@@ -1,9 +1,7 @@
 channels:
-  - defaults
+  # - defaults
   - conda-forge
 dependencies:
-  - numpy=1.19.2
-  - pip=21.0.1
-  - python=3.9
-  - pip:
-      - matplotlib==3.4.3
+  - python=3.10
+  - numpy
+  - matplotlib
