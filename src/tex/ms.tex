@@ -98,17 +98,17 @@ By way of motivation, before delving any further into the methodology, we have p
 
 In a nod to \citet{prh92a}, our first example consists of two simulated light curves of a hypothetical lensed quasar. Both light curves contain the same underlying signal, namely a single random draw from a GP prior with a Mat{\'e}rn $3/2$ kernel with parameters $A=0.1$ and $\lambda=5000\,{\rm d}^2$ (see Section \suz{XXX} for details \suz{check consistency of notation}). All GP calculations in this Section were performed using the {\sc george} package \citep{george}. Both light curves were simulated using the same set of times, which are drawn randomly in the interval $0$--$1500$\,d, but a time-delay of $\delta t=419.3$\,d was applied to the times for the second light curves before sampling the GP. In other words, the signal reaches the second source at a time $\delta t$ \textit{before} it reaches the first. We then added white Gaussian noise with standard deviation $\sigma_1=0.02$ and $\sigma_2=0.04$ vertical offsets of $M_1=1.0$ and $M_2=0.5$. The resulting simulated light curves are shown in the left panel of Figure~\ref{fig:sim_lcs}.
 
-\begin{figure}[h]
-  \centering
-  \begin{minipage}[t]{0.48\linewidth}
-    \includegraphics[width=\linewidth,vshift=1cm]{quasar_lc.pdf} 
-  \end{minipage} \hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \includegraphics[width=\linewidth,vshift=1cm]{transit_lc.pdf}
-  \end{minipage}
-  \caption{Simulated datasets for the lensed quasar and transit examples. In the left panel, black dots and crosses with error bars show the light curves of the two quasar images, respectively, while the thin blue and red lines show the corresponding posterior samples for the simultaneous fit to both light curves using a Mat{\'e}rn $3/2$ GP.  In the right panel, black dots with error bars show the transit observations, while the thin blue and red lines lines show posterior samples for the models with white noise only and with a squared exponential GP, respectively. The posterior distributions for the models fit to both datasets are shown in Figure~\protect\ref{fig:sim_posteriors}. The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
-  \label{fig:sim_lcs}
-\end{figure}
+% \begin{figure}[h]
+%   \centering
+%   \begin{minipage}[t]{0.48\linewidth}
+%     \includegraphics[width=\linewidth,vshift=1cm]{quasar_lc.pdf} 
+%   \end{minipage} \hfill
+%   \begin{minipage}[t]{0.48\linewidth}
+%     \includegraphics[width=\linewidth,vshift=1cm]{transit_lc.pdf}
+%   \end{minipage}
+%   \caption{Simulated datasets for the lensed quasar and transit examples. In the left panel, black dots and crosses with error bars show the light curves of the two quasar images, respectively, while the thin blue and red lines show the corresponding posterior samples for the simultaneous fit to both light curves using a Mat{\'e}rn $3/2$ GP.  In the right panel, black dots with error bars show the transit observations, while the thin blue and red lines lines show posterior samples for the models with white noise only and with a squared exponential GP, respectively. The posterior distributions for the models fit to both datasets are shown in Figure~\protect\ref{fig:sim_posteriors}. The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
+%   \label{fig:sim_lcs}
+% \end{figure}
 
 We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn $3/2$ GP, varying the amplitude and length scale of the GP along with the means of the two time-series and the time-delay between them. We sampled the posterior using Markov Chain Monte Carlo (MCMC) with the {\sc emcee} package \citep{emcee} and broad uniform priors over all parameters. The resulting posteriors are shown Figure~\ref{fig:sim_posteriors}, while posterior samples are over-plotted on the data in Figure~\ref{fig:sim_lcs}. The true value of all parameters (including the light curve means, which aren't shown on the posterior plots as they are nuisance parameters) falls within the 68.5\% confidence interval. In particular, measured the time-delay is $\delta t = 418.9_{-1.3}^{+1.4}$\,d ($1$-$\sigma$).
 
@@ -119,18 +119,18 @@ We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn
 \subsubsection{Simulated transit example}
 \label{sec:sim_transit}
 
-\begin{figure}[h]
-  \centering
-  \begin{minipage}[t]{0.48\linewidth}
-    \includegraphics[align=c,width=\linewidth,vshift=1cm]{quasar_posteriors.pdf} 
-  \end{minipage} \hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \includegraphics[align=c,width=\linewidth,vshift=1cm]{transit_posteriors.pdf}
-  \end{minipage}
-  \caption{Corner plots for the fits to the two simulated quasar and transit light curves (left and right, respectively) shown in Figure~\ref{fig:sim_lcs}.  
-  In each panel, the plots along the diagonal show 1-D histograms of the posterior samples for a subset of the fitted parameters, with vertical dashed lines indicating the 16$^{\rm th}$ and 84$^{\rm th}$ percentiles, while the off-diagonal plots show 2-D correlations between pairs of parameters. The horizontal and vertical solid black lines in each panel show the ``ground truth''. In the quasar case, we show the distribution for the GP variance $A$ and length scale $\lambda$ \suz{ensure notation consistent}, as well as for the time delay $\delta t$. In the transit case, the results of the white-noise only fit are shown in blue, while those of the GP fit are shown in red. These plots were generated using the {\sc corner.py} package \citep{corner}. \dan{How can we have them overlap with the transit one in the top right and the quasar one in the bottom left?} The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
-  \label{fig:sim_posteriors}
-\end{figure}
+% \begin{figure}[h]
+%   \centering
+%   \begin{minipage}[t]{0.48\linewidth}
+%     \includegraphics[align=c,width=\linewidth,vshift=1cm]{quasar_posteriors.pdf} 
+%   \end{minipage} \hfill
+%   \begin{minipage}[t]{0.48\linewidth}
+%     \includegraphics[align=c,width=\linewidth,vshift=1cm]{transit_posteriors.pdf}
+%   \end{minipage}
+%   \caption{Corner plots for the fits to the two simulated quasar and transit light curves (left and right, respectively) shown in Figure~\ref{fig:sim_lcs}.  
+%   In each panel, the plots along the diagonal show 1-D histograms of the posterior samples for a subset of the fitted parameters, with vertical dashed lines indicating the 16$^{\rm th}$ and 84$^{\rm th}$ percentiles, while the off-diagonal plots show 2-D correlations between pairs of parameters. The horizontal and vertical solid black lines in each panel show the ``ground truth''. In the quasar case, we show the distribution for the GP variance $A$ and length scale $\lambda$ \suz{ensure notation consistent}, as well as for the time delay $\delta t$. In the transit case, the results of the white-noise only fit are shown in blue, while those of the GP fit are shown in red. These plots were generated using the {\sc corner.py} package \citep{corner}. \dan{How can we have them overlap with the transit one in the top right and the quasar one in the bottom left?} The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
+%   \label{fig:sim_posteriors}
+% \end{figure}
   
 For our second example, we simulate a transit observation containing correlated as well as white noise, and demonstrate the impact of modelling the correlated noise explicitly. The transit was simulated using the {\sc Pytransit} package \citep{2015MNRAS.450.3233P} with orbital period $P=1$\,d, planet-to-star radius ratio $R_{\rm p}/R_\star=0.1$, system scale $a/R_\star=3.0$, and impact parameter $b=0.1$. Conjunction occurs at $t=0$, and we simulated 100 equally spaced over the interval $-0.2\,{\rm d} \le t \le 0.2$\,d. We used the {\sc LDTk} package \citep{2015MNRAS.453.3821P} to include limb-darkening as expected for a Sun-like star observed in the bandpass of the Transiting Exoplanet Survey Satellite (TESS, \citealt{2015JATIS...1a4003R}). We then added both white Gaussian noise with a standard deviation of $\sigma=0.001$ and correlated noise simulated using a squared exponential GP with variance $A=0.000004$ and length scale $\lambda=0.0005\,{\rm d}^2$. The resulting light curve is shown in the right panel of Figure~\ref{fig:sim_lcs}.
 
@@ -229,11 +229,11 @@ This gives rise to smooth random functions with variance $A$ and characteristic 
 
 \subsection{Inference with a GP}
 
-\begin{figure}[h]
-  \includegraphics[width=\linewidth]{GPR_workflow.pdf}
-  \caption{Schematic of the workflow for Bayesian inference with a GP. The process starts with getting some data (blue box), and making some choices about how we are going to model it (grey boxes, these choices are discussed in Section~\ref{sec:choices}). The mathematical framework presented in this section can then be used (green boxes) to evaluate the likelihood and posterior distribution over the HPs which can be optimized or sampled. We can also condition the GP on the data to predict observations at locations where we do not yet have observations. \suz{Figure will be updated with nicer version.}}
-  \label{fig:GPRworkflow}
-\end{figure}
+% \begin{figure}[h]
+%   \includegraphics[width=\linewidth]{GPR_workflow.pdf}
+%   \caption{Schematic of the workflow for Bayesian inference with a GP. The process starts with getting some data (blue box), and making some choices about how we are going to model it (grey boxes, these choices are discussed in Section~\ref{sec:choices}). The mathematical framework presented in this section can then be used (green boxes) to evaluate the likelihood and posterior distribution over the HPs which can be optimized or sampled. We can also condition the GP on the data to predict observations at locations where we do not yet have observations. \suz{Figure will be updated with nicer version.}}
+%   \label{fig:GPRworkflow}
+% \end{figure}
 
 Now that we know how to evaluate the likelihood (Equation~\ref{eq:gp_like}), we are ready to perform \textit{inference}, that is to use observations to update our prior beliefs about the system we are observing. The overall Bayesian inference workflow for GPR regression is illustrated schematically in Figure~\ref{fig:GPRworkflow}. For example, we can optimize the likelihood with respect to the hyper-parameters $\boldsymbol{\phi}$ and $\boldsymbol{\theta}$. This is called \emph{training} the GP. In doing so, we are learning the properties of the correlated signal from the data, hence GPR is a machine learning method.
 
@@ -476,11 +476,11 @@ Most studies focusing on the photometric signatures of stellar activity ignore v
 \subsubsection{Stellar activity in Radial Velocities}
 Given the remarkable instrumental precision actived by modern RV spectrographs, stellar activity is nowadays the key factor limiting the sensitivity of RV surveys low-amplitude and/or long-period planet signals. The effect of active regions on RV observations is two-fold. First, as dark spots rotate on the stellar surface, they distort the profile of spectral lines, removing a small contribution first from the red wing of each spectral line, then from the line core, and then from the blue wing. The second effect is more subtle: in the absence of active regions, spectral lines of Sun-like stars display a net blue-shift due to granulation: the emission from the hot, up-welling material in the granules, which is blue-shifted, dominates over that from the cooler material falling back down in the inter-granular lanes). In a facula, i.e.\ a region of enhanced magnetic flux density compared to the ``clean'' photosphere, convection is suppressed, leading to a localised reduction in this ``convective blue-shift''. Faculae have very small photometric contrast but can cover a much larger area than dark spots, so their RV signature can dominate over that of spots, specially for moderately slow rotators like the Sun with modest magnetic fields \citep{2010A&A...512A..39M}.
 
-\begin{figure}[h]
-  \includegraphics[width=3in]{rajpaul_framework}
-  \caption{Schematic of the GP framework of \citet{2015MNRAS.452.2269R} for modelling activity signals in RV data \suz{Figure will be updated with nicer version.}}
-  \label{fig:multiGPRV}
-\end{figure}
+% \begin{figure}[h]
+%   \includegraphics[width=3in]{rajpaul_framework}
+%   \caption{Schematic of the GP framework of \citet{2015MNRAS.452.2269R} for modelling activity signals in RV data \suz{Figure will be updated with nicer version.}}
+%   \label{fig:multiGPRV}
+% \end{figure}
 
 Overall, active regions produce quasi-periodic RV variations which are frequently modelled with the same kind of QP GPs as for light curves. However, unlike transits, planetary signatures in RV occur on timescales similar to activity signals, meaning that the risk of overfitting is significant. This partly mitigated for RV follow-up of transiting planets by strong priors on the stellar rotation period and on the period and phase of the planetary orbit, but it is a severe problem for ``blind'' RV searches. The issue is compounded by the fact that RV observations are invariably ground-based, and strong pressure on telescope time means that the time-sampling of these observations is not always good enough to constrain the GP parameters well.
 
