@@ -5,6 +5,8 @@ overleaf:
   push: 
     - src/tex/figures
     - src/tex/output
+    - src/tex/ar-1col.cls
+    - src/tex/ar-style2.bst
   pull:
     - src/tex/ms.tex
     - src/tex/bib.bib
