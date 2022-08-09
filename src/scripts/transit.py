@@ -4,6 +4,7 @@ import numpy as np
 import seaborn as sns
 from ldtk import tess
 from pytransit import LDTkLDModel, RoadRunnerModel
+import corner
 
 sns.set_style("ticks")
 
