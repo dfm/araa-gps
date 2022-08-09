@@ -1,10 +1,12 @@
+import corner
 import emcee
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from ldtk import tess
 from pytransit import LDTkLDModel, RoadRunnerModel
-import corner
+
+from paths import figures
 
 sns.set_style("ticks")
 
@@ -176,7 +178,7 @@ fig1 = corner.corner(
     quantiles=(0.16, 0.84),
 )
 corner.corner(samples[:, 2:], color="C3", fig=fig1, quantiles=(0.16, 0.84))
-plt.savefig("transit_posteriors.pdf")
+plt.savefig(figures / "transit_posteriors.pdf", bbox_inches="tight")
 
 ## Plot fits
 plt.figure()
@@ -192,4 +194,4 @@ for s in samples[rng.integers(len(samples), size=24)]:
 plt.ylabel("normalised flux")
 plt.xlabel("time (days)")
 plt.xlim(-0.21, 0.21)
-plt.savefig("transit.pdf")
+plt.savefig(figures / "transit.pdf", bbox_inches="tight")

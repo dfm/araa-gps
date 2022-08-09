@@ -1,8 +1,9 @@
 import emcee
+import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt
-from george import kernels, GP
+from george import GP, kernels
+
 from paths import figures
 
 sns.set_style("ticks")
@@ -157,4 +158,4 @@ plt.xlabel("time (days)")
 plt.xlim(t_obs.min() - p_best[2] / 2, t_obs.max() + p_best[2] / 2)
 # plt.tight_layout()
 # plt.title("fit accounting for correlated noise");
-plt.savefig(figures / "quasar.pdf")
+plt.savefig(figures / "quasar.pdf", bbox_inches="tight")
