@@ -1,4 +1,6 @@
-version: 0.3.0
+version:
+  fork: https://github.com/dfm/showyourwork.git
+  spec: main
 
 overleaf:
   id: 62f169d4cce9f5c2976ac131
