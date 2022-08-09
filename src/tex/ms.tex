@@ -24,7 +24,7 @@
 % Metadata Information
 \jname{Xxxx. Xxx. Xxx. Xxx.}
 \jvol{AA}
-\jyear{YYYY}
+\jyear{2022}
 \doi{10.1146/((please add article doi))}
 
 
@@ -73,10 +73,10 @@
 \section{INTRODUCTION}
 \label{sec:intro}
 
-\begin{aaramarginnote}[]
+\begin{armarginnote}[]
   \entry{GP}{Gaussian Process}
   \entry{GPR}{Gaussian Process Regression}
-\end{aaramarginnote}
+\end{armarginnote}
 
 Gaussian Processes (GPs) are a powerful class of statistical models, which allow us to define a probability distribution over random functions. Rather than write down an explicit mathematical formula for the function from which some observations are generated, we model the covariance between pairs of samples from the process, using our physical domain knowledge and/or available data to guide our modelling. GP Regression (GPR) has become increasingly popular in the astronomical community over the last decade. Part of the reason for this uptake is the growing availability and importance of time-domain datasets in astronomy. These systematically contain non-trivial random or unknown signals, whether astrophysical or instrumental, that need to be modelled. In many cases, these are nuisance signals, which we need to marginalise over in order to detect or measure other signals robustly. Sometimes, we are interested in the stochastic behaviour itself, and want to infer its characteristics or predict its behaviour. GPR offers a compelling solution: statistically principled, naturally Bayesian, and extremely flexible, yet mathematically simple. To new users, however, the lack of an explicit functional form for the model can make GPR can seem a little arcane. Furthermore, the computational cost of the method, which scales cubically with the dataset size, can be an obstacle. These factors initially impeded its dissemination in the astronomical community, but have been largely overcome in recent years thanks to the availability of user-friendly, computationally optimised software packages. 
 
@@ -315,13 +315,13 @@ In this section we walk through this process in detail.
 \subsection{Gaussian Process Covariance Functions}
 \label{sec:kernels}
 
-\begin{aaramarginnote}[]
+\begin{armarginnote}[]
   \entry{Kernel function}{The ``kernel'' or ``covariance'' function, typeset here as $k(t_i,\,t_j;\,\phi)$ is a parametric description of the covariance between two data points $t_i$ and $t_j$. The parameter $\phi$ indicates that these functions are typically parameterized by a set of parameters, typically referred to as ``hyperparameters''.}
-\end{aaramarginnote}
+\end{armarginnote}
 
-\begin{aaramarginnote}[]
+\begin{armarginnote}[]
   \entry{Hyperparameters}{In a GP model, the kernel function is typically parameterized by a set of parameters that we will label as $\phi$ and refer to as ``hyperparameters''. This label is used to distinguish these parameters from the parameters of the mean function, which we will refer to as $\theta$.}
-\end{aaramarginnote}
+\end{armarginnote}
 
 The kernel function can be any positive semi-definite scalar function, but some will be more useful than others.
 A commonly (over-)used kernel function is the ``exponential-squared'' or ``radial basis function'' kernel
@@ -421,9 +421,9 @@ In practice, GPR has been much more widely applied to transit modelling than to 
 
 To address this, \citet{2009ApJ...704...51C} proposed a wavelet-based method to model correlated noise in transit light curves, which can be seen as a special case of GPR with a covariance function belonging to the exponential family, but the formulation using wavelets. Rather than modelling the covariance in the time domain, the Power Spectral Density (PSD) of the noise is assumed to be of the form $P(f) \propto f^{-\gamma}$. 
 Noting that the wavelet transform of such a process gives rise to a nearly diagonal covariance matrix, \citet{2009ApJ...704...51C}  derived an expression for the likelihood that can be computed in $\mathcal{O}(N)$ operations. This method has been used widely since its publication to model transit observations from space missions which stare continuously at a given field, such as \textit{Kepler} or \textit{TESS}. However, the use of a wavelet transform requires regular time sampling, which precludes its application to datasets with irregular sampling or significant data gaps, for example from space telescopes in low-Earth orbit such as Hubble and Spitzer. 
-\begin{aaramarginnote}
+\begin{armarginnote}
   \entry{Colours of noise}{White, pink and red noise correspond to $\gamma=0$, $1$ and $2$, respectively.}
-\end{aaramarginnote}
+\end{armarginnote}
 
 
 This limitation is significant, as Hubble and Spitzer have been the workhorse instruments for transit and eclipse spectroscopy for over a decade. This involves measuring minute changes in the depth of the primary transit or secondary eclipse as a function of wavelength, either using successive photometric observations through different filters or using a spectrograph (see \citealt {2018haex.bookE.100K} for a review). The signal of interest is the wavelength dependence of the transit depth, or the depth of the eclipse, which are of order $10^{-4}$ and $10^{-3}$ respectively, in  the most favourable cases. Even when observed from space, these signals are typically dwarfed by instrumental systematics. The pointing jitter and thermal relaxation of the telescope as it orbits the Earth causes the target star to move on the detector, typically by a fraction of a pixel. As the sensitivity of the detector varies from pixel to pixel (the ``flat-field'') and between the centre and edges of each pixel, this motion causes spurious variations in the recorded flux from the target. Although we expect the measured flux to depend on ``housekeeping" variables such as the satellite orbital phase, telescope attitude, the centroid of the image or the locus and angle of the spectrum of the detector, or the temperatures of various parts of the instrument, a physically motivated model for the form of this dependence is generally lacking. \textit{Ad hoc} parametric (e.g.\ polynomial) models are problematic, as the choice of model inputs and functional form is arbitrary, yet can drastically alter the resulting exoplanet spectrum \citep{2011MNRAS.411.2199G}.  
@@ -438,9 +438,9 @@ led to the first unambiguous detection of a thermal inversion in an exoplanet em
 
 Despite these theoretical advantages and practical successes, the use of GPR to analyse low-resolution transit and eclipse spectra remains confined to a relatively small subset of the corresponding community. Parametric models (in some cases marginalising over families thereof, [ref wakeford]) remain the most widely-used approach for Hubble space telescope observations, and Pixel-Level-Decorrelation (PLD) for Spitzer observations [ref Deming]. Possible explanations for this include computational cost, as well as the fact that these other methods are perceived as easier to implement and interpret. As the recently-launched JWST begins to deliver much higher signal-to-noise observations, multiple analyses of which by different groups are actively encouraged, it will be interesting to see how this topic evolves in the next few years.
 
-One general shortcoming of current GP-based systematics models with multi-dimensional inputs is that the uncertainties on the input variables are ignored. This could in principle be remedied by treating the housekeeping variables as noisy observations of latent GP variables, and modelling them alongside the observed fluxes, but we are not aware of published attempts to do this in practice to date. \begin{aaramarginnote}
+One general shortcoming of current GP-based systematics models with multi-dimensional inputs is that the uncertainties on the input variables are ignored. This could in principle be remedied by treating the housekeeping variables as noisy observations of latent GP variables, and modelling them alongside the observed fluxes, but we are not aware of published attempts to do this in practice to date. \begin{armarginnote}
   \entry{Latent variable}{A random variable which is never actually observed.}
-\end{aaramarginnote}
+\end{armarginnote}
 In spectroscopic observations, whether using GPs or parametric models, it has become standard practice to model the ``white" light curve first (obtained by integrating the spectrum over the full wavelength range at each time-step). ``Coloured'' light curves, extracted in individual wavelength bins, are then divided by the best-fit systematics model derived from the white light curve, before being modelled further. To our knowledge, no attempt has been made to model the wavelength dependence of the systematics directly. 
 
 On the other hand, GPR has become quite widely used for modelling correlated noise in single-band transit observations. One striking example is the case of transiting planet candidates discovered by \textit{Kepler} around giant stars. By comparing the stellar densities derived from transit modelling to those expected from independent estimates, \citet{2014ApJ...788..148S} argued that many of these candidates, including the confirmed planet Kepler-91, might be false positives. However, red giant light curves contain stochastic variability on timescales of hours due to granulation. In the case of Kepler-91, \citet{2015ApJ...800...46B} showed that the apparent density discrepancy disappears when this granulation signal is modelled using a GP. 
@@ -596,11 +596,11 @@ This section will wrap up the review by recapping the key takeaways and outline 
 
 % \subsection{Sidebars and Margin Notes}
 % % Margin Note
-% \begin{aaramarginnote}[]
+% \begin{armarginnote}[]
 %   \entry{Term A}{definition}
 %   \entry{Term B}{definition}
 %   \entry{Term C}{defintion}
-% \end{aaramarginnote}
+% \end{armarginnote}
 
 % \begin{textbox}[h]\section{SIDEBARS}
 %   Sidebar text goes here.
@@ -657,6 +657,6 @@ Acknowledgements, general annotations, funding.
 %\section*{LITERATURE\ CITED}
 
 \bibliographystyle{ar-style2}
-\bibliography{GPR}
+\bibliography{bib}
   
 \end{document}
