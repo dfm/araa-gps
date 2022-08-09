@@ -1,6 +1,7 @@
 rule quasar:
     output:
-        "src/tex/figures/quasar.pdf"
+        "src/tex/figures/quasar.pdf",
+        "src/tex/figures/quasar_posteriors.pdf"
     script:
         "src/scripts/quasar.py"
 

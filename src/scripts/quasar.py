@@ -1,3 +1,4 @@
+import corner
 import emcee
 import matplotlib.pyplot as plt
 import numpy as np
@@ -135,6 +136,12 @@ def eval_gp(p, t, y, source_id, wn, x_samp, sample=True):
 tau = int(Nsteps / 50)
 
 samples = sampler.get_chain(discard=5 * tau, thin=tau, flat=True)
+
+labels = [r"$\log A$",r"$\log m$",r"$\delta t$ (d)", "$M_1$", "$M_2$"]
+corner.corner(samples,truths=p_true, labels=labels, quantiles=(0.16, 0.84));
+plt.savefig(figures / 'quasar_posteriors.pdf', bbos_inches='tight')
+
+plt.figure()
 t_grid = np.linspace(-500, 2500, 1000)
 
 lnpr = sampler.get_log_prob(discard=5 * tau, thin=tau, flat=True)
