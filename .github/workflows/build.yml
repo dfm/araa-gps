@@ -19,6 +19,9 @@ jobs:
         uses: dfm/showyourwork-action@custom-version
         with:
           pip-install-syw: git+https://github.com/dfm/showyourwork.git@use-fork#egg=showyourwork
+          showyourwork-version:
+            fork: https://github.com/dfm/showyourwork
+            ref: use-fork
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
           OVERLEAF_EMAIL: ${{ secrets.OVERLEAF_EMAIL }}
