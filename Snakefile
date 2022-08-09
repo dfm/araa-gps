@@ -6,7 +6,7 @@ rule quasar:
 
 rule transit:
     output:
-        "src/tex/figures/transit.pdf"
+        "src/tex/figures/transit.pdf",
         "src/tex/figures/transit_posteriors.pdf"
     script:
         "src/scripts/transit.py"
