@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from george import kernels, GP
 from paths import figures
 
-sns.set_context("notebook")
 sns.set_style("ticks")
 
 ## Initialise random number generator

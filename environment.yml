@@ -9,3 +9,11 @@ dependencies:
   - george
   - corner
   - tqdm
+  - astropy
+  - celerite
+  - numba
+  - pytables
+  - pip
+  - pip:
+    - ldtk
+    - PyTransit
