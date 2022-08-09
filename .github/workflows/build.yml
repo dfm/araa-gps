@@ -18,7 +18,7 @@ jobs:
         id: build
         uses: dfm/showyourwork-action@custom-version
         with:
-          pip-install-syw: git+https://github.com/dfm/showyourwork.git@multi-label#egg=showyourwork
+          pip-install-syw: git+https://github.com/dfm/showyourwork.git@use-fork#egg=showyourwork
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
           OVERLEAF_EMAIL: ${{ secrets.OVERLEAF_EMAIL }}
