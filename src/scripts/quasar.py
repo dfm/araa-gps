@@ -137,9 +137,9 @@ tau = int(Nsteps / 50)
 
 samples = sampler.get_chain(discard=5 * tau, thin=tau, flat=True)
 
-labels = [r"$\log A$",r"$\log m$",r"$\delta t$ (d)", "$M_1$", "$M_2$"]
-corner.corner(samples,truths=p_true, labels=labels, quantiles=(0.16, 0.84));
-plt.savefig(figures / 'quasar_posteriors.pdf', bbos_inches='tight')
+labels = [r"$\log A$", r"$\log m$", r"$\delta t$ (d)", "$M_1$", "$M_2$"]
+corner.corner(samples, truths=p_true, labels=labels, quantiles=(0.16, 0.84))
+plt.savefig(figures / "quasar_posteriors.pdf", bbox_inches="tight")
 
 plt.figure()
 t_grid = np.linspace(-500, 2500, 1000)
