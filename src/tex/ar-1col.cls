@@ -1,3 +1,5 @@
+%% Modified 2022-08-08 by @dfm to rename "marginnote" environment to "armarginnote" for showyourwork compatibility
+%%
 %% ar.cls - version 1.1 
 %% Aptara Inc., dated 07 Mar. 2014
 %%
@@ -8,7 +10,7 @@
 %% 2) Used the ifpdf.sty for providing the PDF Paper
 %%    Size in case of pdflatex.
 %% 3) Seperation between author and year removed for Harvard style reference (unnumbered)
-%% 4) Removed the clashing of aaramarginnote environment with amsmath.sty 
+%% 4) Removed the clashing of marginnote environment with amsmath.sty 
 %% 5) Introduced an option to change format of Equation Number and a command ``\firstpagenote''to appear text on first page
 %% 
 %% For AR journals
@@ -34,7 +36,7 @@
 \ProvidesClass{ar}[2013/03/07 v1.1 Standard LaTeX document class]
 %
 \newif\if@restonecol
-\newif\if@DotinEqNum
+\newif\if@DotinEqNum\global\@DotinEqNumtrue
 %
 % Global Variable Declaration
 %
@@ -52,7 +54,7 @@
 \def\authorfont{\fontsize{12}{15}\selectfont\bfseries\leftskip14.25pc\rightskip0\p@ plus1fill\mathversion{bold}}
 \def\abstractfont{\fontsize{9}{12}\selectfont}
 \def\keywordsfont{\fontsize{9}{12}\selectfont\rightskip0\p@ plus1fill\mathversion{normal}}
-\def\affilfont{\fontsize{7}{9}\selectfont\leftskip14.25pc\rightskip0\p@ plus1fil}
+\def\affilfont{\fontsize{7}{9}\selectfont\leftskip14.25pc\rightskip0\p@ plus1fil{}}
 \def\jinfofont{\fontsize{7}{9}\selectfont\rightskip12\p@ plus1fil}
 \def\foliofont{\fontsize{7.5}{7.5}\itshape\selectfont}
 \def\figcaptionfont{\fontsize{8}{10}\selectfont\mathversion{normal}}
@@ -70,8 +72,8 @@
 \def\paragraphfont{\bfseries\itshape}
 \def\subparagraphfont{\itshape}
 \def\extractfont{\fontsize{8}{12}\selectfont\mathversion{normal}}
-\def\aaramarginnotefont{\fontsize{8}{10}\selectfont\rightskip0\p@ plus1fill\mathversion{normal}}
-\def\bibaaramarginnotefont{\fontsize{7}{10}\selectfont\bfseries\rightskip0\p@ plus1fill\mathversion{normal}}
+\def\armarginnotefont{\fontsize{8}{10}\selectfont\rightskip0\p@ plus1fill\mathversion{normal}}
+\def\bibarmarginnotefont{\fontsize{7}{10}\selectfont\bfseries\rightskip0\p@ plus1fill\mathversion{normal}}
 \def\bibliofont{\fontsize{8}{11}\selectfont\mathversion{normal}}
 %
 %
@@ -86,8 +88,8 @@
    {\setlength\paperheight {250mm}%
     \setlength\paperwidth  {176mm}}
 \DeclareOption{letterpaper}
-   {\setlength\paperheight {9.125in}%
-    \setlength\paperwidth  {7.375in}}
+   {\setlength\paperheight {11in}%
+    \setlength\paperwidth  {8.5in}}
 \DeclareOption{legalpaper}
    {\setlength\paperheight {14in}%
     \setlength\paperwidth  {8.5in}}
@@ -331,8 +333,13 @@
 \def\firstpagenote#1{\gdef\@firstpagenote{#1}}\firstpagenote{}%
 \def\journalinfo{{\jinfofont%
     \@jname\ \@jyear. \@jvol:\@fstpage--\@endpage\endgraf%
-    \ifx\@doi\empty\else\vskip6\p@ This article's doi:\break \@doi\endgraf\vskip6\p@\fi%
-    Copyright\ \copyright\ \@jyear\ by Annual Reviews.\endgraf All rights reserved\endgraf%
+    %\ifx\@doi\empty\else\vskip6\p@ This article's doi:\break \@doi\endgraf\vskip6\p@\fi%
+    \ifx\@doi\empty\else\vskip6\p@ https://doi.org/\@doi\endgraf\vskip6\p@\fi%
+   \ifnum\@jyear>2022%
+      Copyright\ \copyright\ \@jyear\ by the  author(s).\endgraf All rights reserved\endgraf%
+   \else%
+      Copyright\ \copyright\ \@jyear\ by Annual Reviews.\endgraf All rights reserved\endgraf%
+   \fi%
     \ifx\@firstpagenote\@empty\else\vskip6\p@\@firstpagenote\endgraf\fi%
 }}
 %
@@ -788,22 +795,22 @@
 %
 %%% Body environment declaration
 %
-\newcount\aaramarginnotecnt
-\newbox\aaramarginnotebox%
-\newenvironment{aaramarginnote}[1][\relax]
-  {\def\@tempa{#1}\global\advance\aaramarginnotecnt\@ne\let\entry\aaramarginnoteentry%
-   \edef\aaramarginnote@page{\getpagerefnumber{aaramarginnote@\the\aaramarginnotecnt}}
-   \setbox\aaramarginnotebox\vbox\bgroup\hsize6.5pc\aaramarginnotefont\parindent\z@\if\@tempa\relax\else\vskip\@tempa\fi%
+\newcount\armarginnotecnt
+\newbox\armarginnotebox%
+\newenvironment{armarginnote}[1][\relax]
+  {\def\@tempa{#1}\global\advance\armarginnotecnt\@ne\let\entry\armarginnoteentry%
+   \edef\armarginnote@page{\getpagerefnumber{armarginnote@\the\armarginnotecnt}}
+   \setbox\armarginnotebox\vbox\bgroup\hsize6.5pc\armarginnotefont\parindent\z@\if\@tempa\relax\else\vskip\@tempa\fi%
    \noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}\par%
   }%
   {\par\vskip-2\p@\noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}\egroup%
-   \ifodd\aaramarginnote@page
-     \marginpar{\hspace*{2.5\p@}\box\aaramarginnotebox}%
+   \ifodd\armarginnote@page
+     \marginpar{\hspace*{2.5\p@}\box\armarginnotebox}%
    \else
-     \marginpar{\hspace*{-23\p@}\box\aaramarginnotebox}%
-   \fi\label{aaramarginnote@\the\aaramarginnotecnt}}
+     \marginpar{\hspace*{-23\p@}\box\armarginnotebox}%
+   \fi\label{armarginnote@\the\armarginnotecnt}}
 % 
-\def\aaramarginnoteentry#1#2{\par\addvspace{4\p@}\noindent{\fignum@color{\sffamily\bfseries#1:}}\ #2\par}
+\def\armarginnoteentry#1#2{\par\addvspace{4\p@}\noindent{\fignum@color{\sffamily\bfseries#1:}}\ #2\par}
 %
 \newcount\bibnotecnt
 \def\bibnote{\@ifnextchar[{\@bibnote}{\@bibnote[\relax]}}
@@ -811,10 +818,10 @@
   \global\advance\bibnotecnt\@ne%
   \edef\bibnote@page{\getpagerefnumber{bibnote@\the\bibnotecnt}}%
   \ifodd\bibnote@page
-    \marginpar{\hbox{\reset@font\hskip2.5\p@\parbox{6.5pc}{\vbox to \z@{\if\chk@tempa\relax\else\vskip\chk@tempa\fi\noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}\par{\bibaaramarginnotefont\ifx\chk@natbib@nonumref\YES\else\ifx\@tempa\@empty\else\theenumiv.\ \fi\fi#2\par}\par\vskip-6.6\p@%
+    \marginpar{\hbox{\reset@font\hskip2.5\p@\parbox{6.5pc}{\vbox to \z@{\if\chk@tempa\relax\else\vskip\chk@tempa\fi\noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}\par{\bibarmarginnotefont\ifx\chk@natbib@nonumref\YES\else\ifx\@tempa\@empty\else\theenumiv.\ \fi\fi#2\par}\par\vskip-6.6\p@%
     \noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}}}}}%
   \else%
-    \marginpar{\hbox{\reset@font\hskip-23\p@\parbox{6.5pc}{\vbox to \z@{\if\chk@tempa\relax\else\vskip\chk@tempa\fi\noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}\par{\reset@font\bibaaramarginnotefont\ifx\chk@natbib@nonumref\YES\else\ifx\@tempa\@empty\else\theenumiv.\ \fi\fi#2\par}\vskip-6.6\p@%
+    \marginpar{\hbox{\reset@font\hskip-23\p@\parbox{6.5pc}{\vbox to \z@{\if\chk@tempa\relax\else\vskip\chk@tempa\fi\noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}\par{\reset@font\bibarmarginnotefont\ifx\chk@natbib@nonumref\YES\else\ifx\@tempa\@empty\else\theenumiv.\ \fi\fi#2\par}\vskip-6.6\p@%
     \noindent\hbox to 6.5pc{\marginrulecolor{\hrulefill}}}}}}%
 \fi%
 \label{bibnote@\the\bibnotecnt}
@@ -956,6 +963,15 @@
     \def\@eqnnum{{\normalfont \normalcolor \theequation.}}
   }%
 \fi% 
+%%
+\@ifpackageloaded{hyperref}{%
+  \def\@linkcolor{green}%
+  \def\termkey#1{\hyperlink{key#1}{#1}}%
+  \def\armarginnoteentry#1#2{\par\addvspace{4\p@}\noindent{\fignum@color{\sffamily\bfseries#1:\hypertarget{key#1}{}}}\ #2\par}%
+}{%
+  \def\termkey#1{#1}%
+}
+%
 }
 %
 \def\@outputpage{%
