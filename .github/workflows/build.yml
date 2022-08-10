@@ -18,8 +18,7 @@ jobs:
         id: build
         uses: dfm/showyourwork-action@custom-version
         with:
-          showyourwork-fork: https://github.com/dfm/showyourwork
-          showyourwork-ref: use-fork
+          showyourwork-ref: main
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
           OVERLEAF_EMAIL: ${{ secrets.OVERLEAF_EMAIL }}

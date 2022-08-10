@@ -13,7 +13,11 @@ dependencies:
   - celerite
   - numba
   - pytables
+  - jax
+  - arviz
   - pip
   - pip:
     - ldtk
     - PyTransit
+    - tinygp
+    - numpyro

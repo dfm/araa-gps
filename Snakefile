@@ -5,6 +5,13 @@ rule quasar:
     script:
         "src/scripts/quasar.py"
 
+rule quasar:
+    output:
+        "src/tex/figures/quasar2.pdf",
+        "src/tex/figures/quasar2_posteriors.pdf"
+    script:
+        "src/scripts/quasar2.py"
+
 rule transit:
     output:
         "src/tex/figures/transit.pdf",
