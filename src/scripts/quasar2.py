@@ -11,9 +11,9 @@ from paths import figures
 data = Table.read("src/data/quasar.csv")
 
 # %%
-plt.plot(data["jd"], data["a_mag"], ".")
-plt.plot(data["jd"], data["b_mag"] + 1, ".")
-plt.ylim(plt.ylim()[::-1])
+# plt.plot(data["jd"], data["a_mag"], ".")
+# plt.plot(data["jd"], data["b_mag"] + 1, ".")
+# plt.ylim(plt.ylim()[::-1])
 
 # %%
 from functools import partial
@@ -100,14 +100,14 @@ soln.params
 
 # %%
 t_lagged = X[0] - soln.params["lag"] * X[1]
-plt.scatter(
-    t_lagged,
-    (y - soln.params["means"][X[1]]) / soln.params["amps"][X[1]],
-    c=X[1],
-    s=10,
-    edgecolor="k",
-    linewidth=0.5,
-)
+# plt.scatter(
+#     t_lagged,
+#     (y - soln.params["means"][X[1]]) / soln.params["amps"][X[1]],
+#     c=X[1],
+#     s=10,
+#     edgecolor="k",
+#     linewidth=0.5,
+# )
 t_grid = jnp.linspace(t_lagged.min() - 200, t_lagged.max() + 200, 1000)
 
 # %%
@@ -173,7 +173,7 @@ corner.corner(
     var_names=["lag", "delta_mean"],
     labels=["time lag", "mean magnitude offset"],
 )
-plt.savefig(figures / "quasar2_posteriors.pdf", bbox_inches="tight")
+plt.savefig(figures / "quasar2_posteriors.png", bbox_inches="tight")
 
 
 # %%
@@ -213,6 +213,6 @@ plt.xlabel(f"time [days; A shifted +{lag:.0f} days]")
 plt.ylabel(f"magnitude [B shifted +{offset}]")
 plt.xlim(t_grid.min() + lag, t_grid.max() + lag)
 plt.legend()
-plt.savefig(figures / "quasar2.pdf", bbox_inches="tight")
+plt.savefig(figures / "quasar2.png", bbox_inches="tight")
 
 # %%
