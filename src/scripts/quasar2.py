@@ -5,10 +5,10 @@ numpyro.set_host_device_count(2)
 
 from astropy.table import Table
 import matplotlib.pyplot as plt
-from paths import figures
+from paths import figures, data
 
 # %%
-data = Table.read("src/data/quasar.csv")
+data = Table.read(data / "quasar.csv")
 
 # %%
 # plt.plot(data["jd"], data["a_mag"], ".")
@@ -87,16 +87,25 @@ loss(init)
 import jaxopt
 
 opt = jaxopt.ScipyMinimize(fun=loss)
-soln = opt.run(init)
+
+minimum = loss(init), init
+lags = []
+vals = []
+for lag in jnp.linspace(0, 1000, 100):
+    init["lag"] = lag
+    soln = opt.run(init)
+    lags.append(soln.params["lag"])
+    vals.append(soln.state.fun_val)
+    if soln.state.fun_val < minimum[0]:
+        minimum = soln.state.fun_val, soln.params
+# %%
+# plt.plot(lags, vals, ".", alpha=0.1)
 
 # %%
-soln
+init = minimum[1]
 
 # %%
 init
-
-# %%
-soln.params
 
 # %%
 t_lagged = X[0] - soln.params["lag"] * X[1]

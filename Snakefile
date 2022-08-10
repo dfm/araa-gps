@@ -5,7 +5,7 @@ rule quasar:
     script:
         "src/scripts/quasar.py"
 
-rule quasar:
+rule quasar2:
     output:
         "src/tex/figures/quasar2.pdf",
         "src/tex/figures/quasar2_posteriors.pdf"
