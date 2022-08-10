@@ -19,6 +19,7 @@ jobs:
         uses: dfm/showyourwork-action@custom-version
         with:
           showyourwork-ref: main
+          article-cache-number: 1
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
           OVERLEAF_EMAIL: ${{ secrets.OVERLEAF_EMAIL }}
