@@ -1,7 +1,4 @@
-version:
-  fork: https://github.com/dfm/showyourwork.git
-  ref: araa
-
+version: main
 
 overleaf:
   id: 62f169d4cce9f5c2976ac131
