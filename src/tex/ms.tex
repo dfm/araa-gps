@@ -125,12 +125,12 @@ We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn
 
 \begin{figure}[ht]
   \centering
-  \script{transit.py}
-  \begin{minipage}[t]{0.48\linewidth}
-    \includegraphics[align=c,width=\linewidth,vshift=1cm]{figures/transit.pdf}
+  \script{transit.ipynb}
+  \begin{minipage}[t]{0.5\linewidth}
+    \includegraphics[width=\linewidth,vshift=1cm]{figures/transit.pdf}
   \end{minipage} \hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \includegraphics[align=c,width=\linewidth,vshift=1cm]{figures/transit_posteriors.pdf}
+  \begin{minipage}[t]{0.44\linewidth}
+    \includegraphics[width=\linewidth]{figures/transit_posteriors.pdf}
   \end{minipage}
   \caption{Corner plots for the fits to the two simulated quasar and transit light curves (left and right, respectively) shown in Figure~\ref{fig:sim_lcs}.
   In each panel, the plots along the diagonal show 1-D histograms of the posterior samples for a subset of the fitted parameters, with vertical dashed lines indicating the 16$^{\rm th}$ and 84$^{\rm th}$ percentiles, while the off-diagonal plots show 2-D correlations between pairs of parameters. The horizontal and vertical solid black lines in each panel show the ``ground truth''. In the quasar case, we show the distribution for the GP variance $A$ and length scale $\lambda$ \suz{ensure notation consistent}, as well as for the time delay $\delta t$. In the transit case, the results of the white-noise only fit are shown in blue, while those of the GP fit are shown in red. These plots were generated using the {\sc corner.py} package \citep{corner}. \dan{How can we have them overlap with the transit one in the top right and the quasar one in the bottom left?} The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
