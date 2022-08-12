@@ -4,9 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from ldtk import tess
-from pytransit import LDTkLDModel, RoadRunnerModel
-
 from paths import figures
+from pytransit import LDTkLDModel, RoadRunnerModel
 
 sns.set_style("ticks")
 
@@ -168,7 +167,14 @@ print(tau)
 samples2 = sampler2.get_chain(discard=5 * tau, thin=tau, flat=True)
 
 ## Plot corner plot
-labels = [r"$\log A$",r"$\log m$",r"$T_0$ (d)", r"$R_{\mathrm{p}}/R_{\star}$", r"$a/R_{\star}$", r"$b$"]
+labels = [
+    r"$\log A$",
+    r"$\log m$",
+    r"$T_0$ (d)",
+    r"$R_{\mathrm{p}}/R_{\star}$",
+    r"$a/R_{\star}$",
+    r"$b$",
+]
 fig1 = corner.corner(
     samples2,
     truths=p_tr_true,

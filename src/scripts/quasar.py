@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from george import GP, kernels
-
 from paths import figures
 
 sns.set_style("ticks")

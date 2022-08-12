@@ -26,3 +26,4 @@ dependencies:
     - numpyro
     - jaxopt
     - git+https://github.com/exoplanet-dev/exo4jax.git@e15d2b778985a9d5ba5771d1a81bacaa5e9baa36#egg=exo4jax
+    - git+https://github.com/dfm/numpyro-ext.git@ccecf01604df658faaac7218e61eb8e4403ce498#egg=numpyro-ext

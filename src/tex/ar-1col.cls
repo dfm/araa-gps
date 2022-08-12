@@ -1,18 +1,18 @@
 %% Modified 2022-08-08 by @dfm to rename "marginnote" environment to "armarginnote" for showyourwork compatibility
 %%
-%% ar.cls - version 1.1 
+%% ar.cls - version 1.1
 %% Aptara Inc., dated 07 Mar. 2014
 %%
 %% Version 1.1 (History)
 %% ---------------------
-%% 1) Implemented the color.sty to avoide the  
+%% 1) Implemented the color.sty to avoide the
 %%    color related problems.
 %% 2) Used the ifpdf.sty for providing the PDF Paper
 %%    Size in case of pdflatex.
 %% 3) Seperation between author and year removed for Harvard style reference (unnumbered)
-%% 4) Removed the clashing of marginnote environment with amsmath.sty 
+%% 4) Removed the clashing of marginnote environment with amsmath.sty
 %% 5) Introduced an option to change format of Equation Number and a command ``\firstpagenote''to appear text on first page
-%% 
+%%
 %% For AR journals
 %%
 %% Steps to compile: latex latex latex
@@ -59,7 +59,7 @@
 \def\foliofont{\fontsize{7.5}{7.5}\itshape\selectfont}
 \def\figcaptionfont{\fontsize{8}{10}\selectfont\mathversion{normal}}
 \def\figcaptionnumfont{\sffamily\fontsize{8}{10}\selectfont\bfseries\mathversion{bold}}
-\def\tablecaptionfont{\fontsize{8}{12}\bfseries\selectfont\mathversion{normal}}% 
+\def\tablecaptionfont{\fontsize{8}{12}\bfseries\selectfont\mathversion{normal}}%
 \def\tablecaptionnumfont{\fontsize{8}{12}\bfseries\selectfont}
 \def\tablefont{\fontsize{8}{11}\selectfont\mathversion{normal}}%
 \def\tabnotefont{\fontsize{7}{10}\selectfont}%
@@ -809,7 +809,7 @@
    \else
      \marginpar{\hspace*{-23\p@}\box\armarginnotebox}%
    \fi\label{armarginnote@\the\armarginnotecnt}}
-% 
+%
 \def\armarginnoteentry#1#2{\par\addvspace{4\p@}\noindent{\fignum@color{\sffamily\bfseries#1:}}\ #2\par}
 %
 \newcount\bibnotecnt
@@ -856,7 +856,7 @@
 \newcount\textboxcnt
 \newenvironment{textbox}[1][\relax]%
   {\gdef\textboxpos{#1}\global\advance\textboxcnt\@ne%
-   \edef\textbox@page{\getpagerefnumber{textbox@\the\textboxcnt}} 
+   \edef\textbox@page{\getpagerefnumber{textbox@\the\textboxcnt}}
    \setbox\z@\vbox\bgroup\hsize38pc\textboxfont\vskip12\p@\noindent\ignorespaces%
    \let\section\textboxhead%
    \let\subsection\textboxsubhead%
@@ -931,8 +931,8 @@
         \leftline{\ifodd\chk@fig@temp\hbox{\hspace*{\@tempdima}\box\z@}\else\hbox{\hspace*{-7.5pc}\hspace*{\@tempdima}\box\z@}\fi}
       \else%
         \centerline{\box\z@}
-      \fi%  
-    \fi%  
+      \fi%
+    \fi%
   \fi}
 %
 %
@@ -962,7 +962,7 @@
     %\def\@eqnnum{{\normalfont \normalcolor (\theequation)}}
     \def\@eqnnum{{\normalfont \normalcolor \theequation.}}
   }%
-\fi% 
+\fi%
 %%
 \@ifpackageloaded{hyperref}{%
   \def\@linkcolor{green}%

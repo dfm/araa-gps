@@ -10,7 +10,7 @@
 %% merlin.mbs  (with options: `,ay,nat,nm-rvx,nmlm,x6,m5,dt-beg,yr-per,yrp-per,note-yr,jtit-x,vnum-x,pp-last,jnm-x,add-pub,edby,edbyx,fin-bare,ppx,ed,abr,ednx,ord,jabr,amper,and-xcom,xand,em-it,nfss')
 %% ----------------------------------------
 %% *** Annual Reviews: Harvard Style (not numbered, excluding titles) ***
-%% 
+%%
  %-------------------------------------------------------------------
  % The original source file contains the following version information:
  % \ProvidesFile{merlin.mbs}[1998/02/25 3.85a (PWD)]
@@ -484,7 +484,7 @@ FUNCTION {format.numbers}
 { number empty$
     { "" }
     { "(" * number ")" * }
-  if$ 
+  if$
 }
 
 FUNCTION {format.editors}
@@ -845,7 +845,7 @@ FUNCTION {format.journal.pages}
 }
 
 FUNCTION {format.vol.num.pages}
-{ 
+{
   volume field.or.null
 }
 
