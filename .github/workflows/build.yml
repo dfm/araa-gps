@@ -18,7 +18,6 @@ jobs:
         id: build
         uses: showyourwork/showyourwork-action@v1
         with:
-          # showyourwork-ref: main
           article-cache-number: 1
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}

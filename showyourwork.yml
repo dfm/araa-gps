@@ -2,7 +2,7 @@ version: main
 
 overleaf:
   id: 62f169d4cce9f5c2976ac131
-  push: 
+  push:
     - src/tex/figures
     - src/tex/output
     - src/tex/ar-1col.cls
@@ -10,3 +10,7 @@ overleaf:
   pull:
     - src/tex/ms.tex
     - src/tex/bib.bib
+
+scripts:
+  ipynb:
+    jupyter execute {script}
