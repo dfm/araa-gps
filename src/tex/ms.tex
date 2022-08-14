@@ -393,6 +393,23 @@ which, in our notation, is actually the product of a ``constant'' kernel and an 
   \end{tabnote}
 \end{table}
 
+\begin{figure}[ht]
+  \centering
+  \script{samples.ipynb}
+  \begin{minipage}[t]{0.3\linewidth}
+    \includegraphics[width=\linewidth]{figures/samples1.pdf}
+  \end{minipage} \hfill
+  \begin{minipage}[t]{0.3\linewidth}
+    \includegraphics[width=\linewidth]{figures/samples2.pdf}
+  \end{minipage} \hfill
+  \begin{minipage}[t]{0.3\linewidth}
+    \includegraphics[width=\linewidth]{figures/samples3.pdf}
+  \end{minipage}
+  \caption{Simulated datasets for the lensed quasar and transit examples. In the left panel, black dots and crosses with error bars show the light curves of the two quasar images, respectively, while the thin blue and red lines show the corresponding posterior samples for the simultaneous fit to both light curves using a Mat{\'e}rn $3/2$ GP.  In the right panel, black dots with error bars show the transit observations, while the thin blue and red lines lines show posterior samples for the models with white noise only and with a squared exponential GP, respectively. The posterior distributions for the models fit to both datasets are shown in Figure~\protect\ref{fig:sim_posteriors}. The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
+  \label{fig:samples}
+\end{figure}
+
+
 \subsection{Hyperparameter Inference}
 
 A key component of all of the covariance functions discussed above is that they are all \emph{parameterized} by a set of parameters that are typically called ``hyperparameters'' for reasons that we won't get into here.
