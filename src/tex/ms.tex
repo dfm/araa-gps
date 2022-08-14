@@ -388,7 +388,7 @@ which, in our notation, is actually the product of a ``constant'' kernel and an 
   \begin{tabnote}
     $^{\rm a}$in each case, $\tau$ is defined as $\tau = \left|t_i - t_j\right| / \lambda$, where the timescale $\lambda$ is a hyperparameter, and any other undefined Greek letters are also hyperparameters;
     $^{\rm b}$``radial basis function'';
-    $^{\rm c}$``damped random walk'' or ``Mat\'ern-1/2'';
+    $^{\rm c}$``Ornstein-Uhlenbeck'', ``damped random walk'' or ``Mat\'ern-1/2'';
     $^{\rm d}$\citet{celerite}.
   \end{tabnote}
 \end{table}
@@ -405,7 +405,11 @@ which, in our notation, is actually the product of a ``constant'' kernel and an 
   \begin{minipage}[t]{0.3\linewidth}
     \includegraphics[width=\linewidth]{figures/samples3.pdf}
   \end{minipage}
-  \caption{Simulated datasets for the lensed quasar and transit examples. In the left panel, black dots and crosses with error bars show the light curves of the two quasar images, respectively, while the thin blue and red lines show the corresponding posterior samples for the simultaneous fit to both light curves using a Mat{\'e}rn $3/2$ GP.  In the right panel, black dots with error bars show the transit observations, while the thin blue and red lines lines show posterior samples for the models with white noise only and with a squared exponential GP, respectively. The posterior distributions for the models fit to both datasets are shown in Figure~\protect\ref{fig:sim_posteriors}. The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
+  \caption{Prior samples for three different classes of kernel functions: (a) exponential, (b) Mat\'ern-3/2, and (c) exponential squared.
+  In each sub-figure, the length scale $\lambda$ of the kernel increases from left to right, and the amplitude $\alpha$ increases from top to bottom.
+  One thing to notice in this figure is that these kernel functions differ in their smoothness properties.
+  Specifically, the exponential kernel is not mean-square differentiable, while the exponential squared kernel is infinitely differentiable.
+  This can be seen qualitatively in this figure.}
   \label{fig:samples}
 \end{figure}
 
