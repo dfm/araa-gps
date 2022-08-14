@@ -3,8 +3,10 @@ repos:
     rev: v4.1.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^(src/tex/ms.tex|src/tex/bib.bib)$
       - id: end-of-file-fixer
         exclude_types: [json, binary]
+        exclude: ^(src/tex/ms.tex|src/tex/bib.bib)$
   - repo: https://github.com/PyCQA/isort
     rev: "5.10.1"
     hooks:
