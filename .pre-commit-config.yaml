@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.3.0
     hooks:
       - id: trailing-whitespace
         exclude: ^(src/tex/ms.tex|src/tex/bib.bib)$
@@ -17,6 +17,6 @@ repos:
     hooks:
       - id: black-jupyter
   - repo: https://github.com/kynan/nbstripout
-    rev: "0.5.0"
+    rev: "0.6.0"
     hooks:
       - id: nbstripout
