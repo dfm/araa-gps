@@ -116,7 +116,7 @@ By way of motivation, before delving any further into the methodology, we have p
 \label{sec:sim_quasar}
 
 In a nod to \citet{prh92a}, our first example consists of two simulated light curves of a hypothetical lensed quasar. Both light curves contain the same underlying signal, namely a single random draw from a GP prior with a Mat{\'e}rn $3/2$ kernel with parameters $A=0.1$ and $\lambda=5000\,{\rm d}^2$ (see Section \suz{XXX} for details \suz{check consistency of notation}). All GP calculations in this Section were performed using the {\sc george} package \citep{george}. Both light curves were simulated using the same set of times, which are drawn randomly in the interval $0$--$1500$\,d, but a time-delay of $\delta t=419.3$\,d was applied to the times for the second light curves before sampling the GP. In other words, the signal reaches the second source at a time $\delta t$ \textit{before} it reaches the first. We then added white Gaussian noise with standard deviation $\sigma_1=0.02$ and $\sigma_2=0.04$ vertical offsets of $M_1=1.0$ and $M_2=0.5$. The resulting simulated light curves are shown in the left panel of Figure~\ref{fig:sim_lcs}.
-
+ 
 \begin{figure}[ht]
   \centering
   \script{quasar.ipynb}
