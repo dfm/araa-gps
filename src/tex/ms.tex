@@ -44,6 +44,12 @@
 \newcommand{\nat}{Nature}
 \newcommand{\prl}{Physical Review Letters}
 
+% Symbols
+\newcommand{\hyperparams}{\ensuremath{\boldsymbol{\phi}}}
+\newcommand{\meanparams}{\ensuremath{\boldsymbol{\theta}}}
+\newcommand{\dt}{\ensuremath{\tau}}
+\newcommand{\amplitude}{\ensuremath{\alpha}}
+\newcommand{\lengthscale}{\ensuremath{\lambda}}
 
 % Document starts
 \begin{document}
@@ -95,25 +101,29 @@ In particular, GP Regression (GPR) has become increasingly popular in the astron
 
 An early use of GPR, was for spatial interpolation in geophysics \citep{kriging}, and GPR has since been adopted or re-invented in a wide range of other application domains. GPs were used in simulations in a wide range of astronomical sub-fields \citep[see e.g.][]{1980asfr.symp..159B,1988JGR....9311569C,1997ApJ...483L...1P}, but early mentions of GPs for modelling astronomical datasets \citep[see e.g.][]{1976MitAG..38..192D,1978A&A....70..777V,1991MGeo...16..313J} received limited attention.
 
-Perhaps the earliest use of GPR in the refereed astronomical literature that will be familiar to a modern reader was published by \citet{prh92a} in the context of quasar variability, and for a long time this remained its main application domain in astronomy. GPR then gradually appeared in other areas, starting with photometric redshift estimation \citep{2006ApJ...647..102W}, then exoplanet transit observations \citep{2009ApJ...704...51C,2012MNRAS.419.2683G} and radial velocity planet searches \citep{2012MNRAS.419.3147A,2014MNRAS.443.2517H}. Nonetheless, GPR remained relatively niche and few astronomers had heard of it until a few years ago. To illustrate this point, we searched on the NASA Astrophysics Data System (ADS) for articles published in refereeed astronomy and astrophysics journals with the words `Gaussian Process' in the title or abstract. Until 2010, the number of such papers in any given year could be counted on the fingers of one hand. From that point onwards it has risen steadily, and in 2021 it was close to 100.
+Perhaps the earliest use of GPR in the refereed astronomical literature that will be familiar to a modern reader was published by \citet{prh92a} in the context of quasar variability, and for a long time this remained its main application domain in astronomy. GPR then gradually appeared in other areas, starting with photometric redshift estimation \citep{2006ApJ...647..102W}, then exoplanet transit observations \citep{2009ApJ...704...51C,2012MNRAS.419.2683G} and radial velocity planet searches \citep{2012MNRAS.419.3147A,2014MNRAS.443.2517H}. Nonetheless, GPR remained relatively niche and few astronomers had heard of it until a few years ago. To illustrate this point, we searched on the NASA Astrophysics Data System (ADS) for articles published in refereeed astronomy and astrophysics journals with the words ``Gaussian Process'' in full text of the article \autoref{fig:literature}.
+After an increase in popularity throughout the 1990s, the use of GPs in astrophysics remained fairly constant around $\sim20$ publications per year until 2010.
+Since 2010, the popularity of GPs has grown significantly, and in 2021, more than 500 refereed papers referencing GPs were published in astrophysics literature.
 
 A number of important factors have contributed to recent the democratisation of GPR across a wide range of scientific disciplines, including the publication of a dedicated textbook \citep{gpml}, as well as the availability of cheap computing power and user-friendly, open-source GPR software. In astronomy, specifically, an additional factor has been at play: the rise of time domain surveys. Correlated noise in time-domain observations is a direct and unavoidable consequence of causation, and hence ubiquitous. Adequately modelling this correlated noise is vital when searching for faint signals, for example from exoplanets. Astrophysical sources, from accretion disks on all scales to magnetically active stars or cloudy brown darfs, also display complex, intrinsically or apparently stochastic behaviour, for which adequate modelling strategies are required. GPR is a natural choice to tackle these challenges. Rather than attempting to cover all applications of GPs to all of astrophysics, which would not be feasible in the space available, we have therefore opted to focus on its application to time-domain datasets in astronomy.
 
 \begin{figure}[ht]
   \centering
   \script{literature.ipynb}
-  \includegraphics[width=\linewidth]{figures/literature.pdf}
-  \caption{A search for.}
+  \includegraphics[width=0.5\linewidth]{figures/literature.pdf}
+  \caption{The number of referred publications in the astronomy and astrophysics literature that include the text ``Gaussian process'' as indexed by the NASA Astrophysics Data System (ADS).}
   \label{fig:literature}
 \end{figure}
 
-\subsection{Simulated examples}
+\subsection{Motivating examples}
 \label{sec:sim_examples}
 
 By way of motivation, before delving any further into the methodology, we have produced two simulated examples that illustrate the power of GPR for astronomical datasets. We have opted to use simulations rather than real data from the literature because knowning the ``ground truth'' allows us to quantify the performance of GPR against our metric of choice and to compare it to that of other methods.
 
 \subsubsection{Lensed quasar light curves with time-delays}
 \label{sec:sim_quasar}
+
+\dan{Update text. I have switched to fitting the real data and recover a result consistent with that from prh.}
 
 In a nod to \citet{prh92a}, our first example consists of two simulated light curves of a hypothetical lensed quasar. Both light curves contain the same underlying signal, namely a single random draw from a GP prior with a Mat{\'e}rn $3/2$ kernel with parameters $A=0.1$ and $\lambda=5000\,{\rm d}^2$ (see Section \suz{XXX} for details \suz{check consistency of notation}). All GP calculations in this Section were performed using the {\sc george} package \citep{george}. Both light curves were simulated using the same set of times, which are drawn randomly in the interval $0$--$1500$\,d, but a time-delay of $\delta t=419.3$\,d was applied to the times for the second light curves before sampling the GP. In other words, the signal reaches the second source at a time $\delta t$ \textit{before} it reaches the first. We then added white Gaussian noise with standard deviation $\sigma_1=0.02$ and $\sigma_2=0.04$ vertical offsets of $M_1=1.0$ and $M_2=0.5$. The resulting simulated light curves are shown in the left panel of Figure~\ref{fig:sim_lcs}.
 
@@ -182,33 +192,33 @@ where $\mathbf{m}$ is the \emph{mean vector} and $\mathbf{K}$ the \emph{covarian
 
 The elements of the mean vector and covariance matrix are given by the \textit{mean function} $m$ and the \textit{covariance function} $k$, respectively:
 \begin{equation}
-    m_{i} = m(\boldsymbol{x}_i, \boldsymbol{\theta}),
+    m_{i} = m(\boldsymbol{x}_i, \meanparams),
 \end{equation}
 \begin{equation}
-    K_{ij} = k(\boldsymbol{x}_i,\boldsymbol{x}_j, \boldsymbol{\phi}).
+    K_{ij} = k(\boldsymbol{x}_i,\boldsymbol{x}_j, \hyperparams).
 \end{equation}
 where $\boldsymbol{x}_i$ is the set of inputs (independent variables) corresponding to the $i^{\rm th}$ sample. For time-series data, the inputs usually include, but aren't necessarily restricted to, the time $t_i$. The covariance function, also known as the \emph{kernel}, is the fundamental ingredient of a GP model, and considerable care must be taken to select it adequately (or to test different possibilities). Sometimes the mean function is assumed to be constant, or even zero, everywhere; this is often done in the wider GPR literature to keep derivations uncluttered. However, for many astrophysical applications where a GP is used to model a nuisance signal, the mean function contains the signal of interest and is important.
 
-The parameters $\boldsymbol{\theta}$ and $\boldsymbol{\phi}$ of the mean and covariance function are known as the \textit{hyper-parameters} of the GP. Strictly speaking, the \textit{parameters} of the GP are the elements of the mean vector and covariance matrix. However, for a given set of inputs and choice of mean and covariance functions, these numerous individual parameters are entirely determined by the the hyper-parameters, so the user interacts with the latter in much the same way as they would with the parameters of a more classical model.
+The parameters $\meanparams$ and $\hyperparams$ of the mean and covariance function are known as the \textit{hyper-parameters} of the GP. Strictly speaking, the \textit{parameters} of the GP are the elements of the mean vector and covariance matrix. However, for a given set of inputs and choice of mean and covariance functions, these numerous individual parameters are entirely determined by the the hyper-parameters, so the user interacts with the latter in much the same way as they would with the parameters of a more classical model.
 
 Although is is possible to construct and use stochastic process models based on other distributions, GPs are by far the most popular, for two main reasons. The first is Central Limit theorem: it implies that the assumption of Gaussianity is often at least approximately correct. The second is that Gaussian distributions obey simple mathematical identities for marginalisation and conditioning, that enable inference with GPs to be performed analytically, as we will see later.
 
 \subsection{From least-squares to GPR}
 \label{sec:from_lsq}
 
-The formal definition above does not necessarily provide an intuitive understanding of how GPs work. Most readers of this review will, however, be comfortable with least-squares regression. In this section we will show that GPR can be thought of as a generalisation of least-squares regression, allowing for correlated noise (or signals) in the data. Conversely, least-squares regression is a special case of GPR, where the covariance matrix is assumed to be purely diagonal, and the variances associated with each observation are known \textit{a priori}.
+The formal definition above does not necessarily provide an intuitive understanding of how GPs work. Most readers of this review will, however, be more familiar with least-squares regression. In this section we will show that GPR can be thought of as a generalisation of least-squares regression, allowing for correlated noise (or signals) in the data. Conversely, least-squares regression, as traditionally presented, is a special case of GPR, where the covariance matrix is assumed to be purely diagonal, and the variances associated with each observation are known \textit{a priori}.
 
 \subsubsection{Revsisiting least squares}
 
-Consider $N$ observations of a variable $\mathbf{y} = \{ y_i\}_{i=1, \ldots, N}$, taken at times $\mathbf{t} = \{ t_i\}$, with associated measurement uncertainties $\boldsymbol{\sigma}=\{\sigma_i\}$. We wish to compare these to a model function $m(t,\boldsymbol{\theta})$ controlled by parameters $\boldsymbol{\theta}=\{\theta_j\}_{j=1,\ldots,M}$. In most astrophysical applications, we are interested in estimating some or all of those parameters. In least-squares regression, we minimize the quantity
+Consider $N$ observations of a variable $\mathbf{y} = \{ y_i\}_{i=1, \ldots, N}$, taken at times $\mathbf{t} = \{ t_i\}$, with associated measurement uncertainties $\boldsymbol{\sigma}=\{\sigma_i\}$. We wish to compare these to a model function $m(t,\meanparams)$ controlled by parameters $\meanparams=\{\meanparams_j\}_{j=1,\ldots,M}$. In most astrophysical applications, we are interested in estimating some or all of those parameters. In least-squares regression, we minimize the quantity
 \begin{equation}
   \chi^2 \equiv\sum_{i=1}^N (y_i-m_i)^2/\sigma^2_i,
 \end{equation}
-where $m_i \equiv m(x_i,\boldsymbol{\theta})$, with respect to $\boldsymbol{\theta}$. Where does this come from?
+where $m_i \equiv m(x_i,\meanparams)$, with respect to $\meanparams$. Where does this come from?
 
 Let us assume that the observations are given by
 \begin{equation}
-  y_i=m(t_i,\boldsymbol{\theta})+\epsilon_i,
+  y_i=m(t_i,\meanparams)+\epsilon_i,
 \end{equation}
 where $\epsilon_i$ is the measurement error, or noise, on the $i^{\rm th}$ observation. Furthermore, let us assume that $\epsilon_i$ is drawn from a Gaussian distribution with mean $0$ and variance $\sigma_i^2$:
 \begin{equation}
@@ -216,11 +226,11 @@ where $\epsilon_i$ is the measurement error, or noise, on the $i^{\rm th}$ obser
 \end{equation}
 then the \emph{likelihood} for the $i^{\rm th}$ observation is simply
 \begin{equation}
-  \mathcal{L}_i\equiv p(y_i|\boldsymbol{\theta})=\mathcal{N}(m_i,\sigma_i^2) =\frac{1}{\sqrt{2\pi} \sigma_i} \exp\left[-\frac{(y_i-m_i)^2}{2\sigma_i^2} \right].
+  \mathcal{L}_i\equiv p(y_i|\meanparams)=\mathcal{N}(m_i,\sigma_i^2) =\frac{1}{\sqrt{2\pi} \sigma_i} \exp\left[-\frac{(y_i-m_i)^2}{2\sigma_i^2} \right].
 \end{equation}
 Furthermore, we also assume that the noise is uncorrelated, or white, meaning that the $\epsilon_i$'s are drawn independently from each other from their respective distributions. Then, the likelihood for the whole dataset $\mathbf{y}$ is merely the product of the likelihoods for the individual observations:
 \begin{equation}
-  \mathcal{L} \equiv p(\mathbf{y}|\boldsymbol{\theta}) = \prod_{i=1}^N \mathcal{L}_i = \prod_{i=1}^N \left\{ \frac{1}{\sqrt{2\pi} \sigma_i}
+  \mathcal{L} \equiv p(\mathbf{y}|\meanparams) = \prod_{i=1}^N \mathcal{L}_i = \prod_{i=1}^N \left\{ \frac{1}{\sqrt{2\pi} \sigma_i}
   \exp\left[-\frac{(y_i-m_i)^2}{2\sigma_i^2} \right] \right\},
 \end{equation}
 where $\mathbf{m}=\{m_i\}_{i=1,\ldots,N}$. From this one can readily see that $\ln \mathcal{L} = \mathrm{constant} - 0.5 \chi^2$, where the constant depends only on the $\sigma$'s. Thus, if the $\sigma$'s are known, maximizing $\mathcal{L}$ is equivalent to minimizing $\chi^2$. In other words, least-squares regression yields the Maximum Likelihood Estimate (MLE) of the parameters under the assumption of white, Gaussian noise with known variance.
@@ -229,24 +239,24 @@ where $\mathbf{m}=\{m_i\}_{i=1,\ldots,N}$. From this one can readily see that $\
 Let us now re-write the likelihood in matrix form:
 \begin{equation}
 \label{eq:gp_like}
-  \mathcal{L} = \left(\frac{1}{2\pi} \right)^{N/2}
-  \frac{1}{|\mathbf{K}|} \exp \left(-(\mathbf{y}-\mathbf{m})^{\mathrm{T}} \mathbf{K}^{-1}
+  \mathcal{L} = 
+  \frac{1}{\sqrt{|2\,\pi\,\mathbf{K}|}} \exp \left(-(\mathbf{y}-\mathbf{m})^{\mathrm{T}} \mathbf{K}^{-1}
   (\mathbf{y}-\mathbf{m}) \right),
 \end{equation}
 where $\mathbf{K}$ is a purely diagonal ($N$, $N$) matrix with elements $K_{ij} = \delta_{ij} \sigma_i^2$ ($\delta_{ij}$ being the discrete Kronecker delta function). This is, of course, the \emph{covariance matrix} of the model.
 
 Now, instead of assuming that the covariance matrix takes this very specific form, let us allow a more flexible model for the covariance:
 \begin{equation}
-  K_{ij} = k(t_i,t_j,\boldsymbol{\phi}) + \delta_{ij} \sigma_i^2,
+  K_{ij} = k(t_i,t_j,\hyperparams) + \delta_{ij} \sigma_i^2,
 \end{equation}
-where $k$ is a \emph{covariance function} or \emph{kernel}, controlled by parameters $\boldsymbol{\phi}$. The result is a GP, and its likelihood is still given by Equation~(\ref{eq:gp_like}). Depending on the choice of kernel and parameters, the covariance matrix can now have non-zero off-diagonal elements, allowing us to explicitly model correlated noise or stochastic signals in the data.
+where $k$ is a \emph{covariance function} or \emph{kernel}, controlled by parameters $\hyperparams$. The result is a GP, and its likelihood is still given by Equation~(\ref{eq:gp_like}). Depending on the choice of kernel and parameters, the covariance matrix can now have non-zero off-diagonal elements, allowing us to explicitly model correlated noise or stochastic signals in the data.
 Note that the likelihood depends not only on the argument of the exponential, but also on the determinant of the covariance matrix, which therefore needs to be evaluated explicitly. This term acts as a built-in Occam's razor, automatically penalising more complex models.
 
-The kernel $k$ encodes our beliefs about the stochastic, or random, element of the model, in just the same way as the mean function $m$ encodes our beliefs about the deterministic component of the model. For example, in many circumstances, we would expect that two observations taken close together in time should be more strongly correlated than observations taken further apart, and we would use a decreasing function of the time interval $\tau=|t_i-t_j|$ to represent that. One of the most widely used covariance functions is the squared exponential
+The kernel $k$ encodes our beliefs about the stochastic, or random, element of the model, in just the same way as the mean function $m$ encodes our beliefs about the deterministic component of the model. For example, in many circumstances, we would expect that two observations taken close together in time should be more strongly correlated than observations taken further apart, and we would use a decreasing function of the time interval $\dt=|t_i-t_j|$ to represent that. One of the most widely used covariance functions is the squared exponential
 \begin{equation}
-    k_{\rm SE} = A \exp{-\tau^2/\lambda}.
+  k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,\lengthscale^2}\right)
 \end{equation}
-This gives rise to smooth random functions with variance $A$ and characteristic length-scale $\sqrt{\lambda}$. We present other commonly used kernels and discuss how to select one in Section~\ref{sec:kernels}.
+This gives rise to smooth random functions with variance $\amplitude$ and characteristic length-scale $\lambda$. We present other commonly used kernels and discuss how to select one in Section~\ref{sec:kernels}.
 
 \subsection{Inference with a GP}
 
@@ -256,22 +266,22 @@ This gives rise to smooth random functions with variance $A$ and characteristic 
 %   \label{fig:GPRworkflow}
 % \end{figure}
 
-Now that we know how to evaluate the likelihood (Equation~\ref{eq:gp_like}), we are ready to perform \textit{inference}, that is to use observations to update our prior beliefs about the system we are observing. The overall Bayesian inference workflow for GPR regression is illustrated schematically in Figure~\ref{fig:GPRworkflow}. For example, we can optimize the likelihood with respect to the hyper-parameters $\boldsymbol{\phi}$ and $\boldsymbol{\theta}$. This is called \emph{training} the GP. In doing so, we are learning the properties of the correlated signal from the data, hence GPR is a machine learning method.
+Now that we know how to evaluate the likelihood (Equation~\ref{eq:gp_like}), we are ready to perform \textit{inference}, that is to use observations to update our prior beliefs about the system we are observing. The overall Bayesian inference workflow for GPR regression is illustrated schematically in Figure~\ref{fig:GPRworkflow}. For example, we can optimize the likelihood with respect to the hyper-parameters $\hyperparams$ and $\meanparams$. In the machine learning literature, where GPs are commonly used, this is called \emph{training} the GP. In doing so, we are learning the properties of the correlated signal from the data.
 
 Given adequate priors, we can also evaluate the \emph{posterior} distribution:
 \begin{equation}
-  p(\boldsymbol{\theta},\boldsymbol{\phi}|\mathbf{y})=\frac{p(\mathbf{y}|\boldsymbol{\theta},\boldsymbol{\phi})p(\boldsymbol{\theta},\boldsymbol{\phi})}{p(\mathbf{y})},
+  p(\meanparams,\hyperparams|\mathbf{y})=\frac{p(\mathbf{y}|\meanparams,\hyperparams)p(\meanparams,\hyperparams)}{p(\mathbf{y})},
 \end{equation}
-where $p(\mathbf{y})=\int p(\mathbf{y}|\boldsymbol{\theta},\boldsymbol{\phi})p(\boldsymbol{\theta},\boldsymbol{\phi}) \mathrm{d}\boldsymbol{\theta} \mathrm{d}\boldsymbol{\phi}$.
+where $p(\mathbf{y})=\int p(\mathbf{y}|\meanparams,\hyperparams)p(\meanparams,\hyperparams) \mathrm{d}\meanparams \mathrm{d}\hyperparams$.
 Usually, the posterior cannot be evaluated analytically, so we resort to sampling methods such as Markov Chain Monte Carlo (MCMC) or nested sampling.
 
-In many astrophysical applications of GPs, we wish to take into account correlated noise, but we are not interested in the noise \emph{per se}, only on the impact it has on the parameters of the mean function, $\boldsymbol{\theta}$. We thus \emph{marginalize} (integrate over) the \emph{nuisance parameters} $\boldsymbol{\phi}$.
+In many astrophysical applications of GPs, we wish to take into account correlated noise, but we are not interested in the noise \emph{per se}, only on the impact it has on the parameters of the mean function, $\meanparams$. We thus \emph{marginalize} (integrate over) the \emph{nuisance parameters} $\hyperparams$.
 
 
 \subsection{Making predictions}
 \label{sec:pred}
 
-An important use case for GPR is as a statistically principled interpolation method. We wish to ``learn'' an unknown function that gave rise to some data, in order to make predictions for some new set of of inputs. Importantly, a GP model provides not a point estimate but a full probability distribution for the function at any desired location(s) in the input domain. This allows for robust uncertainty propagation (though there are some important caveats we will touch upon), and can also motivate strategies for active sampling (deciding when or where to make new observations).
+An important use case for GPR is as a statistically principled interpolation method. We wish to ``learn'' an unknown function that gave rise to some data, in order to make predictions for some new set of inputs. Importantly, a GP model provides not a point estimate but a full probability distribution for the function at any desired location(s) in the input domain. This allows for robust uncertainty propagation (though there are some important caveats we will touch upon), and can also motivate strategies for active sampling (deciding when or where to make new observations).
 
 \subsubsection{The predictive equations}
 
@@ -281,13 +291,13 @@ Given some existing observations $\mathbf{y}$, taken at times $\mathbf{t}$, how 
   \mathbf{f}_\star = \mathbf{m}_\star + \mathbf{K}_\star^{\mathrm{T}} \, \mathbf{K}^{-1} \, (\mathbf{y} - \mathbf{m}) ~\mathrm{~~~and~~~}
   \mathbf{C}_\star =   \mathbf{K}_{\star\star} - \mathbf{K}_\star^{\mathrm{T}} \, \mathbf{K}^{-1} \, \mathbf{K}_\star,
 \end{equation}
-where we have introduced the notation $\mathbf{m}_\star \equiv m(\mathbf{t}_\star,\boldsymbol{\theta})$, $\mathbf{K}_\star \equiv k(\mathbf{t},\mathbf{t}_\star, \boldsymbol{\phi})$ and
-$\mathbf{K}_{\star\star} \equiv k(\mathbf{t}_\star,\mathbf{t}_\star,\boldsymbol{\phi})$. Note that, as real observations are always noisy, $\mathbf{K}$ generally includes a white noise term ($\delta_{ij} \sigma^2_i$), but $\mathbf{K}_\star$ does not. Depending on whether one wishes the predictive variance (the diagonal elements of $\mathbf{C}_\star$)  to account for measurement uncertainties or not, one can include the white noise term in $\mathbf{K}_{\star\star}$ or leave it out.
+where we have introduced the notation $\mathbf{m}_\star \equiv m(\mathbf{t}_\star,\meanparams)$, $\mathbf{K}_\star \equiv k(\mathbf{t},\mathbf{t}_\star, \hyperparams)$ and
+$\mathbf{K}_{\star\star} \equiv k(\mathbf{t}_\star,\mathbf{t}_\star,\hyperparams)$. Note that, as real observations are always noisy, $\mathbf{K}$ generally includes a white noise term ($\delta_{ij} \sigma^2_i$), but $\mathbf{K}_\star$ does not. Depending on whether one wishes the predictive variance (the diagonal elements of $\mathbf{C}_\star$)  to account for measurement uncertainties or not, one can include the white noise term in $\mathbf{K}_{\star\star}$ or leave it out.
 
 \subsubsection{Properties of the  predictive distribution}
 A closer look at Equations~(\ref{eq:pred}) reveals some important properties.
 First, a GP is a \textit{linear predictor}. The predictive mean for a specific time $t_\star$ can be written as a linear combination of the observations:
-$f_\star = \mathbf{w}^{\mathrm{T}} \, \mathbf{y}$, where $\mathbf{w} = \mathbf{K}^{-1} \, \mathbf{k}_\star$ and $\mathbf{k}_\star=k(\mathbf{t},t_\star,\phi)$. It can also be written as
+$f_\star = \mathbf{w}^{\mathrm{T}} \, \mathbf{y}$, where $\mathbf{w} = \mathbf{K}^{-1} \, \mathbf{k}_\star$ and $\mathbf{k}_\star=k(\mathbf{t},t_\star,\hyperparams)$. It can also be written as
 a linear combination of covariance functions centred on the training points:
 $f_\star = \mathbf{\alpha}^\mathrm{T} \,  \mathbf{k}_\star$ where $\mathbf{\alpha} = \mathbf{K}^{-1} \, \mathbf{y}$.
 These linearity properties are very important to understand the behaviour of GPs. The shed light on the relationship between GPR and standard linear models with very large numbers of free parameters \citep[see e.g.][for a more detailed discussion]{2021PASP..133i3001H},
@@ -315,52 +325,42 @@ It is also important to note that the predictive variance accounts for the imper
 % \paragraph{Tuning} This section will cover the process of "training" a Gaussian process model, i.e. tuning the parameters of the covariance function and, if included, the mean function. Compared to standard texts from other fields, this topic will be covered in more depth because parameter inference (as opposed to interpolation or prediction) is one of the most common applications of Gaussian processes in astronomy. Once again we will aim to dispel some misconceptions and provide practical advice. This will also be where we illustrate how a Gaussian process model can be embedded in a Bayesian inference framework using posterior sampling, and point out the importance of marginalising over nuisance parameters. Estimated length: 5-10 pages
 
 
-In the previous section, we introduced the GP sampling distribution, and results of conditioning a GP on observed data.
-A crucial part of such a GP model is it's ``kernel'' or ``covariance'' function---called $k(t_i,\,t_j;\,\phi)$ above---which specifies the covariance between two input coordinates $t_i$ and $t_j$.
-Throughout the astronomical literature, GP modeling generally includes a non-trivial mean function.
-However, in other fields, this mean is regularly omitted, meaning that the kernel function fully specifies the behavior of the GP model, making this choice \emph{the fundamental GP modeling decision}.
-That being said, in our experience, new users of GP models will often focus and worry more than necessary about the choice of kernel function for their problem.
+In the previous section, we presented an overview of GP methods, and the key mathematical details. In this section, we will dive deeper into some of the practical decisions that arise when using GPs.
+The two core elements of a GP model are the mean function $m(t;\,\meanparams)$, and the ``kernel'' or ``covariance'' function $k(t_i,\,t_j;\,\hyperparams)$.
+Unlike how they are typical presented in the machine learning literature, GP models in astrophysics will often---but not always---include non-trivial mean functions.
+For example, in the example from \autoref{sec:sim_transit}, the mean function $m(t;\,\meanparams)$ is a physical transit model that is a function of the orbital parameters of the system, and includes a realistic limb-darkening model \citep{2002ApJ...580L.171M}.
+However, in this review we won't discuss the mean function in detail, focusing instead primarily on the kernel function, since that is unique to GP modeling.
+All this being said, in our experience, new users of GP models will often focus and worry more than necessary about the choice of kernel function for their problem.
 As with any probabilistic modeling problem, there are several well-defined workflows for motivating, selecting, and validating your choice of kernel.
 In this section we walk through this process in detail.
-
-% In this section, we formally define this kernel function and the properties it must have, we provide some examples and advice for setting up GP models, and discuss the most commonly used inference schemes for these models.
-
-
-% DFM to do
-% More conceptual intro; requirements
-% Stationary vs non-stationary, Fourier repr; some examples
-% kernel design: sums, products, etc.
-% hyperparameter tuning / marginalization
-
 
 \subsection{Gaussian Process Covariance Functions}
 \label{sec:kernels}
 
-\begin{textbox}[ht]
-  \section{Kernel function}
-  The ``kernel'' or ``covariance'' function, typeset here as $k(t_i,\,t_j;\,\boldsymbol{\phi})$ is a parametric description of the covariance between two data points $t_i$ and $t_j$. The parameter $\boldsymbol{\phi}$ indicates that these functions are typically parameterized by a set of parameters, typically referred to as ``hyperparameters''.
-\end{textbox}
+\dan{Say something about to handle higher dimensional inputs and distance metrics.}
 
-\begin{textbox}[ht]
-  \section{Hyperparameters}
-  In a GP model, the kernel function is typically parameterized by a set of parameters that we will label as $\boldsymbol{\phi}$ and refer to as ``hyperparameters''. This label is used to distinguish these parameters from the parameters of the mean function, which we will refer to as $\boldsymbol{\theta}$.
+\begin{textbox}[htb]
+  \section{Kernel function}
+  The ``kernel'' or ``covariance'' function, typeset here as $k(t_i,\,t_j;\,\hyperparams)$ is a parametric description of the covariance between two data points $t_i$ and $t_j$. The parameter $\hyperparams$ indicates that these functions are typically parameterized by a set of parameters, typically referred to as ``hyper-parameters''.
+
+  \vspace{1.5em}
+
+  \section{Hyper-parameters}
+  In a GP model, the kernel function is typically parameterized by a set of parameters that we will label as $\hyperparams$ and refer to as ``hyper-parameters''.
+  Formally, the ``parameters'' of a GP are the (unknown) ``true'' values of the process at the observed times, but the magic of Gaussians means that these parameters can be marginalised over in closed form, leaving the hyper-parameters as the parameters of interest.
 \end{textbox}
 
 The kernel function can be any positive semi-definite scalar function, but some will be more useful than others.
-A commonly (over-)used kernel function is the ``exponential-squared'' or ``radial basis function'' kernel
-\begin{equation}
-  k(t_i,\,t_j;\,\phi) = \sigma^2\,\exp\left[-\frac{(t_i - t_j)^2}{2\,\tau^2}\right]
-\end{equation}
-where the ``hyperparameters'' $\phi$ are $\sigma$ and $\tau$.
-In this case, the hyperparameters specify the typical amplitude $\sigma$ and timescale $\tau$ of the variance of the process.
-SOMEFIGURE shows how changing these parameters affect our GP model.
-
-There exist many other commonly used kernel functions, some of which are listed in SOMETABLE.
-This table is far from comprehensive, and importantly, the sum or product of two valid kernel functions is itself also a valid kernel, so it is possible (and common) to build extremely flexible and expressive kernel functions specific to your use case.
-
+% A commonly (over-)used kernel function is the ``exponential-squared'' or ``radial basis function'' kernel
+% \begin{equation}
+%   k(t_i,\,t_j;\,\hyperparams) = \sigma^2\,\exp\left[-\frac{(t_i - t_j)^2}{2\,\tau^2}\right]
+% \end{equation}
+% where the ``hyperparameters'' $\hyperparams$ are $\sigma$ and $\tau$.
+% In this case, the hyperparameters specify the typical amplitude $\sigma$ and timescale $\tau$ of the variance of the process.
+% SOMEFIGURE shows how changing these parameters affect our GP model.
+% There exist many other commonly used kernel functions, some of which are listed in SOMETABLE.
+% This table is far from comprehensive, and importantly, the sum or product of two valid kernel functions is itself also a valid kernel, so it is possible (and common) to build extremely flexible and expressive kernel functions specific to your use case.
 Given this large decision space, you may be wondering how to choose the right kernel for your specific problem.
-There are several good options.
-
 If you're very lucky, you may be able to motivate your model using physics.
 This can be approached from two directions.
 On one hand, some commonly used kernel function have a specific physical interpretation---for example, the solution to a stochastic ordinary differential equation---that can be used to motivate their use.
@@ -370,17 +370,29 @@ Even if you don't have a formal physics-based justification for your model, you 
 The usual approach to this problem is to take sums and products of commonly used kernel functions to select a set of  models that have the needed covariance structure, and then combine or select between these choices.
 For example, if there is only expected to only be a single non-periodic timescale in the problem of interest, you could list all the two-parameter non-periodic kernels and use a numerical model selection technique as described below.
 
-Some popular kernels are listed in \autoref{tab:kernels}, and some other choices are discussed in Chapter \dan{which?} \citet{gpml}.
+Some popular kernels are listed in \autoref{tab:kernels}, and some other choices are discussed in Chapter 4 of \citet{gpml}.
 In any practical application, these kernel functions are not used on their own.
 Instead, more expressive models are designed by combining these models.
 In particular, any valid kernel functions can be added or multiplied to generate new valid functions.
-For example, the ``exponential squared'' kernel function is generally defined as
+For example, the squared exponential kernel function is generally defined as
 \begin{equation}
-    k_\mathrm{exp.\,sq.}(\tau;\,\sigma,\,\lambda) = \sigma^2\,\exp\left(-\frac{\tau^2}{2\,\lambda^2}\right)
+  k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,\lengthscale^2}\right)
 \end{equation}
-which, in our notation, is actually the product of a ``constant'' kernel and an ``exponential squared'' kernel.
+with $\hyperparams = \{\amplitude,\,\lengthscale\}$, which, in our notation, is actually the product of a constant kernel and a squared exponential kernel, as defined in \autoref{tab:kernels}.
+Another example that is commonly used in the astrophysics literature is the following ``quasi-periodic'' kernel
+\begin{equation}
+  k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,{\lengthscale_1}^2} -\gamma\,\sin^2\left[\frac{\pi\,\dt}{\lengthscale_2}\right] \right)
+\end{equation}
+with $\hyperparams = \{\amplitude,\,\lengthscale_1,\,\lengthscale_2,\,\gamma\}$, which has a period of $\lengthscale_2$, and a decoherence timescale of $\lengthscale_1$.
 
-% More about how you may choose kernels for scalability here.
+When selecting a kernel function, it can be useful to generate samples from this implied prior distribution over functions to get a qualitative sense of the properties of the kernel.
+In practice, this is done by choosing a grid of times $\boldsymbol{t} = \{t_i\}$, evaluating the elements of the covariance matrix
+\begin{equation}
+  K_{i,j} = k(t_i,\,t_j;\,\hyperparams) \quad,
+\end{equation}
+and then generating a multivariate Gaussian sample with this covariance.
+As an example, \autoref{fig:samples} shows several prior samples for three different kernel functions from \autoref{tab:kernels}, with a range of length scales $\lengthscale$ and amplitudes $\amplitude$.
+In this figure, we can see some qualitative differences between the kernels---namely that the kernels become ``smoother'' from left to right---and we can see how the range of allowed functions change with the hyper-parameters.
 
 \begin{table}[ht]
   \caption{Some kernel functions commonly used in the astrophysics literature}
@@ -390,19 +402,19 @@ which, in our notation, is actually the product of a ``constant'' kernel and an 
       \hline
       Name                           &  Representation$^{\rm a}$                                    \\
       \hline
-      Constant kernel                & $\sigma^2$                                                     \\
-      Exponential Squared$^{\rm b}$  & $e^{-\tau^2/2}$                                              \\
-      Exponential$^{\rm c}$          & $e^{-\tau}$                                                  \\
-      Mat\'ern-3/2                   & $\left(1 + \sqrt{3}\tau\right)e^{-\sqrt{3}\tau}$             \\
-      Mat\'ern-5/2                   & $\left(1 + \sqrt{5}\tau +5\tau^2/3\right)e^{-\sqrt{5}\tau}$  \\
-      Cosine                         & $\cos \tau$                                                  \\
-      Exponential Sine Squared       & $\exp\left(-\gamma\sin^2\pi\tau\right)$                      \\
-      Stochastic Harmonic Oscillator$^{\rm d}$ & $\cos\left(\sqrt{1-\beta^2}\tau\right) + \frac{\beta}{\sqrt{1-\beta^2}}\sin\left(\sqrt{1-\beta^2}\tau\right)$                          \\
+      Constant kernel                & $\amplitude^2$                                                     \\
+      Squared Exponential$^{\rm b}$  & $e^{-(\dt/\lengthscale)^2/2}$                                              \\
+      Exponential$^{\rm c}$          & $e^{-\dt/\lengthscale}$                                                  \\
+      Mat\'ern-3/2                   & $\left(1 + \sqrt{3}\dt/\lengthscale\right)e^{-\sqrt{3}\dt/\lengthscale}$             \\
+      Mat\'ern-5/2                   & $\left(1 + \sqrt{5}\dt/\lengthscale +5(\dt/\lengthscale)^2/3\right)e^{-\sqrt{5}\dt/\lengthscale}$  \\
+      Cosine                         & $\cos 2\pi\dt/\lengthscale$                                                  \\
+      Exponential Sine Squared       & $\exp\left(-\gamma\sin^2\pi\dt/\lengthscale\right)$                      \\
+      Stochastic Harmonic Oscillator$^{\rm d}$ & $\cos\left(\sqrt{1-\beta^2}\frac{\dt}{\lengthscale}\right) + \frac{\beta}{\sqrt{1-\beta^2}}\sin\left(\sqrt{1-\beta^2}\frac{\dt}{\lengthscale}\right)$                          \\
       \hline
     \end{tabular}
   \end{center}
   \begin{tabnote}
-    $^{\rm a}$in each case, $\tau$ is defined as $\tau = \left|t_i - t_j\right| / \lambda$, where the timescale $\lambda$ is a hyperparameter, and any other undefined Greek letters are also hyperparameters;
+    $^{\rm a}$in each case, $\dt$ is defined as $\dt = \left|t_i - t_j\right|$, and Greek letters indicate hyper-parameters;
     $^{\rm b}$``radial basis function'';
     $^{\rm c}$``Ornstein-Uhlenbeck'', ``damped random walk'' or ``Mat\'ern-1/2'';
     $^{\rm d}$\citet{celerite}.
@@ -437,8 +449,8 @@ In most cases, you won't have \emph{a priori} knowledge for how the values of th
 Instead, their values will need to be numerically tuned or incorporated into a larger inference scheme.
 
 In the astrophysics literature, the most common approach for taking this uncertainty into account---and the method that we advocate for here---is to treat the hyperparameters directly as parameters of the model.
-In other words, instead of just fitting for the parameters of the mean model $\theta$ (see SECTION ABOVE), we can simultaneously fit for both $\theta$ and the hyperparameters $\phi$.
-The likelihood function defined in SOMEEQUATION is a function of both $\theta$ and $\phi$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo (MCMC) procedure to marginalize over nuisance parameters.
+In other words, instead of just fitting for the parameters of the mean model $\meanparams$ (see SECTION ABOVE), we can simultaneously fit for both $\meanparams$ and the hyperparameters $\hyperparams$.
+The likelihood function defined in SOMEEQUATION is a function of both $\meanparams$ and $\hyperparams$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo (MCMC) procedure to marginalize over nuisance parameters.
 
 An important point here is that, since many data analysis procedures in astrophysics include a step like the ones listed above, the use of a GP likelihood doesn't significantly change the processing.
 In fact, we like to say that the GP likelihood can be used as a drop-in replacement for anywhere you're currently using a ``chi-squared'' objective.
