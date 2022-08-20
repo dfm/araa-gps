@@ -370,6 +370,8 @@ Even if you don't have a formal physics-based justification for your model, you 
 The usual approach to this problem is to take sums and products of commonly used kernel functions to select a set of  models that have the needed covariance structure, and then combine or select between these choices.
 For example, if there is only expected to only be a single non-periodic timescale in the problem of interest, you could list all the two-parameter non-periodic kernels and use a numerical model selection technique as described below.
 
+\subsubsection{Standard kernels \& sums or products thereof}
+
 Some popular kernels are listed in \autoref{tab:kernels}, and some other choices are discussed in Chapter 4 of \citet{gpml}.
 In any practical application, these kernel functions are not used on their own.
 Instead, more expressive models are designed by combining these models.
@@ -379,7 +381,7 @@ For example, the squared exponential kernel function is generally defined as
   k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,\lengthscale^2}\right)
 \end{equation}
 with $\hyperparams = \{\amplitude,\,\lengthscale\}$, which, in our notation, is actually the product of a constant kernel and a squared exponential kernel, as defined in \autoref{tab:kernels}.
-Another example that is commonly used in the astrophysics literature is the following ``quasi-periodic'' kernel
+Another example that is commonly used in the astrophysics literature \dan{ADD SOME CITATIONS} is the following ``quasi-periodic'' kernel
 \begin{equation}
   k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,{\lengthscale_1}^2} -\gamma\,\sin^2\left[\frac{\pi\,\dt}{\lengthscale_2}\right] \right)
 \end{equation}
@@ -441,6 +443,28 @@ In this figure, we can see some qualitative differences between the kernels---na
   \label{fig:samples}
 \end{figure}
 
+\subsubsection{Operations on kernel functions}
+
+Derivatives, integrals, etc.
+
+\begin{figure}[ht]
+  \centering
+  \script{kernel-ops.ipynb}
+  \includegraphics[width=\linewidth]{figures/kernel-ops1.pdf}
+  \includegraphics[width=\linewidth]{figures/kernel-ops2.pdf}
+  \includegraphics[width=\linewidth]{figures/kernel-ops3.pdf}
+  \caption{Derivative kernels.}
+  \label{fig:kernel-ops}
+\end{figure}
+
+
+\subsubsection{Multi-dimensional inputs}
+
+Abs vs other norms, non-standard geometry (GPs on the sphere), parallel time series.
+
+\subsubsection{Physically motivated kernels}
+
+Cosmology, asteroseismology, etc.
 
 \subsection{Hyperparameter Inference}
 
