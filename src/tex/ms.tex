@@ -31,6 +31,10 @@
 \jyear{2022}
 \doi{10.1146/((please add article doi))}
 
+% autoref formatting
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
+
 % macros
 \newcommand{\apjl}{Astrophysical Journal Letters}
 \newcommand{\aj}{Astronomical Journal}
@@ -50,6 +54,8 @@
 \newcommand{\dt}{\ensuremath{\tau}}
 \newcommand{\amplitude}{\ensuremath{\alpha}}
 \newcommand{\lengthscale}{\ensuremath{\lambda}}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 % Document starts
 \begin{document}
@@ -118,10 +124,20 @@ A number of important factors have contributed to recent the democratisation of 
 \subsection{Motivating examples}
 \label{sec:sim_examples}
 
-By way of motivation, before delving any further into the methodology, we have produced two simulated examples that illustrate the power of GPR for astronomical datasets. We have opted to use simulations rather than real data from the literature because knowning the ``ground truth'' allows us to quantify the performance of GPR against our metric of choice and to compare it to that of other methods.
+By way of motivation, before delving any further into the methodology, we have produced two illustrative examples that highlight some typical use cases for GPR in astrophysics.
+These examples are not meant to comprehensively summarize the space of use cases.
+Similarly, the goal of this section is not to formally compare the performance of GPR to other methods with the same goals.
+Instead, these examples are meant to identify some common, but qualitatively different applications.
 
-\subsubsection{Lensed quasar light curves with time-delays}
-\label{sec:sim_quasar}
+The first example is a re-implmentation of one of the earliest uses of GPR in time-domain astronomy \citep{prh92a, prh92b}, using modern language and techniques.
+In this example, we measure the time delay of a lensed quasar, using a GP as a flexible, non-parametric model for the latent (un-observed) variability of the unlensed quasar system.
+
+The second example demonstrates the use of GPR to account for stellar variability in the light curve of a transiting exoplanet, when inferring its parameters.
+In this case, the parameters of interest are the parameters of the mean model, and the GP is a nuisance model, and our goal is to propagate uncertainty introduced by the stellar variability to our constraints on the physical parameters of interest.
+For this example, we use simulated data because it is useful to know the ``ground truth'' to truly highlight the importance of taking nuisances into account.
+
+\subsubsection{Example 1: The time delay of a gravitational lensed quasar}
+\label{sec:quasar}
 
 \dan{Update text. I have switched to fitting the real data and recover a result consistent with that from prh.}
 
@@ -137,7 +153,7 @@ In a nod to \citet{prh92a}, our first example consists of two simulated light cu
     \includegraphics[width=\linewidth]{figures/quasar_posteriors.pdf}
   \end{minipage}
   \caption{Simulated datasets for the lensed quasar and transit examples. In the left panel, black dots and crosses with error bars show the light curves of the two quasar images, respectively, while the thin blue and red lines show the corresponding posterior samples for the simultaneous fit to both light curves using a Mat{\'e}rn $3/2$ GP.  In the right panel, black dots with error bars show the transit observations, while the thin blue and red lines lines show posterior samples for the models with white noise only and with a squared exponential GP, respectively. The posterior distributions for the models fit to both datasets are shown in Figure~\protect\ref{fig:sim_posteriors}. The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
-  \label{fig:sim_lcs}
+  \label{fig:quasar}
 \end{figure}
 
 We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn $3/2$ GP, varying the amplitude and length scale of the GP along with the means of the two time-series and the time-delay between them. We sampled the posterior using Markov Chain Monte Carlo (MCMC) with the {\sc emcee} package \citep{emcee} and broad uniform priors over all parameters. The resulting posteriors are shown Figure~\ref{fig:sim_posteriors}, while posterior samples are over-plotted on the data in Figure~\ref{fig:sim_lcs}. The true value of all parameters (including the light curve means, which aren't shown on the posterior plots as they are nuisance parameters) falls within the 68.5\% confidence interval. In particular, measured the time-delay is $\delta t = 418.9_{-1.3}^{+1.4}$\,d ($1$-$\sigma$).
@@ -146,7 +162,7 @@ We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn
 
 \dan{If time permits: rewrite using {\sc tinygp} instead of {\sc george} and {\sc emcee}?}
 
-\subsubsection{Simulated transit example}
+\subsubsection{Example 2: Fitting an exoplanet transit with stellar variability}
 \label{sec:sim_transit}
 
 \begin{figure}[ht]
@@ -160,7 +176,7 @@ We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn
   \end{minipage}
   \caption{Corner plots for the fits to the two simulated quasar and transit light curves (left and right, respectively) shown in Figure~\ref{fig:sim_lcs}.
   In each panel, the plots along the diagonal show 1-D histograms of the posterior samples for a subset of the fitted parameters, with vertical dashed lines indicating the 16$^{\rm th}$ and 84$^{\rm th}$ percentiles, while the off-diagonal plots show 2-D correlations between pairs of parameters. The horizontal and vertical solid black lines in each panel show the ``ground truth''. In the quasar case, we show the distribution for the GP variance $A$ and length scale $\lambda$ \suz{ensure notation consistent}, as well as for the time delay $\delta t$. In the transit case, the results of the white-noise only fit are shown in blue, while those of the GP fit are shown in red. These plots were generated using the {\sc corner.py} package \citep{corner}. \dan{How can we have them overlap with the transit one in the top right and the quasar one in the bottom left?} The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
-  \label{fig:sim_posteriors}
+  \label{fig:sim_transit}
 \end{figure}
 
 For our second example, we simulate a transit observation containing correlated as well as white noise, and demonstrate the impact of modelling the correlated noise explicitly. The transit was simulated using the {\sc Pytransit} package \citep{2015MNRAS.450.3233P} with orbital period $P=1$\,d, planet-to-star radius ratio $R_{\rm p}/R_\star=0.1$, system scale $a/R_\star=3.0$, and impact parameter $b=0.1$. Conjunction occurs at $t=0$, and we simulated 100 equally spaced over the interval $-0.2\,{\rm d} \le t \le 0.2$\,d. We used the {\sc LDTk} package \citep{2015MNRAS.453.3821P} to include limb-darkening as expected for a Sun-like star observed in the bandpass of the Transiting Exoplanet Survey Satellite (TESS, \citealt{2015JATIS...1a4003R}). We then added both white Gaussian noise with a standard deviation of $\sigma=0.001$ and correlated noise simulated using a squared exponential GP with variance $A=0.000004$ and length scale $\lambda=0.0005\,{\rm d}^2$. The resulting light curve is shown in the right panel of Figure~\ref{fig:sim_lcs}.
@@ -208,7 +224,7 @@ Although is is possible to construct and use stochastic process models based on 
 
 The formal definition above does not necessarily provide an intuitive understanding of how GPs work. Most readers of this review will, however, be more familiar with least-squares regression. In this section we will show that GPR can be thought of as a generalisation of least-squares regression, allowing for correlated noise (or signals) in the data. Conversely, least-squares regression, as traditionally presented, is a special case of GPR, where the covariance matrix is assumed to be purely diagonal, and the variances associated with each observation are known \textit{a priori}.
 
-\subsubsection{Revsisiting least squares}
+\subsubsection{Revisiting least squares}\label{sec:lsq}
 
 Consider $N$ observations of a variable $\mathbf{y} = \{ y_i\}_{i=1, \ldots, N}$, taken at times $\mathbf{t} = \{ t_i\}$, with associated measurement uncertainties $\boldsymbol{\sigma}=\{\sigma_i\}$. We wish to compare these to a model function $m(t,\meanparams)$ controlled by parameters $\meanparams=\{\meanparams_j\}_{j=1,\ldots,M}$. In most astrophysical applications, we are interested in estimating some or all of those parameters. In least-squares regression, we minimize the quantity
 \begin{equation}
@@ -235,7 +251,8 @@ Furthermore, we also assume that the noise is uncorrelated, or white, meaning th
 \end{equation}
 where $\mathbf{m}=\{m_i\}_{i=1,\ldots,N}$. From this one can readily see that $\ln \mathcal{L} = \mathrm{constant} - 0.5 \chi^2$, where the constant depends only on the $\sigma$'s. Thus, if the $\sigma$'s are known, maximizing $\mathcal{L}$ is equivalent to minimizing $\chi^2$. In other words, least-squares regression yields the Maximum Likelihood Estimate (MLE) of the parameters under the assumption of white, Gaussian noise with known variance.
 
-\subsubsection{Link to Gaussian Process Regression}
+\subsubsection{Link to Gaussian Process Regression}\label{sec:gp-lsq-link}
+\dan{I think we should explicitly re-write this as $\mathcal{L}(\meanparams,\,\hyperparams)$ and indicate that $K$ and $m$ depend on these parameters. We should really highlight that this is a drop-in replacement for the likelihood defined in the previous section.}
 Let us now re-write the likelihood in matrix form:
 \begin{equation}
 \label{eq:gp_like}
@@ -258,7 +275,7 @@ The kernel $k$ encodes our beliefs about the stochastic, or random, element of t
 \end{equation}
 This gives rise to smooth random functions with variance $\amplitude$ and characteristic length-scale $\lambda$. We present other commonly used kernels and discuss how to select one in Section~\ref{sec:kernels}.
 
-\subsection{Inference with a GP}
+\subsection{Inference with a GP}\label{sec:gp-inf}
 
 % \begin{figure}[ht]
 %   \includegraphics[width=\linewidth]{GPR_workflow.pdf}
@@ -467,23 +484,36 @@ Cosmology, asteroseismology, etc.
 
 \subsection{Hyperparameter Inference}
 
-A key component of all of the covariance functions discussed above is that they are all \emph{parameterized} by a set of parameters that are typically called ``hyperparameters'' for reasons that we won't get into here.
-In most cases, you won't have \emph{a priori} knowledge for how the values of these hyperparameters should be set.
+A key component of all the covariance functions discussed above is that they are all \emph{parameterized} by a set of hyper-parameters.
+In most cases, you won't have \emph{a priori} knowledge for how the values of these hyper-parameters should be set.
 Instead, their values will need to be numerically tuned or incorporated into a larger inference scheme.
 
-In the astrophysics literature, the most common approach for taking this uncertainty into account---and the method that we advocate for here---is to treat the hyperparameters directly as parameters of the model.
-In other words, instead of just fitting for the parameters of the mean model $\meanparams$ (see SECTION ABOVE), we can simultaneously fit for both $\meanparams$ and the hyperparameters $\hyperparams$.
-The likelihood function defined in SOMEEQUATION is a function of both $\meanparams$ and $\hyperparams$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo (MCMC) procedure to marginalize over nuisance parameters.
+In the astrophysics literature, the most common approach for taking this uncertainty into account---and the method that we advocate for here---is to treat the hyper-parameters directly as parameters of the model.
+In other words, instead of just fitting for the parameters of the mean model $\meanparams$, we can simultaneously fit for both $\meanparams$ and the hyper-parameters $\hyperparams$.
+In \autoref{sec:gp-lsq-link}, we defined the likelihood for a GP model and, in \autoref{sec:gp-inf}, we sketched the procedure used for Bayesian inference with such a model.
+The likelihood function defined in \autoref{eq:gp_like} is a function of both $\meanparams$ and $\hyperparams$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo (MCMC) procedure to marginalise over the hyper-parameters, and propagate their uncertainty to constraints on the parameters of the mean model.
 
 An important point here is that, since many data analysis procedures in astrophysics include a step like the ones listed above, the use of a GP likelihood doesn't significantly change the processing.
 In fact, we like to say that the GP likelihood can be used as a drop-in replacement for anywhere you're currently using a ``chi-squared'' objective.
 There are some practical reasons why things aren't necessarily this simple (for example, computational cost, as described below), but the sentiment stands.
 
-TODO: Add an example of parameter optimization and marginalization.
+In this review, we won't go into too many details about the inference algorithms, but throughout the text, we will regularly use the \textsf{BFGS} gradient-based, non-linear optimization routine \citep{Nocedal:1999, scipy} to find the maximum likelihood parameter values
+\begin{equation}
+  \meanparams_\star,\hyperparams_\star = \argmax_{\meanparams,\hyperparams} \,\mathcal{L}(\meanparams,\hyperparams) = \argmax_{\meanparams,\hyperparams} \,\log p(\boldsymbol{y}\,|\,\meanparams,\hyperparams) \quad.
+\end{equation}
+Another common inference technique used in astrophysics---and in this review!---is the use of Markov chain Monte Carlo (MCMC) to generate posterior samples
+\begin{equation}
+  \meanparams,\hyperparams \sim p(\meanparams,\hyperparams\,|\,\boldsymbol{y})
+\end{equation}
+that can be used to marginalise over some subset of the parameters, and estimate the uncertainty on the parameter values.
+All the examples in this review are implemented using the \textsf{NumPyro} probabilistic inference library, and all the MCMC examples use the gradient-based No U-Turn Sampler (NUTS) algorithm \citep{Hoffman:2014}.
 
-\subsection{Model validation}
+\autoref{sec:quasar} and \autoref{sec:sim_transit}, and specifically \autoref{fig:quasar} and \autoref{fig:sim_transit}, show the results of worked examples of an MCMC-based GPR workflow, without and with (respectively) a non-trival mean function.
 
-TODO: discuss processes for validating model choices. Evidence integrals; cross validation; etc.
+
+\subsection{Model assessment, validation, and selection}
+
+
 
 \begin{figure}[ht]
   \centering
@@ -510,7 +540,7 @@ The Active Galactic Nuclei (AGN) at the centre of many distant galaxies produce 
 
 As discussed in Section~\ref{sec:intro}, this is --to the best of our knowledge-- the first area in which GPR makes an appearance in the refereed astronomical literature.
 
-\suz{Refer to the first simulated example in section ~\ref{sec:sim_quasar} here. Some of the text below may need to move to that Section.}
+\suz{Refer to the first simulated example in \autoref{sec:quasar} here. Some of the text below may need to move to that Section.}
 
 When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple images can be formed, whose brightness can be monitored individually. Measurements of the time-delays between the resulting light curves can be used to constrain the Hubble constant, $H_0$ \citep{doi:10.1146/annurev.aa.30.090192.001523}. Early measurements of these time-delays in the decade following the discovery of the first multiply imaged quasar, the ``double quasar'' 0957$+$561, were hampered by the lack of a generative model for the light curves. Heuristic methods based on interpolation and cross-correlation were developed, but uncertainties were difficult to derive and results obtained with different instruments and different bandpasses weren't always consistent. \citet{prh92a} derived a simple $\chi^2$ metric under the assumption that the observed light curves are shifted, noisy versions of a single sample a Gaussian process with known covariance. Having proposed an empirical procedure to estimate the covariance function from the data, they then optimize the $\chi^2$ with respect to the time-delay between images, and apply standard methods used to derive an uncertainty. While their method relied on an adhoc method to estimate the covariance matrix, and did not propagate the corresponding errors into the final result, it did resolve the prior discrepancy between the estimates of the time-delay from optical and radio dataets \citet{prh92b}. Even then, the requirement to invert the covariance matrix was a barrier to the wider application of this method. This was addressed a few years later by \citet{pr95}, who introduced introduced a fast algorithm, to invert the covariance matrix for exponential kernels. Updated versions of this algorithm now form the basis for fast GP solvers discussed in Section~\ref{sec:fast}.
 
