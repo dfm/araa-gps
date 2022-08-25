@@ -32,6 +32,7 @@
 \doi{10.1146/((please add article doi))}
 
 % autoref formatting
+\def\sectionautorefname{Section}
 \let\subsectionautorefname\sectionautorefname
 \let\subsubsectionautorefname\sectionautorefname
 
@@ -49,6 +50,7 @@
 \newcommand{\prl}{Physical Review Letters}
 
 % Symbols
+\newcommand{\ydata}{\ensuremath{\boldsymbol{y}}}
 \newcommand{\hyperparams}{\ensuremath{\boldsymbol{\phi}}}
 \newcommand{\meanparams}{\ensuremath{\boldsymbol{\theta}}}
 \newcommand{\dt}{\ensuremath{\tau}}
@@ -128,20 +130,36 @@ By way of motivation, before delving any further into the methodology, we have p
 These examples are not meant to comprehensively summarize the space of use cases.
 Similarly, the goal of this section is not to formally compare the performance of GPR to other methods with the same goals.
 Instead, these examples are meant to identify some common, but qualitatively different applications.
+In both examples, we use simulated datasets since it is useful to know the ``ground truth'' to validate performance.
 
-The first example is a re-implmentation of one of the earliest uses of GPR in time-domain astronomy \citep{prh92a, prh92b}, using modern language and techniques.
+The first example is a re-implementation of one of the earliest uses of GPR in time-domain astronomy \citep{prh92a}, using modern language and techniques.
 In this example, we measure the time delay of a lensed quasar, using a GP as a flexible, non-parametric model for the latent (un-observed) variability of the unlensed quasar system.
 
 The second example demonstrates the use of GPR to account for stellar variability in the light curve of a transiting exoplanet, when inferring its parameters.
 In this case, the parameters of interest are the parameters of the mean model, and the GP is a nuisance model, and our goal is to propagate uncertainty introduced by the stellar variability to our constraints on the physical parameters of interest.
-For this example, we use simulated data because it is useful to know the ``ground truth'' to truly highlight the importance of taking nuisances into account.
+
+These examples---and all the examples throughout this review---are implemented using \textsf{tinygp} \dan{add tinygp Zenodo ref}, a \textsf{Python} library for GPR built on top of the \textsf{JAX} library for numerical computing \dan{add JAX ref}.
+Here and throughout, the probabilistic models are implemented using the \textsf{NumPyro} library \dan{add NumPyro reference} and the Markov chain Monte Carlo (MCMC) inference is performed using the No U-Turn Sampling (NUTS) algorithm \citep{Hoffman:2014}.
 
 \subsubsection{Example 1: The time delay of a gravitational lensed quasar}
 \label{sec:quasar}
 
-\dan{Update text. I have switched to fitting the real data and recover a result consistent with that from prh.}
+In this example, we re-visit the method developed by \citet{prh92a} to measure the time delay of the gravitationally lensed quasar 0957+561, one of the earliest applications of GPR for time domain astronomy.
+The underlying model here is that the unobserved latent variability of the source is modelled using a GP, in this case we use a Mat\'ern-3/2 covariance function as discussed and defined in \autoref{sec:kernels}.
+The images sample this time series at lagged times and with different mean magnitudes and variability amplitudes.
 
-In a nod to \citet{prh92a}, our first example consists of two simulated light curves of a hypothetical lensed quasar. Both light curves contain the same underlying signal, namely a single random draw from a GP prior with a Mat{\'e}rn $3/2$ kernel with parameters $A=0.1$ and $\lambda=5000\,{\rm d}^2$ (see Section \suz{XXX} for details \suz{check consistency of notation}). All GP calculations in this Section were performed using the {\sc george} package \citep{george}. Both light curves were simulated using the same set of times, which are drawn randomly in the interval $0$--$1500$\,d, but a time-delay of $\delta t=419.3$\,d was applied to the times for the second light curves before sampling the GP. In other words, the signal reaches the second source at a time $\delta t$ \textit{before} it reaches the first. We then added white Gaussian noise with standard deviation $\sigma_1=0.02$ and $\sigma_2=0.04$ vertical offsets of $M_1=1.0$ and $M_2=0.5$. The resulting simulated light curves are shown in the left panel of Figure~\ref{fig:sim_lcs}.
+Under this assumed model, we simulate a pair of light curves with the same cadence and uncertainties as the dataset from \citet{1989A&A...215....1V} that was analyzed by \citet{prh92a}.
+In this simulation, the parameters of the covariance model, the mean magnitudes, and the time delay are all set to known values, designed to produce qualitatively similar features to the dataset from \citet{1989A&A...215....1V}.
+The simulated light curves are plotted in the left panel of \autoref{fig:quasar}.
+
+Using these simulated data, we fit a GP model using MCMC, varying the time delay, the mean magnitude of each image, the variability amplitude of each image, and the timescale of the covariance.
+The results of this inference are shown in \autoref{fig:quasar}.
+In the left panel we show the simulated data with the median of posterior time delay applied to image A, and an arbitrary magnitude offset applied to image B for plotting purposes.
+Over-plotted on these data are 12 posterior samples of the GP model predictions for the noise-free photometry for each image.
+This figure captures how a GP can be used to flexibly capture a stochastically variable process under certain smoothness constraints, and how the uncertainties on the interpolated and extrapolated predictions increase away from the observed data.
+
+The right panel of \autoref{fig:quasar} shows the posterior constraints for two of the key parameters of the model: the time delay, and the mean magnitude difference between images.
+Since these are simulated data, we know the true values of these parameters, and these true values are over-plotted on \autoref{fig:quasar}b, demonstrating that our method reliably recovers the expected result.
 
 \begin{figure}[ht]
   \centering
@@ -152,18 +170,33 @@ In a nod to \citet{prh92a}, our first example consists of two simulated light cu
   \begin{minipage}[t]{0.44\linewidth}
     \includegraphics[width=\linewidth]{figures/quasar_posteriors.pdf}
   \end{minipage}
-  \caption{Simulated datasets for the lensed quasar and transit examples. In the left panel, black dots and crosses with error bars show the light curves of the two quasar images, respectively, while the thin blue and red lines show the corresponding posterior samples for the simultaneous fit to both light curves using a Mat{\'e}rn $3/2$ GP.  In the right panel, black dots with error bars show the transit observations, while the thin blue and red lines lines show posterior samples for the models with white noise only and with a squared exponential GP, respectively. The posterior distributions for the models fit to both datasets are shown in Figure~\protect\ref{fig:sim_posteriors}. The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
+  \caption{The results of fitting the simulated light curves of two images of a lensed quasar with a time delay between images.
+  \emph{Left:} The simulated light curves for each image with an arbitrary magnitude offset applied to image B, and the median of posterior time delay applied to image A, bringing the light curves into a common frame.
+  The data are plotted as points with error bars, and over-plotted on these data are posterior predictive samples of each images' predicted variability.
+  \emph{Right:} The posterior constraints on the time delay and mean magnitude offset between the two images, obtained using Markov chain Monte Carlo (MCMC) to fit the simulated data shown in the left panel of this figure.
+  The true values of these parameters that were used to simulate the data are over-plotted as blue lines.}
   \label{fig:quasar}
 \end{figure}
 
-We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn $3/2$ GP, varying the amplitude and length scale of the GP along with the means of the two time-series and the time-delay between them. We sampled the posterior using Markov Chain Monte Carlo (MCMC) with the {\sc emcee} package \citep{emcee} and broad uniform priors over all parameters. The resulting posteriors are shown Figure~\ref{fig:sim_posteriors}, while posterior samples are over-plotted on the data in Figure~\ref{fig:sim_lcs}. The true value of all parameters (including the light curve means, which aren't shown on the posterior plots as they are nuisance parameters) falls within the 68.5\% confidence interval. In particular, measured the time-delay is $\delta t = 418.9_{-1.3}^{+1.4}$\,d ($1$-$\sigma$).
-
-\suz{If time permits: try downloading and modelling the actual data in \citet{1989A&A...215....1V} instead of simualted data?}
-
-\dan{If time permits: rewrite using {\sc tinygp} instead of {\sc george} and {\sc emcee}?}
-
 \subsubsection{Example 2: Fitting an exoplanet transit with stellar variability}
-\label{sec:sim_transit}
+\label{sec:transit}
+
+In this second example, we demonstrate another common application of GPR in astrophysics, as a flexible model for nuisances and correlated noise where we want to correctly capture uncertainty introduced by this noise model into our constraints on the parameters of interest.
+To this end, we simulate the light curve of a transiting exoplanet and aim to infer the physical parameters of the system, taking correlated noise into account.
+The correlated noise in transit light curves is typically caused by the variability of the host star and by instrumental effects like focus or pointing changes.
+It has been demonstrated that neglecting to account for these variations can cause significant errors when inferring the properties of the planet \dan{add references}.
+This correlated noise can often be well-modeled by a GP, and the use of GPs for transit modeling has been a fruitful area of research in the astrophysics literature \dan{add references}.
+
+For this example, the transit was simulated with known physical properties such as the planet-to-star radius ratio, the impact parameter, and quadratic limb darkening parameters \dan{cite Agol for light curve computation}.
+We then add correlated and white noise by sampling from a GP model with a Mat\'ern-3/2 covariance function as defined in \autoref{sec:kernels}, with a known amplitude, timescale, and white noise amplitude.
+These simulated data are shown in the left panel of \autoref{fig:transit}
+
+We then used the same framework to model the simulated dataset, first ignoring the correlated noise and then accounting for it explicitly.
+For the transit model, we fit for the planet-to-star radius ratio $R_{\rm p}/R_\star$, the mid-transit time $T_0$, the out-of-transit flux $f_0$, and the limb darkening parameters $u_1,\,u_2$.
+When also fitting for correlated noise, we also marginalise over the amplitude $\amplitude$ and timescale $\lengthscale$ of the GP model.
+The posterior constraints on the time of transit and the planet-to-star ratio are shown in the right panel of \autoref{fig:transit}, with the true values of these parameters over-plotted as a black line.
+When the correlated noise is neglected (plotted in orange in \autoref{fig:transit}), the inferred parameters are significantly inconsistent with the truth.
+Taking the correlated noise into account (blue in \autoref{fig:transit}) increases the uncertainties on the inferred parameters, but also shifts the results to recover the true parameters.
 
 \begin{figure}[ht]
   \centering
@@ -174,18 +207,18 @@ We then modelled both time-series simultaneously using, once again, a Mat{\'e}rn
   \begin{minipage}[t]{0.44\linewidth}
     \includegraphics[width=\linewidth]{figures/transit_posteriors.pdf}
   \end{minipage}
-  \caption{Corner plots for the fits to the two simulated quasar and transit light curves (left and right, respectively) shown in Figure~\ref{fig:sim_lcs}.
-  In each panel, the plots along the diagonal show 1-D histograms of the posterior samples for a subset of the fitted parameters, with vertical dashed lines indicating the 16$^{\rm th}$ and 84$^{\rm th}$ percentiles, while the off-diagonal plots show 2-D correlations between pairs of parameters. The horizontal and vertical solid black lines in each panel show the ``ground truth''. In the quasar case, we show the distribution for the GP variance $A$ and length scale $\lambda$ \suz{ensure notation consistent}, as well as for the time delay $\delta t$. In the transit case, the results of the white-noise only fit are shown in blue, while those of the GP fit are shown in red. These plots were generated using the {\sc corner.py} package \citep{corner}. \dan{How can we have them overlap with the transit one in the top right and the quasar one in the bottom left?} The {\sc Jupyter} notebooks used to produce this figure are available as Supplementary Material (\texttt{quasar\_time\_delay.ipynb} and \texttt{transit\_modelling.ipynb}).}
-  \label{fig:sim_transit}
+  \caption{The results of fitting the simulated light curve of a transiting exoplanet.
+  \emph{Left:} The simulated dataset plotted as points with error bars.
+  The inferred model when correlated noise is (blue) or isn't (orange) taken into account are over-plotted on the data.
+  \emph{Right:} The posterior constraints on the time of transit $T_0$ and the planet-to-star radius ratio $R_\mathrm{p}/R_\star$.
+  The colors in this figure match those in the left panel, and the true values of these parameters are indicated with black lines.
+  The results when neglecting correlated noise (orange) are significantly inconsistent with the true value, but when the correlated noise is modeled using a GP (blue), the correct parameters are recovered, albeit with larger uncertainty.}
+  \label{fig:transit}
 \end{figure}
 
-For our second example, we simulate a transit observation containing correlated as well as white noise, and demonstrate the impact of modelling the correlated noise explicitly. The transit was simulated using the {\sc Pytransit} package \citep{2015MNRAS.450.3233P} with orbital period $P=1$\,d, planet-to-star radius ratio $R_{\rm p}/R_\star=0.1$, system scale $a/R_\star=3.0$, and impact parameter $b=0.1$. Conjunction occurs at $t=0$, and we simulated 100 equally spaced over the interval $-0.2\,{\rm d} \le t \le 0.2$\,d. We used the {\sc LDTk} package \citep{2015MNRAS.453.3821P} to include limb-darkening as expected for a Sun-like star observed in the bandpass of the Transiting Exoplanet Survey Satellite (TESS, \citealt{2015JATIS...1a4003R}). We then added both white Gaussian noise with a standard deviation of $\sigma=0.001$ and correlated noise simulated using a squared exponential GP with variance $A=0.000004$ and length scale $\lambda=0.0005\,{\rm d}^2$. The resulting light curve is shown in the right panel of Figure~\ref{fig:sim_lcs}.
 
-We then used the same framework to model the simulated dataset, first ignoring the correlated noise and then accounting for it explicitly. As with the quasar example, all GP calculations were performed using {\sc george} and the posterior exploration was done using {\sc emcee}. Only $R_{\rm p}/R_\star$, $T_0$ and, where applicable, $A$ and $\lambda$ were allowed to vary (using broad, uninformative priors in all cases). The other parameters ($P$, $b$, $a/R_\star$ and the limb-darkening parameters) were fixed at their simulated values. In a real-world setting, these parameters would also be allowed to vary, but subject to priors derived from pre-existing observations of the transits and of the host star, which is beyond the scope of this simple example. The resulting posteriors for $R_{\rm p}/R_\star$ and $T_0$ are shown in Figure~\ref{fig:sim_posteriors}, while posterior samples from the two models are overplotted on the data in Figure~\ref{fig:sim_lcs}. Ignoring the correlated nature of the noise when modelling this dataset leads to significant biases in these parameters. On the other hand, when the correlated noise is accounted for using a GP, the posterior distributions are broader, but compatible with the ground truth. The posterior distributions for the GP parameters are not shown as they are nuisance parameters in this case, but they are also compatible with the true values.
+\subsection{Overview of this review}
 
-\dan{If time permits switch to {\sc tinygp}}
-
-\smallskip
 The remainder of this review is structured as follows. Section~\ref{sec:basics} provides a brief, accessible introduction to the basic theory of GPR, and Section~\ref{sec:choices} discusses the key modelling choices one needs to make when using a GP to model data, with practical advice for how to make these choices. Section~\ref{sec:uses} gives an overview of applications of GPR to time-domain astronomical datasets to date. \suz{describe remaining sections}
 
 
@@ -345,7 +378,7 @@ It is also important to note that the predictive variance accounts for the imper
 In the previous section, we presented an overview of GP methods, and the key mathematical details. In this section, we will dive deeper into some of the practical decisions that arise when using GPs.
 The two core elements of a GP model are the mean function $m(t;\,\meanparams)$, and the ``kernel'' or ``covariance'' function $k(t_i,\,t_j;\,\hyperparams)$.
 Unlike how they are typical presented in the machine learning literature, GP models in astrophysics will often---but not always---include non-trivial mean functions.
-For example, in the example from \autoref{sec:sim_transit}, the mean function $m(t;\,\meanparams)$ is a physical transit model that is a function of the orbital parameters of the system, and includes a realistic limb-darkening model \citep{2002ApJ...580L.171M}.
+For example, in the example from \autoref{sec:transit}, the mean function $m(t;\,\meanparams)$ is a physical transit model that is a function of the orbital parameters of the system, and includes a realistic limb-darkening model \citep{2002ApJ...580L.171M}.
 However, in this review we won't discuss the mean function in detail, focusing instead primarily on the kernel function, since that is unique to GP modeling.
 All this being said, in our experience, new users of GP models will often focus and worry more than necessary about the choice of kernel function for their problem.
 As with any probabilistic modeling problem, there are several well-defined workflows for motivating, selecting, and validating your choice of kernel.
@@ -414,7 +447,7 @@ As an example, \autoref{fig:samples} shows several prior samples for three diffe
 In this figure, we can see some qualitative differences between the kernels---namely that the kernels become ``smoother'' from left to right---and we can see how the range of allowed functions change with the hyper-parameters.
 
 \begin{table}[ht]
-  \caption{Some kernel functions commonly used in the astrophysics literature}
+  \caption{Some kernel functions commonly used in the astrophysics literature \dan{add the rational quadratic kernel}}
   \label{tab:kernels}
   \begin{center}
     \begin{tabular}{@{}l|l@{}}
@@ -499,20 +532,61 @@ There are some practical reasons why things aren't necessarily this simple (for 
 
 In this review, we won't go into too many details about the inference algorithms, but throughout the text, we will regularly use the \textsf{BFGS} gradient-based, non-linear optimization routine \citep{Nocedal:1999, scipy} to find the maximum likelihood parameter values
 \begin{equation}
-  \meanparams_\star,\hyperparams_\star = \argmax_{\meanparams,\hyperparams} \,\mathcal{L}(\meanparams,\hyperparams) = \argmax_{\meanparams,\hyperparams} \,\log p(\boldsymbol{y}\,|\,\meanparams,\hyperparams) \quad.
+  \meanparams_\star,\hyperparams_\star = \argmax_{\meanparams,\hyperparams} \,\mathcal{L}(\meanparams,\hyperparams) = \argmax_{\meanparams,\hyperparams} \,\log p(\ydata\,|\,\meanparams,\hyperparams) \quad.
 \end{equation}
 Another common inference technique used in astrophysics---and in this review!---is the use of Markov chain Monte Carlo (MCMC) to generate posterior samples
 \begin{equation}
-  \meanparams,\hyperparams \sim p(\meanparams,\hyperparams\,|\,\boldsymbol{y})
+  \meanparams,\hyperparams \sim p(\meanparams,\hyperparams\,|\,\ydata)
 \end{equation}
 that can be used to marginalise over some subset of the parameters, and estimate the uncertainty on the parameter values.
 All the examples in this review are implemented using the \textsf{NumPyro} probabilistic inference library, and all the MCMC examples use the gradient-based No U-Turn Sampler (NUTS) algorithm \citep{Hoffman:2014}.
 
-\autoref{sec:quasar} and \autoref{sec:sim_transit}, and specifically \autoref{fig:quasar} and \autoref{fig:sim_transit}, show the results of worked examples of an MCMC-based GPR workflow, without and with (respectively) a non-trival mean function.
+\autoref{sec:quasar} and \autoref{sec:transit}, and specifically \autoref{fig:quasar} and \autoref{fig:transit}, show the results of worked examples of an MCMC-based GPR workflow, without and with (respectively) a non-trival mean function.
 
 
 \subsection{Model assessment, validation, and selection}
 
+Given the wide array of possible kernel functions described in \autoref{sec:kernels}, it can be important to assess the performance of your model and the relevant choices.
+This includes both assessing the choice to use a GP in the first place, and the specific choice of kernel function.
+It's important to note that there's nothing fundamentally different about GPs in the context when compared to other models for data, so that means that many methods that you may already use for model selection and validation in other contexts will also apply when using GPs.
+That being said, within the astrophysics literature formal probabilistic model checking has had limited use, and GPs do come with some specific technical complications, therefore we will discuss some examples of model validation and selection techniques that have been used for GPs.
+
+\dan{Say something here about assessing Gaussianity.}
+
+When it comes to selecting between different possible kernel functions, the approach that you take may depend on your specific research goals.
+For example, in many cases, including the transiting exoplanet example in \autoref{sec:transit}, the main parameters of physical interest may be the parameters of the mean model, and the GP is simply an effective model for stochastic nuisances.
+In this case, it may be sufficient to demonstrate that the inferred results are not significantly inconsistent for different choices of kernel function.
+
+Other common use cases, like the time delay example in \autoref{sec:quasar}, primarily require good predictive performance for the GP model.
+In these cases, methods like cross-validation of posterior predictive assessment \dan{add link to Gelman paper here} can be used to evaluate different choices of kernel function.
+
+To demonstrate these approaches, \autoref{fig:assessment} shows the results of performing a model comparison between three different kernel functions applied to a simulated dataset.
+The simulated data were generated from a GP model with a squared exponential kernel with known parameters, and we aim to compare the performance of three kernels: (1) the squared exponential kernel, (2) the Mat\'ern-3/2 kernel, and (3) the rational quadratic kernel.
+The simulated dataset is shown in the left panel of \autoref{fig:assessment}.
+
+First, using the full dataset, we compute the Bayesian evidence integral for each of these model choices using a nested sampling algorithm implemented in the \textsf{jaxns} package \dan{add citation}.
+The Bayesian evidence integral is defined as:
+\begin{equation}
+  Z(H) \equiv p(\ydata\,|\,H) = \int p(\meanparams,\hyperparams\,|\,H)\,p(\ydata\,|\,\meanparams,\hyperparams,H)\,\mathrm{d}\meanparams\,\mathrm{d}\hyperparams
+\end{equation}
+where $H$ indicates the modeling choices, in this case the choice of kernel function.
+For better or worse\footnote{A discussion of the relative merits of different model selection algorithms is beyond the scope of this review.}, the Bayesian evidence is frequently used in the astrophysics literature as an ingredient in model selection procedures.
+Nested sampling is an algorithm for numerically estimating this integral, and we apply it to produce estimates of $Z$ for each choice of kernel $H$, and plot these results in the middle panel of \autoref{fig:assessment}.
+In this figure, it is clear that the squared exponential and rational quadratic kernels are indistinguishable under this metric, while the Mat\'ern-3/2 kernel is somewhat disfavoured.
+
+Another popular method for model selection that is less commonly used in the astrophysics literature is cross validation.
+Cross validation is designed to assess the predictive performance of the model, and it proceeds by holding out some data, fitting the rest of the data, and then computing the likelihood of the held out data conditioned on the fit results.
+These steps can then be repeated for different held out samples.
+For a GP model, the likelihood of the held out data can be computed using the predictive distribution discussed in \autoref{sec:pred}.
+In particular, the likelihood is the following multivariate Gaussian
+\begin{equation}\label{eq:held-out-like}
+  p(\ydata_\star\,|\,\ydata,\meanparams, \hyperparams) = \mathcal{N}(\boldsymbol{f}_\star,\boldsymbol{C}_\star)
+\end{equation}
+where $\boldsymbol{f}_\star$ and $\boldsymbol{C}_\star$ are defined in \autoref{eq:pred}, noting (importantly!) that the (squared) observational uncertainties on the held out data should be included on the diagonal of $\boldsymbol{C}_\star$.
+
+In this example, we use MCMC to fit the data shown as black dots in the left panel of \autoref{fig:assessment}, holding out the data points indicated by blue crosses.
+At each step in the MCMC, we evaluate the likelihood in \autoref{eq:held-out-like} for the held out data conditioned on the training data and the model parameters.
+In the rightmost panel of \autoref{fig:assessment}, we plot the posterior distribution of the held out log probability to show that, like with the evidence integral, the squared exponential and rational quadratic kernels are indistinguishable, while the Mat\'ern-3/2 kernel is disfavoured. 
 
 
 \begin{figure}[ht]
@@ -570,7 +644,7 @@ In such cases, a simultaneous modelling approach could improve detection perform
 
 \subsubsection{Transit and eclipse modelling}
 
-In practice, GPR has been much more widely applied to transit modelling than to detection \textit{per se}. The detailed depth, timing, duration and shape of a transit depends on the planet-to-star radius ratio $R_{\rm p}/R_\star$, the system scale $a/R_\star$ (where $a$ is the orbital semi-major axis), the impact parameter $b$, the orbital period $P$ and the time of transit centre, $T_0$ as well as the limb-darkening profile of the star. High-precision observations of one or more transits of a given planet can be used to infer these parameters, which has a wide range of scientific applications. The most obvious is to estimate the planet size (and hence, given a mass estimate, its bulk density and composition [ref]). The system scale is directly related to the stellar density [ref seager-mallen03], which can be used for sanity checks to ensure the transits are indeed of planetary origin [ref tingley]. Small departures from strictly periodic timing, known as Transit Timing Variations (TTVs), probe dynamical interactions between multiple planets in a given system, and can be used measure the planets' masses and eccentricities and to reveal the presence of additional, non-transiting planets [ref]. Wavelength-dependent measurements of the transit depth probe the effect of the planet's atmosphere on the star light that filters through it, and hence allow us to access the atmospheric composition. The depth of any secondary eclipse (when the planet passes behind the star) depends on the planet-to-star flux ratio, and can therefore be used to measure an emission or reflection spectrum, while its timing yields strong constraints on the orbital eccentricity. All of this requires precise and accurate measurements of the transit parameters, for which any correlated noise must be accounted for explicitly, as we demonstrated using a simulated example in Section~\ref{sec:sim_transit}.
+In practice, GPR has been much more widely applied to transit modelling than to detection \textit{per se}. The detailed depth, timing, duration and shape of a transit depends on the planet-to-star radius ratio $R_{\rm p}/R_\star$, the system scale $a/R_\star$ (where $a$ is the orbital semi-major axis), the impact parameter $b$, the orbital period $P$ and the time of transit centre, $T_0$ as well as the limb-darkening profile of the star. High-precision observations of one or more transits of a given planet can be used to infer these parameters, which has a wide range of scientific applications. The most obvious is to estimate the planet size (and hence, given a mass estimate, its bulk density and composition [ref]). The system scale is directly related to the stellar density [ref seager-mallen03], which can be used for sanity checks to ensure the transits are indeed of planetary origin [ref tingley]. Small departures from strictly periodic timing, known as Transit Timing Variations (TTVs), probe dynamical interactions between multiple planets in a given system, and can be used measure the planets' masses and eccentricities and to reveal the presence of additional, non-transiting planets [ref]. Wavelength-dependent measurements of the transit depth probe the effect of the planet's atmosphere on the star light that filters through it, and hence allow us to access the atmospheric composition. The depth of any secondary eclipse (when the planet passes behind the star) depends on the planet-to-star flux ratio, and can therefore be used to measure an emission or reflection spectrum, while its timing yields strong constraints on the orbital eccentricity. All of this requires precise and accurate measurements of the transit parameters, for which any correlated noise must be accounted for explicitly, as we demonstrated using a simulated example in Section~\ref{sec:transit}.
 
 
 To address this, \citet{2009ApJ...704...51C} proposed a wavelet-based method to model correlated noise in transit light curves, which can be seen as a special case of GPR with a covariance function belonging to the exponential family, but the formulation using wavelets. Rather than modelling the covariance in the time domain, the Power Spectral Density (PSD) of the noise is assumed to be of the form $P(f) \propto f^{-\gamma}$.
