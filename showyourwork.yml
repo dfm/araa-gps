@@ -1,4 +1,6 @@
-version: main
+version:
+  fork: https://github.com/dfm/showyourwork
+  ref: araa-abstract-fix
 
 overleaf:
   id: 62f169d4cce9f5c2976ac131
