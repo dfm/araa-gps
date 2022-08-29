@@ -18,7 +18,7 @@ jobs:
         id: build
         uses: showyourwork/showyourwork-action@v1
         with:
-          article-cache-number: 1
+          article-cache-number: 2
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
           OVERLEAF_EMAIL: ${{ secrets.OVERLEAF_EMAIL }}
