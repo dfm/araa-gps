@@ -105,13 +105,15 @@ In particular, GP Regression (GPR) has become increasingly popular in the astron
 % We then work through many examples of how GPs have been used in the astronomical literature.
 % Discuss
 
+\suz{Should we mention we are using showyourwork?}
+
 \subsection{Brief history}
 
 An early use of GPR, was for spatial interpolation in geophysics \citep{kriging}, and GPR has since been adopted or re-invented in a wide range of other application domains. GPs were used in simulations in a wide range of astronomical sub-fields \citep[see e.g.][]{1980asfr.symp..159B,1988JGR....9311569C,1997ApJ...483L...1P}, but early mentions of GPs for modelling astronomical datasets \citep[see e.g.][]{1976MitAG..38..192D,1978A&A....70..777V,1991MGeo...16..313J} received limited attention.
 
 Perhaps the earliest use of GPR in the refereed astronomical literature that will be familiar to a modern reader was published by \citet{prh92a} in the context of quasar variability, and for a long time this remained its main application domain in astronomy. GPR then gradually appeared in other areas, starting with photometric redshift estimation \citep{2006ApJ...647..102W}, then exoplanet transit observations \citep{2009ApJ...704...51C,2012MNRAS.419.2683G} and radial velocity planet searches \citep{2012MNRAS.419.3147A,2014MNRAS.443.2517H}. Nonetheless, GPR remained relatively niche and few astronomers had heard of it until a few years ago. To illustrate this point, we searched on the NASA Astrophysics Data System (ADS) for articles published in refereeed astronomy and astrophysics journals with the words ``Gaussian Process'' in full text of the article \autoref{fig:literature}.
 After an increase in popularity throughout the 1990s, the use of GPs in astrophysics remained fairly constant around $\sim20$ publications per year until 2010.
-Since 2010, the popularity of GPs has grown significantly, and in 2021, more than 500 refereed papers referencing GPs were published in astrophysics literature.
+Since 2010, the popularity of GPs has grown significantly, and in 2021, more than 500 refereed papers referencing GPs were published in the astrophysics literature.
 
 A number of important factors have contributed to recent the democratisation of GPR across a wide range of scientific disciplines, including the publication of a dedicated textbook \citep{gpml}, as well as the availability of cheap computing power and user-friendly, open-source GPR software. In astronomy, specifically, an additional factor has been at play: the rise of time domain surveys. Correlated noise in time-domain observations is a direct and unavoidable consequence of causation, and hence ubiquitous. Adequately modelling this correlated noise is vital when searching for faint signals, for example from exoplanets. Astrophysical sources, from accretion disks on all scales to magnetically active stars or cloudy brown darfs, also display complex, intrinsically or apparently stochastic behaviour, for which adequate modelling strategies are required. GPR is a natural choice to tackle these challenges. Rather than attempting to cover all applications of GPs to all of astrophysics, which would not be feasible in the space available, we have therefore opted to focus on its application to time-domain datasets in astronomy.
 
@@ -184,12 +186,12 @@ Since these are simulated data, we know the true values of these parameters, and
 In this second example, we demonstrate another common application of GPR in astrophysics, as a flexible model for nuisances and correlated noise where we want to correctly capture uncertainty introduced by this noise model into our constraints on the parameters of interest.
 To this end, we simulate the light curve of a transiting exoplanet and aim to infer the physical parameters of the system, taking correlated noise into account.
 The correlated noise in transit light curves is typically caused by the variability of the host star and by instrumental effects like focus or pointing changes.
-It has been demonstrated that neglecting to account for these variations can cause significant errors when inferring the properties of the planet \dan{add references}.
-This correlated noise can often be well-modeled by a GP, and the use of GPs for transit modeling has been a fruitful area of research in the astrophysics literature \dan{add references}.
+It has been demonstrated that neglecting to account for these variations can cause significant errors when inferring the properties of the planet \citep{2006MNRAS.373..231P,2007A&A...472L..13G}.
+This correlated noise can often be well-modeled by a GP, and the use of GPs for transit modeling has been a fruitful area of research in the astrophysics literature (see Section~\ref{sec:transit_fit} for a more detailed discussion).
 
 For this example, the transit was simulated with known physical properties such as the planet-to-star radius ratio, the impact parameter, and quadratic limb darkening parameters \dan{cite Agol for light curve computation}.
 We then add correlated and white noise by sampling from a GP model with a Mat\'ern-3/2 covariance function as defined in \autoref{sec:kernels}, with a known amplitude, timescale, and white noise amplitude.
-These simulated data are shown in the left panel of \autoref{fig:transit}
+These simulated data are shown in the left panel of \autoref{fig:transit}.
 
 We then used the same framework to model the simulated dataset, first ignoring the correlated noise and then accounting for it explicitly.
 For the transit model, we fit for the planet-to-star radius ratio $R_{\rm p}/R_\star$, the mid-transit time $T_0$, the out-of-transit flux $f_0$, and the limb darkening parameters $u_1,\,u_2$.
@@ -248,9 +250,9 @@ The elements of the mean vector and covariance matrix are given by the \textit{m
 \end{equation}
 where $\boldsymbol{x}_i$ is the set of inputs (independent variables) corresponding to the $i^{\rm th}$ sample. For time-series data, the inputs usually include, but aren't necessarily restricted to, the time $t_i$. The covariance function, also known as the \emph{kernel}, is the fundamental ingredient of a GP model, and considerable care must be taken to select it adequately (or to test different possibilities). Sometimes the mean function is assumed to be constant, or even zero, everywhere; this is often done in the wider GPR literature to keep derivations uncluttered. However, for many astrophysical applications where a GP is used to model a nuisance signal, the mean function contains the signal of interest and is important.
 
-The parameters $\meanparams$ and $\hyperparams$ of the mean and covariance function are known as the \textit{hyper-parameters} of the GP. Strictly speaking, the \textit{parameters} of the GP are the elements of the mean vector and covariance matrix. However, for a given set of inputs and choice of mean and covariance functions, these numerous individual parameters are entirely determined by the the hyper-parameters, so the user interacts with the latter in much the same way as they would with the parameters of a more classical model.
+The parameters $\meanparams$ and $\hyperparams$ of the mean and covariance function are known as the \textit{hyper-parameters} of the GP. Strictly speaking, the \textit{parameters} of the GP are the (infinitely many) unknown functions that share the specified mean vector and covariance matrix and could have given rise to the observations. However, these parameters are always marginalised over: we never explicitly deal with the individual functions, except when drawing samples for illustrative purposes (as we did in Figures~\ref{fig:quasar} and \ref{fig:transit}). GPs are therefore a type of \textit{Hierarchichal Bayesian hierarchical Model} (HBM). 
 
-Although is is possible to construct and use stochastic process models based on other distributions, GPs are by far the most popular, for two main reasons. The first is Central Limit theorem: it implies that the assumption of Gaussianity is often at least approximately correct. The second is that Gaussian distributions obey simple mathematical identities for marginalisation and conditioning, that enable inference with GPs to be performed analytically, as we will see later.
+Although is is possible to construct and use stochastic process models based on other distributions, GPs are by far the most popular, for two main reasons. The first is Central Limit theorem: it implies that the assumption of Gaussianity is often at least approximately correct. The second is that Gaussian distributions obey simple mathematical identities for marginalisation and conditioning, that inference with GPs (the process of marginalising over the individual functions) to be performed \textit{analytically}, with very simple linear algebra. It is this analytic marginalisation property that sets GPR apart from other forms of HBM. \suz{ask Dan to check these last two paragraphs.}
 
 \subsection{From least-squares to GPR}
 \label{sec:from_lsq}
@@ -263,7 +265,7 @@ Consider $N$ observations of a variable $\mathbf{y} = \{ y_i\}_{i=1, \ldots, N}$
 \begin{equation}
   \chi^2 \equiv\sum_{i=1}^N (y_i-m_i)^2/\sigma^2_i,
 \end{equation}
-where $m_i \equiv m(x_i,\meanparams)$, with respect to $\meanparams$. Where does this come from?
+where $m_i \equiv m(t_i,\meanparams)$, with respect to $\meanparams$. Where does this come from?
 
 Let us assume that the observations are given by
 \begin{equation}
@@ -285,17 +287,17 @@ Furthermore, we also assume that the noise is uncorrelated, or white, meaning th
 where $\mathbf{m}=\{m_i\}_{i=1,\ldots,N}$. From this one can readily see that $\ln \mathcal{L} = \mathrm{constant} - 0.5 \chi^2$, where the constant depends only on the $\sigma$'s. Thus, if the $\sigma$'s are known, maximizing $\mathcal{L}$ is equivalent to minimizing $\chi^2$. In other words, least-squares regression yields the Maximum Likelihood Estimate (MLE) of the parameters under the assumption of white, Gaussian noise with known variance.
 
 \subsubsection{Link to Gaussian Process Regression}\label{sec:gp-lsq-link}
-\dan{I think we should explicitly re-write this as $\mathcal{L}(\meanparams,\,\hyperparams)$ and indicate that $K$ and $m$ depend on these parameters. We should really highlight that this is a drop-in replacement for the likelihood defined in the previous section.}
+\dan{I think we should explicitly re-write this as $\mathcal{L}(\meanparams,\,\hyperparams)$ and indicate that $K$ and $m$ depend on these parameters. We should really highlight that this is a drop-in replacement for the likelihood defined in the previous section.} \suz{Is this ok?}
 Let us now re-write the likelihood in matrix form:
 \begin{equation}
 \label{eq:gp_like}
-  \mathcal{L} = 
+  \mathcal{L}(\meanparams,\hyperparams) = 
   \frac{1}{\sqrt{|2\,\pi\,\mathbf{K}|}} \exp \left(-(\mathbf{y}-\mathbf{m})^{\mathrm{T}} \mathbf{K}^{-1}
   (\mathbf{y}-\mathbf{m}) \right),
 \end{equation}
-where $\mathbf{K}$ is a purely diagonal ($N$, $N$) matrix with elements $K_{ij} = \delta_{ij} \sigma_i^2$ ($\delta_{ij}$ being the discrete Kronecker delta function). This is, of course, the \emph{covariance matrix} of the model.
+where, as before, the mean vector $\mathbf{m}$ has elements $m_i=m(t_i,\meanparams)$ and $\mathbf{K}$ is a purely diagonal ($N$, $N$) matrix with elements $K_{ij} = \delta_{ij} \sigma_i^2$ ($\delta_{ij}$ being the discrete Kronecker delta function). This is, of course, the \emph{covariance matrix} of the model.
 
-Now, instead of assuming that the covariance matrix takes this very specific form, let us allow a more flexible model for the covariance:
+Now, instead of assuming that the covariance matrix takes this very specific form, let us allow a more flexible covariance model:
 \begin{equation}
   K_{ij} = k(t_i,t_j,\hyperparams) + \delta_{ij} \sigma_i^2,
 \end{equation}
@@ -350,7 +352,7 @@ First, a GP is a \textit{linear predictor}. The predictive mean for a specific t
 $f_\star = \mathbf{w}^{\mathrm{T}} \, \mathbf{y}$, where $\mathbf{w} = \mathbf{K}^{-1} \, \mathbf{k}_\star$ and $\mathbf{k}_\star=k(\mathbf{t},t_\star,\hyperparams)$. It can also be written as
 a linear combination of covariance functions centred on the training points:
 $f_\star = \mathbf{\alpha}^\mathrm{T} \,  \mathbf{k}_\star$ where $\mathbf{\alpha} = \mathbf{K}^{-1} \, \mathbf{y}$.
-These linearity properties are very important to understand the behaviour of GPs. The shed light on the relationship between GPR and standard linear models with very large numbers of free parameters \citep[see e.g.][for a more detailed discussion]{2021PASP..133i3001H},
+These linearity properties are very important to understand the behaviour of GPs. They shed light on the relationship between GPR and standard linear models with very large numbers of free parameters \citep[see e.g.][for a more detailed discussion]{2021PASP..133i3001H},
 and lead to a number of powerful extensions that are beyond  scope of this review.
 
 Second, the predictive covariance is independent of the data. $\mathbf{C}_\star$ depends only on the \emph{locations} $\mathbf{t}$ of the observations, not on their values $\mathbf{y}$. This has important consequences for observation planning: if we know the covariance function $k$ and its parameters, we can decide when to observations to optimise our predictions at a given (set of) time(s). However, in practice we rarely know the hyper-parameters \textit{a priori}, and the predictive posterior distribution marginalised over the hyper-parameters \textit{does} depend on the observations.
@@ -377,7 +379,7 @@ It is also important to note that the predictive variance accounts for the imper
 
 In the previous section, we presented an overview of GP methods, and the key mathematical details. In this section, we will dive deeper into some of the practical decisions that arise when using GPs.
 The two core elements of a GP model are the mean function $m(t;\,\meanparams)$, and the ``kernel'' or ``covariance'' function $k(t_i,\,t_j;\,\hyperparams)$.
-Unlike how they are typical presented in the machine learning literature, GP models in astrophysics will often---but not always---include non-trivial mean functions.
+Unlike how they are typically presented in the machine learning literature, GP models in astrophysics will often---but not always---include non-trivial mean functions.
 For example, in the example from \autoref{sec:transit}, the mean function $m(t;\,\meanparams)$ is a physical transit model that is a function of the orbital parameters of the system, and includes a realistic limb-darkening model \citep{2002ApJ...580L.171M}.
 However, in this review we won't discuss the mean function in detail, focusing instead primarily on the kernel function, since that is unique to GP modeling.
 All this being said, in our experience, new users of GP models will often focus and worry more than necessary about the choice of kernel function for their problem.
@@ -414,7 +416,7 @@ Given this large decision space, you may be wondering how to choose the right ke
 If you're very lucky, you may be able to motivate your model using physics.
 This can be approached from two directions.
 On one hand, some commonly used kernel function have a specific physical interpretation---for example, the solution to a stochastic ordinary differential equation---that can be used to motivate their use.
-On the other hand, if your physical model is specified by its \emph{power spectrum}, this can recast as a GP model with a specific kernel function.
+On the other hand, if your physical model is specified by its \emph{power spectrum}, this can recast as a GP model with a specific kernel function. \suz{Say something about the number of times a function is differentiable? That can be a useful consideration. But perhaps already mentioned later.}
 
 Even if you don't have a formal physics-based justification for your model, you may be able to identify the key scales of your problem and design a kernel function that captures these features.
 The usual approach to this problem is to take sums and products of commonly used kernel functions to select a set of  models that have the needed covariance structure, and then combine or select between these choices.
@@ -431,7 +433,7 @@ For example, the squared exponential kernel function is generally defined as
   k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,\lengthscale^2}\right)
 \end{equation}
 with $\hyperparams = \{\amplitude,\,\lengthscale\}$, which, in our notation, is actually the product of a constant kernel and a squared exponential kernel, as defined in \autoref{tab:kernels}.
-Another example that is commonly used in the astrophysics literature \dan{ADD SOME CITATIONS} is the following ``quasi-periodic'' kernel
+Another example that is commonly used in the astrophysics literature \citep{2012MNRAS.419.3147A,2014MNRAS.443.2517H} is the following ``quasi-periodic'' kernel
 \begin{equation}
   k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,{\lengthscale_1}^2} -\gamma\,\sin^2\left[\frac{\pi\,\dt}{\lengthscale_2}\right] \right)
 \end{equation}
@@ -514,6 +516,8 @@ Abs vs other norms, non-standard geometry (GPs on the sphere), parallel time ser
 \subsubsection{Physically motivated kernels}
 
 Cosmology, asteroseismology, etc.
+
+\suz{Mention kernels with break points to detect sudden changes, as described in review by \citet{2012RSPTA.37110550R} for example?}
 
 \subsection{Hyperparameter Inference}
 
@@ -623,12 +627,14 @@ When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple i
 \subsubsection{Quasar power spectrum estimation}
 
 \subsection{Stars and exoplanets}
+\label{sec:stars_planets}
 
 It is no coincidence that the recent uptake of GPR in astronomy coincides with the meteoritic rise of exoplanet studies. Almost all exoplanet detections and related discoveries are made indirectly, and involve detecting small and/or short-lived signals in time-domain datasets: transits in light curves, Keplerian signals in Radial Velocity (RV) or astrometry time-series. These are invariably affected by, and often buried in, correlated noise or nuisance signals, making GPR a natural choice.
 
 %The search for exoplanets has also motivated the development of large-scale time-domain photometric and spectroscopic surveys, a by-product of which is the study of a wide range of stellar astrophysics phenomena, where GPR has also found fresh applications that will be discussed later in this Section. Historically, the first applications of GPR to exoplanet datasets were for transit modelling.
 
 \subsubsection{Transit searches}
+\label{sec:transit_det}
 
 Following the discovery of the first transiting exoplanet \citep{2000ApJ...529L..41H,2000ApJ...529L..45C}, numerous ground-based photometric monitoring surveys were set up (or re-purposed) to search for planetary transits. Early estimates of their yield \citep[see e.g.][]{2003ASPC..294..361H} ran into the hundreds of planets per year, but these soon turned out to be highly optimistic. While surveys such as the Optical Gravititational Lensing Experiment (OGLE) did indeed discover numerous transit-like events
 %\citep{2002AcA....52....1U,2002AcA....52..317U,2003AcA....53..133U,2004AcA....54..313U}
@@ -643,6 +649,7 @@ In other space-based transit surveys such as \textit{CoRoT}, \emph{Kepler} and \
 In such cases, a simultaneous modelling approach could improve detection performance significantly. Since the nuisance signal is specific to each star, it cannot be modeled using other light curves, but a GP is a credible alternative. Such an approach could also offer a small but significant enhancement in the sensitivity future missions such as \textit{PLATO} to transits of habitable planets around Sun-like stars (which are very shallow and relatively long). The main issue would be computational cost: transit surveys monitor $10^4$--$10^5$ stars at a time, with $10^3$--$10^5$ observations per run, and the transit search must be run over a fine grid of periods and phases. Doing this with standard GPR methods would be impractical. However, now fast and scalable GP solvers are available, this becomes a more feasible proposition.
 
 \subsubsection{Transit and eclipse modelling}
+\label{sec:transit_fit}
 
 In practice, GPR has been much more widely applied to transit modelling than to detection \textit{per se}. The detailed depth, timing, duration and shape of a transit depends on the planet-to-star radius ratio $R_{\rm p}/R_\star$, the system scale $a/R_\star$ (where $a$ is the orbital semi-major axis), the impact parameter $b$, the orbital period $P$ and the time of transit centre, $T_0$ as well as the limb-darkening profile of the star. High-precision observations of one or more transits of a given planet can be used to infer these parameters, which has a wide range of scientific applications. The most obvious is to estimate the planet size (and hence, given a mass estimate, its bulk density and composition [ref]). The system scale is directly related to the stellar density [ref seager-mallen03], which can be used for sanity checks to ensure the transits are indeed of planetary origin [ref tingley]. Small departures from strictly periodic timing, known as Transit Timing Variations (TTVs), probe dynamical interactions between multiple planets in a given system, and can be used measure the planets' masses and eccentricities and to reveal the presence of additional, non-transiting planets [ref]. Wavelength-dependent measurements of the transit depth probe the effect of the planet's atmosphere on the star light that filters through it, and hence allow us to access the atmospheric composition. The depth of any secondary eclipse (when the planet passes behind the star) depends on the planet-to-star flux ratio, and can therefore be used to measure an emission or reflection spectrum, while its timing yields strong constraints on the orbital eccentricity. All of this requires precise and accurate measurements of the transit parameters, for which any correlated noise must be accounted for explicitly, as we demonstrated using a simulated example in Section~\ref{sec:transit}.
 
