@@ -228,6 +228,14 @@ The remainder of this review is structured as follows. Section~\ref{sec:basics} 
 \section{BASICS OF GAUSSIAN PROCESS REGRESSION}
 \label{sec:basics}
 
+\begin{figure}[ht]
+  \centering
+  \script{GPR_PGM.ipynb}
+  \includegraphics[width=0.7\linewidth]{figures/GPR_PGM.pdf}
+  \caption{A PGM.}
+  \label{fig:GPR_PGM}
+\end{figure}
+
 So far we have discussed how GPR has become widely used in astronomy and touched on some of their pros and cons, but we haven't explicitly defined what a GP is or explained how GPR works. This section gives a brief introduction to the theory of GPR, written in a way that we hope will be intelligible to most astronomers. For more details and practical exercises, we refer the reader to \citet{gpml} and \textcolor{red}{[Cite SA Saas Fee lecture notes if published]}.
 
 \subsection{Formal definition}
@@ -497,7 +505,33 @@ In this figure, we can see some qualitative differences between the kernels---na
 
 \subsubsection{Operations on kernel functions}
 
-Derivatives, integrals, etc.
+As discussed above, more flexible kernel models are often constructed using products and sums of the standard kernels listed in \autoref{tab:kernels}.
+Besides, addition and multiplication, other operations can be used to impose structure on the standard kernels.
+For example, linear operations like scalar multiplication, differentiation, or integration can all be used to develop new kernel functions.
+
+For example, there are good arguments \dan{CITE} to expect that the radial velocity time series of a spotted rotating star is related to the photometric time series via its time derivative.
+More formally, assume we have two time series---one with observations of some function $f(t)$ and another with observations of $\dot{f}(t)$, where the dot indicates the derivative with respect to time---and the function $f(t)$ is modeled as a GP with some covariance function $k(t_i,t_j;\hyperparams)$.the covariance between $f(t)$ and $\dot{f}(t)$ is
+\begin{equation}
+  \mathrm{Cov}\left[f(t_i),\dot{f}(t_j)\right] = \left.\frac{\mathrm{d}k(t_i,t;\hyperparams)}{\mathrm{d}t}\right|_{t=t_j}
+\end{equation}
+and the covariance $\dot{f}(t)$ and itself is
+\begin{equation}
+  \mathrm{Cov}\left[f(t_i),\dot{f}(t_j)\right] = \left.\frac{\mathrm{d}^2k(t,t^\prime;\hyperparams)}{\mathrm{d}t\,\mathrm{d}t^\prime}\right|_{t=t_i,t^\prime=t_j} \quad.
+\end{equation}
+This means that we can compute the GP model for observations of both sets of observations and their covariances.
+\autoref{fig:kernel-ops} shows some examples of this. \dan{more and citations}
+
+Similarly, integration or convolution also have similar properties.
+For example, real time series observations are made with finite exposure time $\Delta$, and therefore, if the underlying stochastic process $f(t)$ is modeled as a GP with covariance $k(t_i,t_j;\hyperparams)$, the observations are actually of
+\begin{equation}
+  f_\mathrm{int}(t) = \int_{t-\Delta/2}^{t+\Delta/2} f(t^\prime)\,\mathrm{d}t^\prime \quad,
+\end{equation}
+which has a covariance of
+\begin{equation}
+  k_\mathrm{int}(t_i,t_j;\hyperparams) = \int_{t_i-\Delta/2}^{t_i+\Delta/2}\int_{t_j^\prime-\Delta/2}^{t_j+\Delta/2} k(t,t^\prime;\hyperparams)\,\mathrm{d}t\,\mathrm{d}t^\prime \quad,
+\end{equation}
+which can be evaluated in closed form for some standard kernel functions.
+Another context where integrated GPs has been used for astrophysics (albeit not for time series), is as a model of the Galactic dust distribution \dan{CITE}.
 
 \begin{figure}[ht]
   \centering
@@ -509,7 +543,19 @@ Derivatives, integrals, etc.
 \end{figure}
 
 
-\subsubsection{Multi-dimensional inputs}
+\subsubsection{Multivariate GPs}
+
+Since this review is focused on GPs for \emph{time domain} astronomy, we primarily consider univariate GPs with just \emph{time} as the input coordinate.
+However, we would be remiss to neglect discussing multivariate GPs altogether.
+Most of our discussion so far applies to multivariate datasets without any change, but there are some subtleties that are worth mentioning here.
+
+When working with univariate GPs, it is relatively straightforward and unambiguous to compute the ``distance'' between two points $t_i$, and $t_j$: $\rho(t_i,t_j) = \dt = \left|t_i - t_j\right|$.
+For multivariate inputs $\boldsymbol{x}$, more care must be taken to define a sensible distance metric $\rho(\boldsymbol{x}_i,\boldsymbol{x_j})$.
+Common choices include the $d$-th norm $\rho_d(\boldsymbol{x}_i,\boldsymbol{x_j}) = \left|\left|\boldsymbol{x}_i - \boldsymbol{x}_j\right|\right|_d$ for $d=1$ or $d=2$, but other metrics---for example, the Haversine distance when the elements of $\boldsymbol{x}$ are coordinates on a sphere---might be better motivated for a particular use case.
+
+A common class of multivariate GP model for time domain astronomy are datasets with multiple parallel covariant time series.
+For example, multi-band time series produced by surveys like PanSTARRS or LSST, or radial velocity time series with parallel activity indicators.
+One useful way to specify these datasets are to define the inputs as $\boldsymbol{x_i} \equiv (t_i,\ell_i)$ where $t_i$ the time of the $i$-th observation and $\ell_i$ is a ``label'' for which time series the $i$-th observation is drawn from.
 
 Abs vs other norms, non-standard geometry (GPs on the sphere), parallel time series.
 
@@ -574,9 +620,9 @@ The Bayesian evidence integral is defined as:
   Z(H) \equiv p(\ydata\,|\,H) = \int p(\meanparams,\hyperparams\,|\,H)\,p(\ydata\,|\,\meanparams,\hyperparams,H)\,\mathrm{d}\meanparams\,\mathrm{d}\hyperparams
 \end{equation}
 where $H$ indicates the modeling choices, in this case the choice of kernel function.
-For better or worse\footnote{A discussion of the relative merits of different model selection algorithms is beyond the scope of this review.}, the Bayesian evidence is frequently used in the astrophysics literature as an ingredient in model selection procedures.
+For better or worse\footnote{A discussion of the relative merits of different model selection algorithms is beyond the scope of this review. \suz{Sure but can we link to a more in-depth discussion of the topic for interested readers?}}, the Bayesian evidence is frequently used in the astrophysics literature as an ingredient in model selection procedures.
 Nested sampling is an algorithm for numerically estimating this integral, and we apply it to produce estimates of $Z$ for each choice of kernel $H$, and plot these results in the middle panel of \autoref{fig:assessment}.
-In this figure, it is clear that the squared exponential and rational quadratic kernels are indistinguishable under this metric, while the Mat\'ern-3/2 kernel is somewhat disfavoured.
+In this figure, it is clear that the squared exponential and rational quadratic kernels are indistinguishable under this metric, while the Mat\'ern-3/2 kernel is somewhat disfavoured. 
 
 Another popular method for model selection that is less commonly used in the astrophysics literature is cross validation.
 Cross validation is designed to assess the predictive performance of the model, and it proceeds by holding out some data, fitting the rest of the data, and then computing the likelihood of the held out data conditioned on the fit results.
@@ -591,7 +637,7 @@ where $\boldsymbol{f}_\star$ and $\boldsymbol{C}_\star$ are defined in \autoref{
 In this example, we use MCMC to fit the data shown as black dots in the left panel of \autoref{fig:assessment}, holding out the data points indicated by blue crosses.
 At each step in the MCMC, we evaluate the likelihood in \autoref{eq:held-out-like} for the held out data conditioned on the training data and the model parameters.
 In the rightmost panel of \autoref{fig:assessment}, we plot the posterior distribution of the held out log probability to show that, like with the evidence integral, the squared exponential and rational quadratic kernels are indistinguishable, while the Mat\'ern-3/2 kernel is disfavoured. 
-
+\suz{Maybe mention leave-p-out CV as a more realistic CV strategy for real applications?}
 
 \begin{figure}[ht]
   \centering
@@ -608,23 +654,6 @@ In the rightmost panel of \autoref{fig:assessment}, we plot the posterior distri
 
 In this section we discuss a range of applications of GPR to time-domain datasets in the astronomical literature. The present-day popularity of GPs in astronomy precludes any attempt at an exhaustive review. Instead, we have selected examples which showcase the power and flexibility of the method. The order in which these applications are discussed is partly based on chronological considerations, but we have also attempted to present the simpler applications first.d
 
-\subsection{AGN variability (DFM)}
-
-\suz{This section is assigned to DFM but as I started writing something about it for the introduction then decided to move it here I have left it in -- feel free to use this as a starting point or ignore it entirely!.}
-
-The Active Galactic Nuclei (AGN) at the centre of many distant galaxies produce stochastic variability in their optical and radio emission, on timescales ranging from hours to years.
-
-\subsubsection{Lensed quasar time-delays}
-
-As discussed in Section~\ref{sec:intro}, this is --to the best of our knowledge-- the first area in which GPR makes an appearance in the refereed astronomical literature.
-
-\suz{Refer to the first simulated example in \autoref{sec:quasar} here. Some of the text below may need to move to that Section.}
-
-When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple images can be formed, whose brightness can be monitored individually. Measurements of the time-delays between the resulting light curves can be used to constrain the Hubble constant, $H_0$ \citep{doi:10.1146/annurev.aa.30.090192.001523}. Early measurements of these time-delays in the decade following the discovery of the first multiply imaged quasar, the ``double quasar'' 0957$+$561, were hampered by the lack of a generative model for the light curves. Heuristic methods based on interpolation and cross-correlation were developed, but uncertainties were difficult to derive and results obtained with different instruments and different bandpasses weren't always consistent. \citet{prh92a} derived a simple $\chi^2$ metric under the assumption that the observed light curves are shifted, noisy versions of a single sample a Gaussian process with known covariance. Having proposed an empirical procedure to estimate the covariance function from the data, they then optimize the $\chi^2$ with respect to the time-delay between images, and apply standard methods used to derive an uncertainty. While their method relied on an adhoc method to estimate the covariance matrix, and did not propagate the corresponding errors into the final result, it did resolve the prior discrepancy between the estimates of the time-delay from optical and radio dataets \citet{prh92b}. Even then, the requirement to invert the covariance matrix was a barrier to the wider application of this method. This was addressed a few years later by \citet{pr95}, who introduced introduced a fast algorithm, to invert the covariance matrix for exponential kernels. Updated versions of this algorithm now form the basis for fast GP solvers discussed in Section~\ref{sec:fast}.
-
-\subsubsection{Reverberation mapping}
-
-\subsubsection{Quasar power spectrum estimation}
 
 \subsection{Stars and exoplanets}
 \label{sec:stars_planets}
@@ -727,6 +756,24 @@ On the other hand, RV extraction pipelines routinely provide additional indicato
 
 
 \suz{Possible addition: modelling high-dispersion spectra with GPs}
+
+\subsection{AGN variability (DFM)}
+
+\suz{This section is assigned to DFM but as I started writing something about it for the introduction then decided to move it here I have left it in -- feel free to use this as a starting point or ignore it entirely!.}
+
+The Active Galactic Nuclei (AGN) at the centre of many distant galaxies produce stochastic variability in their optical and radio emission, on timescales ranging from hours to years.
+
+\subsubsection{Lensed quasar time-delays}
+
+As discussed in Section~\ref{sec:intro}, this is --to the best of our knowledge-- the first area in which GPR makes an appearance in the refereed astronomical literature.
+
+\suz{Refer to the first simulated example in \autoref{sec:quasar} here. Some of the text below may need to move to that Section.}
+
+When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple images can be formed, whose brightness can be monitored individually. Measurements of the time-delays between the resulting light curves can be used to constrain the Hubble constant, $H_0$ \citep{doi:10.1146/annurev.aa.30.090192.001523}. Early measurements of these time-delays in the decade following the discovery of the first multiply imaged quasar, the ``double quasar'' 0957$+$561, were hampered by the lack of a generative model for the light curves. Heuristic methods based on interpolation and cross-correlation were developed, but uncertainties were difficult to derive and results obtained with different instruments and different bandpasses weren't always consistent. \citet{prh92a} derived a simple $\chi^2$ metric under the assumption that the observed light curves are shifted, noisy versions of a single sample a Gaussian process with known covariance. Having proposed an empirical procedure to estimate the covariance function from the data, they then optimize the $\chi^2$ with respect to the time-delay between images, and apply standard methods used to derive an uncertainty. While their method relied on an adhoc method to estimate the covariance matrix, and did not propagate the corresponding errors into the final result, it did resolve the prior discrepancy between the estimates of the time-delay from optical and radio dataets \citet{prh92b}. Even then, the requirement to invert the covariance matrix was a barrier to the wider application of this method. This was addressed a few years later by \citet{pr95}, who introduced introduced a fast algorithm, to invert the covariance matrix for exponential kernels. Updated versions of this algorithm now form the basis for fast GP solvers discussed in Section~\ref{sec:fast}.
+
+\subsubsection{Reverberation mapping}
+
+\subsubsection{Quasar power spectrum estimation}
 
 \subsection{Compact objects}
 \suz{I thought this new heading would be a neat way to introduce applications to pulsars, non-quasar QPOs and GWs?}
