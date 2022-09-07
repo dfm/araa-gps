@@ -228,14 +228,6 @@ The remainder of this review is structured as follows. Section~\ref{sec:basics} 
 \section{BASICS OF GAUSSIAN PROCESS REGRESSION}
 \label{sec:basics}
 
-\begin{figure}[ht]
-  \centering
-  \script{GPR_PGM.ipynb}
-  \includegraphics[width=0.7\linewidth]{figures/GPR_PGM.pdf}
-  \caption{A PGM.}
-  \label{fig:GPR_PGM}
-\end{figure}
-
 So far we have discussed how GPR has become widely used in astronomy and touched on some of their pros and cons, but we haven't explicitly defined what a GP is or explained how GPR works. This section gives a brief introduction to the theory of GPR, written in a way that we hope will be intelligible to most astronomers. For more details and practical exercises, we refer the reader to \citet{gpml} and \textcolor{red}{[Cite SA Saas Fee lecture notes if published]}.
 
 \subsection{Formal definition}
@@ -340,6 +332,14 @@ In many astrophysical applications of GPs, we wish to take into account correlat
 
 \subsection{Making predictions}
 \label{sec:pred}
+
+\begin{figure}[ht]
+  \centering
+  \script{GPR_PGM.ipynb}
+  \includegraphics[width=\linewidth]{figures/GPR_PGM.pdf}
+  \caption{Probabilistic Graphical Model (PGM) got GP regression (adapted from Figure 2.3 of \citealt{} }
+  \label{fig:GPR_PGM}
+\end{figure}
 
 An important use case for GPR is as a statistically principled interpolation method. We wish to ``learn'' an unknown function that gave rise to some data, in order to make predictions for some new set of inputs. Importantly, a GP model provides not a point estimate but a full probability distribution for the function at any desired location(s) in the input domain. This allows for robust uncertainty propagation (though there are some important caveats we will touch upon), and can also motivate strategies for active sampling (deciding when or where to make new observations).
 
@@ -740,11 +740,11 @@ Most studies focusing on the photometric signatures of stellar activity ignore v
 \subsubsection{Stellar activity in Radial Velocities}
 Given the remarkable instrumental precision actived by modern RV spectrographs, stellar activity is nowadays the key factor limiting the sensitivity of RV surveys low-amplitude and/or long-period planet signals. The effect of active regions on RV observations is two-fold. First, as dark spots rotate on the stellar surface, they distort the profile of spectral lines, removing a small contribution first from the red wing of each spectral line, then from the line core, and then from the blue wing. The second effect is more subtle: in the absence of active regions, spectral lines of Sun-like stars display a net blue-shift due to granulation: the emission from the hot, up-welling material in the granules, which is blue-shifted, dominates over that from the cooler material falling back down in the inter-granular lanes). In a facula, i.e.\ a region of enhanced magnetic flux density compared to the ``clean'' photosphere, convection is suppressed, leading to a localised reduction in this ``convective blue-shift''. Faculae have very small photometric contrast but can cover a much larger area than dark spots, so their RV signature can dominate over that of spots, specially for moderately slow rotators like the Sun with modest magnetic fields \citep{2010A&A...512A..39M}.
 
-% \begin{figure}[ht]
-%   \includegraphics[width=3in]{rajpaul_framework}
-%   \caption{Schematic of the GP framework of \citet{2015MNRAS.452.2269R} for modelling activity signals in RV data \suz{Figure will be updated with nicer version.}}
-%   \label{fig:multiGPRV}
-% \end{figure}
+\begin{figure}[ht]
+  \includegraphics[width=3in]{figures/RV_framework.pdf}
+  \caption{Schematic of the GP framework of \citet{2015MNRAS.452.2269R} for modelling activity signals in RV data \suz{Figure will be updated with nicer version.}}
+  \label{fig:RV_framework}
+\end{figure}
 
 Overall, active regions produce quasi-periodic RV variations which are frequently modelled with the same kind of QP GPs as for light curves. However, unlike transits, planetary signatures in RV occur on timescales similar to activity signals, meaning that the risk of overfitting is significant. This partly mitigated for RV follow-up of transiting planets by strong priors on the stellar rotation period and on the period and phase of the planetary orbit, but it is a severe problem for ``blind'' RV searches. The issue is compounded by the fact that RV observations are invariably ground-based, and strong pressure on telescope time means that the time-sampling of these observations is not always good enough to constrain the GP parameters well.
 
