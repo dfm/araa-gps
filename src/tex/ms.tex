@@ -306,6 +306,7 @@ Now, instead of assuming that the covariance matrix takes this very specific for
 \end{equation}
 where $k$ is a \emph{covariance function} or \emph{kernel}, controlled by parameters $\hyperparams$. The result is a GP, and its likelihood is still given by Equation~(\ref{eq:gp_like}). Depending on the choice of kernel and parameters, the covariance matrix can now have non-zero off-diagonal elements, allowing us to explicitly model correlated noise or stochastic signals in the data.
 Note that the likelihood depends not only on the argument of the exponential, but also on the determinant of the covariance matrix, which therefore needs to be evaluated explicitly. This term acts as a built-in Occam's razor, automatically penalising more complex models.
+\dan{We should probably define the determinant notation here? I don't think we really clearly define our matrix notation anywhere else.}
 
 The kernel $k$ encodes our beliefs about the stochastic, or random, element of the model, in just the same way as the mean function $m$ encodes our beliefs about the deterministic component of the model. For example, in many circumstances, we would expect that two observations taken close together in time should be more strongly correlated than observations taken further apart, and we would use a decreasing function of the time interval $\dt=|t_i-t_j|$ to represent that. One of the most widely used covariance functions is the squared exponential
 \begin{equation}
@@ -380,15 +381,6 @@ It is also important to note that the predictive variance accounts for the imper
 \section{GAUSSIAN PROCESS MODELING DECISIONS}
 \label{sec:choices}
 
-% Assigned: DFM
-
-% \paragraph{Kernels} Selecting a kernel function is how the user builds physical domain knowledge into the Gaussian process model. In this section, we will both try to dispel some common misconceptions about how to choose covariance functions and their parameters, and provide some practical guidelines for how to make these modelling choices in practice, highlighting specific examples from the astronomical literature. Estimated length: 5-10 pages
-
-% Question: will this also be the section where the most commonly used kernel functions in astrophysics are introduced or will that be part of section1? This will affect the relative length of the two sections, but overall I'd expect it to be 15-20 pages for both sections
-
-% \paragraph{Tuning} This section will cover the process of "training" a Gaussian process model, i.e. tuning the parameters of the covariance function and, if included, the mean function. Compared to standard texts from other fields, this topic will be covered in more depth because parameter inference (as opposed to interpolation or prediction) is one of the most common applications of Gaussian processes in astronomy. Once again we will aim to dispel some misconceptions and provide practical advice. This will also be where we illustrate how a Gaussian process model can be embedded in a Bayesian inference framework using posterior sampling, and point out the importance of marginalising over nuisance parameters. Estimated length: 5-10 pages
-
-
 In the previous section, we presented an overview of GP methods, and the key mathematical details. In this section, we will dive deeper into some of the practical decisions that arise when using GPs.
 The two core elements of a GP model are the mean function $m(t;\,\meanparams)$, and the ``kernel'' or ``covariance'' function $k(t_i,\,t_j;\,\hyperparams)$.
 Unlike how they are typically presented in the machine learning literature, GP models in astrophysics will often---but not always---include non-trivial mean functions.
@@ -415,15 +407,6 @@ In this section we walk through this process in detail.
 \end{textbox}
 
 The kernel function can be any positive semi-definite scalar function, but some will be more useful than others.
-% A commonly (over-)used kernel function is the ``exponential-squared'' or ``radial basis function'' kernel
-% \begin{equation}
-%   k(t_i,\,t_j;\,\hyperparams) = \sigma^2\,\exp\left[-\frac{(t_i - t_j)^2}{2\,\tau^2}\right]
-% \end{equation}
-% where the ``hyperparameters'' $\hyperparams$ are $\sigma$ and $\tau$.
-% In this case, the hyperparameters specify the typical amplitude $\sigma$ and timescale $\tau$ of the variance of the process.
-% SOMEFIGURE shows how changing these parameters affect our GP model.
-% There exist many other commonly used kernel functions, some of which are listed in SOMETABLE.
-% This table is far from comprehensive, and importantly, the sum or product of two valid kernel functions is itself also a valid kernel, so it is possible (and common) to build extremely flexible and expressive kernel functions specific to your use case.
 Given this large decision space, you may be wondering how to choose the right kernel for your specific problem.
 If you're very lucky, you may be able to motivate your model using physics.
 This can be approached from two directions.
@@ -641,20 +624,20 @@ This includes both assessing the choice to use a GP in the first place, and the 
 It's important to note that there's nothing fundamentally different about GPs in the context when compared to other models for data, so that means that many methods that you may already use for model selection and validation in other contexts will also apply when using GPs.
 That being said, within the astrophysics literature formal probabilistic model checking has had limited use, and GPs do come with some specific technical complications, therefore we will discuss some examples of model validation and selection techniques that have been used for GPs.
 
-\dan{Say something here about assessing Gaussianity.}
+\dan{Say something here about assessing Gaussianity, and more generally model checking (rather than comparison; posterior predictive checks).}
 
 When it comes to selecting between different possible kernel functions, the approach that you take may depend on your specific research goals.
 For example, in many cases, including the transiting exoplanet example in \autoref{sec:transit}, the main parameters of physical interest may be the parameters of the mean model, and the GP is simply an effective model for stochastic nuisances.
 In this case, it may be sufficient to demonstrate that the inferred results are not significantly inconsistent for different choices of kernel function.
 
 Other common use cases, like the time delay example in \autoref{sec:quasar}, primarily require good predictive performance for the GP model.
-In these cases, methods like cross-validation of posterior predictive assessment \dan{add link to Gelman paper here} can be used to evaluate different choices of kernel function.
+In these cases, methods like cross-validation \citep[e.g.][]{gelfand1992model} or posterior predictive assessment \citep[e.g.][]{gelman1996posterior} can be used to evaluate different choices of kernel function.
 
 To demonstrate these approaches, \autoref{fig:assessment} shows the results of performing a model comparison between three different kernel functions applied to a simulated dataset.
 The simulated data were generated from a GP model with a squared exponential kernel with known parameters, and we aim to compare the performance of three kernels: (1) the squared exponential kernel, (2) the Mat\'ern-3/2 kernel, and (3) the rational quadratic kernel.
 The simulated dataset is shown in the left panel of \autoref{fig:assessment}.
 
-First, using the full dataset, we compute the Bayesian evidence integral for each of these model choices using a nested sampling algorithm implemented in the \textsf{jaxns} package \dan{add citation}.
+First, using the full dataset, we compute the Bayesian evidence integral for each of these model choices using a nested sampling algorithm implemented in the \textsf{jaxns} package \citep{jaxns}.
 The Bayesian evidence integral is defined as:
 \begin{equation}
   Z(H) \equiv p(\ydata\,|\,H) = \int p(\meanparams,\hyperparams\,|\,H)\,p(\ydata\,|\,\meanparams,\hyperparams,H)\,\mathrm{d}\meanparams\,\mathrm{d}\hyperparams
@@ -840,7 +823,8 @@ When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple i
 
 So far, we have primarily discussed the benefits of GP models for astrophysics, but in this section we aim to highlight some challenges faced when using GPs in practice.
 The most significant challenge that has so far limited broader adoption GPs for astrophysics is their computational cost and scaling.
-
+In the following section, we discuss some of the techniques that have been developed to scale GPs for time domain astronomy.
+We also briefly discuss some contexts where GP models may overfit, or be otherwise misspecified for specific problems.
 
 \subsection{Scalable GP inference}
 \label{sec:fast}
@@ -863,7 +847,6 @@ The use of Toeplitz structure for scalable Gaussian noise modeling has primarily
 The most widely-used algorithms for scalable exact GPR in time domain astrophysics are based---often not explicitly---on stochastic differential equations \citep[SDEs;][]{Sarkka:2019}, and typically require that the data be ``sortable''.
 As an early example in the astrophysics literature, \citet{pr95} presented an algorithm for GPR with linear scaling with the size of the dataset, when using an exponential kernel with unevenly sampled time series data.
 This method was later generalized to a wider range of covariance functions \citep{ambikasaran2015generalized, celerite, 2020AJ....160..240G, 2020A&A...638A..95D, 2022A&A...659A.182D}, and the \project{celerite}\footnote{\url{https://github.com/dfm/celerite}} and \project{S+LEAF}\footnote{\url{https://obswww.unige.ch/~delisle/spleaf/doc}} implementations have been widely-used for time domain astronomy. \dan{Add some citations to show the range.}
-% \suz{yes. I take it you're reluctant to cite the S+LEAF papers?}.
 A qualitatively different, and independently developed approach to implementing these models uses a state-space representation for the underlying SDE to enable scalable inference \citep{2014ApJ...788...33K,  2021RNAAS...5..107J, 2022arXiv220709327M} \dan{Maybe add some citations of the use of these methods}.
 
 \dan{Do we want to add a figure here demonstrating the importance of scaling?} \suz{yes why not...}
@@ -871,9 +854,14 @@ A qualitatively different, and independently developed approach to implementing 
 
 \subsection{Overfitting}
 
-Normalization.
+In our experience, a common concern that astrophysicists have when working with GPs is that these flexible models may overfit the observations, and decrease the significance of their results, especially when a GP is used as an effective model for noise sources.
+While this is not an unjustified concern, we find that the risk is generally overestimated.
+As discussed in \autoref{sec:gp-lsq-link}, the determinant in \autoref{eq:gp_like} penalises GP models with ``unspecific'' hyperparameters, instead preferring to explain as much of the data as possible with the mean model.
+In other (but equally informal) terms, this means that a GP's modeling capacity will only be used to describe residuals that are not captured within the mean model's support.
 
-\subsection{Non-Gaussianity}
+All this being said, there do exist cases where the use of
+
+\subsection{Model misspecification}
 
 Outliers. Heavy tails.
 
