@@ -2,6 +2,8 @@ name: build
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -18,13 +20,9 @@ jobs:
         id: build
         uses: showyourwork/showyourwork-action@v1
         with:
-          article-cache-number:
+          article-cache-number: 4
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
           OVERLEAF_EMAIL: ${{ secrets.OVERLEAF_EMAIL }}
           OVERLEAF_PASSWORD: ${{ secrets.OVERLEAF_PASSWORD }}
-
-      - run: git status
-      - run: git diff
-      - run: git diff
-      - run: git rev-parse HEAD
+      - run: git push
