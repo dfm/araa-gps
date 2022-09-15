@@ -445,7 +445,7 @@ In this figure, we can see some qualitative differences between the kernel funct
 
 A key feature of a kernel function that defines its qualitative behaviour is its mean square (MS) differentiability.
 We won't formally define MS differentiability---interested readers are instead referred to Section~4.1.1 of \citet{gpml} for a more detailed discussion---but we want to highlight that MS differentiability is important because it defines the ``smoothness'' of the functions that can be modelled by the GP.
-It can be seen in \autoref{fig:samples} that the exponential squared kernel function, which is infinitely MS differentiable, is significantly ``smoother'' than the exponential kernel function, which is only 1-time MS differentiable. \suz{here you say the exponential kernel is 1-time MS differentiable but in the caption of Figure 6 you say it's not MS differentiable at all. I think the caption is correct, but will let you resolve it.}
+It can be seen in \autoref{fig:samples} that the exponential squared kernel function, which is infinitely MS differentiable, is significantly ``smoother'' than the exponential kernel function, which is not MS differentiable.
 
 \begin{armarginnote}[]
   \entry{MS differentiability}{mean square differentiability}
@@ -513,9 +513,8 @@ More formally, assume we have two time series---one with observations of some fu
 and the covariance between two observations of $\dot{f}(t)$ is
 \begin{equation}
   \label{eq:cross-deriv-covar}
-  \mathrm{Cov}\left[f(t_i),\dot{f}(t_j)\right] = \left.\frac{\partial^2 k(t,t^\prime;\hyperparams)}{\partial t\,\mathrm{d}t^\prime}\right|_{t=t_i,t^\prime=t_j} \quad.
+  \mathrm{Cov}\left[f(t_i),\dot{f}(t_j)\right] = \left.\frac{\partial^2 k(t,t^\prime;\hyperparams)}{\partial t\,\partial t^\prime}\right|_{t=t_i,t^\prime=t_j} \quad.
 \end{equation}
-\suz{I corrected a typo in the above and switched notation to use partial derivatives here since it matters which of the two inputs the derivative is taken with respect to, specially for non-stationary covariance functions.}
 This means that we can compute the GP model for observations of both sets of observations and their covariances.
 One technical point which is worth noting here: for \autoref{eq:cross-deriv-covar} to define a valid covariance function, the base kernel $k(t,t^\prime;\hyperparams)$ must be mean square differentiable, as mentioned briefly in the previous section.
 Therefore, the exponential kernel, for example, should not be used for modeling derivative observations since it does not have the appropriate properties.
@@ -834,7 +833,7 @@ When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple i
 
 Quasar power spectrum estimation references: \citet{2014ApJ...788...33K, 2017MNRAS.470.3027K, 2019PASP..131f3001M, 2022ApJ...936..132Y}
 
-\subsection{Compact objects}
+\subsection{Compact objects, gravitational waves, and transients}
 \suz{I thought this new heading would be a neat way to introduce applications to pulsars, non-quasar QPOs and GWs?}
 
 % \subsubsection{Pulsars}
