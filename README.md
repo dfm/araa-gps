@@ -18,3 +18,4 @@ This is the source code for our submitted [Annual Review of Astronomy & Astrophy
 Most of the figures in this submission are generated using scripts in this repository via the [showyourwork](https://github.com/showyourwork/showyourwork) workflow.
 To set up your environment, you can use the `conda` environment defined in `environment.yml`, and then run the Jupyter notebooks in `src/scripts` to generate the figures.
 To re-build the full manuscript, take a look at the [showyourwork documentation](https://show-your.work).
+
