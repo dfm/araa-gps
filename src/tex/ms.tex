@@ -205,6 +205,7 @@ For the transit model, we fit for the planet-to-star radius ratio $R_{\rm p}/R_\
 When also fitting for correlated noise, we also marginalise over the amplitude $\amplitude$ and timescale $\lengthscale$ of the GP model.
 The posterior constraints on the time of transit and the planet-to-star ratio are shown in the right panel of \autoref{fig:transit}, with the true values of these parameters over-plotted as a black line.
 When the correlated noise is neglected (plotted in orange in \autoref{fig:transit}), the inferred parameters are significantly inconsistent with the truth.
+In this fit, while the correlated noise is neglected, we fit for an excess variance or ``jitter'' term, which is a method commonly used to account for model misspecification.
 Taking the correlated noise into account (blue in \autoref{fig:transit}) increases the uncertainties on the inferred parameters, but also shifts the results to recover the true parameters.
 
 \begin{figure}[ht]
