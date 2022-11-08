@@ -4,6 +4,7 @@ version:
 
 overleaf:
   id: 62f169d4cce9f5c2976ac131
+  gh_actions_sync: true
   push:
     - src/tex/figures
     - src/tex/output
