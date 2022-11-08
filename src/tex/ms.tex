@@ -103,7 +103,7 @@ While this may seem abstract, GPs have a wide range of applications from modelli
   \entry{GP}{Gaussian Process}
   \entry{GPR}{Gaussian Process Regression}
 \end{armarginnote}
-In particular, GP Regression (GPR) has become increasingly popular in the astronomical community over the last decade. Part of the reason for this uptake is the growing availability and importance of time-domain datasets in astronomy. These systematically contain non-trivial random or unknown signals, whether astrophysical or instrumental, that need to be modelled. In many cases, these are nuisance signals, which we need to marginalise over in order to detect or measure other signals robustly. Sometimes, we are interested in the stochastic behaviour itself, and want to infer its characteristics or predict its behaviour. GPR offers a compelling solution: statistically principled, naturally Bayesian, and extremely flexible, yet mathematically simple. To new users, however, the lack of an explicit functional form for the model can make GPR can seem a little arcane. Furthermore, the computational cost of the method, which scales cubically with the dataset size, can be an obstacle. These factors initially impeded its dissemination in the astronomical community, but have been largely overcome in recent years thanks to the availability of user-friendly, computationally optimised software packages.
+In particular, GP Regression (GPR) has become increasingly popular in the astronomical community over the last decade. Part of the reason for this uptake is the growing availability and importance of time-domain datasets in astronomy. These systematically contain non-trivial random or unknown signals, whether astrophysical or instrumental, that need to be modelled. In many cases, these are nuisance signals, which we need to marginalise over in order to detect or measure other signals robustly. Sometimes, we are interested in the stochastic behaviour itself, and want to infer its characteristics or predict its behaviour. GPR offers a compelling solution: statistically principled, naturally Bayesian, and extremely flexible, yet mathematically simple. To new users, however, the lack of an explicit functional form for the model can make GPR can seem a little arcane. Furthermore, the computational cost of the method, which naively scales cubically with the dataset size, can be an obstacle. These factors initially impeded its dissemination in the astronomical community, but have been largely overcome in recent years thanks to the availability of user-friendly, computationally optimised software packages.
 
 In this review, we aim to give the reader a concise introduction to the basic theoretical framework of GPR, and to illustrate the range, strengths and limitations of the method by discussing some of its applications to time-domain datasets in astronomy so far. We made no attempt to provide a complete theoretical description or to discuss the relevant literature exhaustively: there are excellent textbooks which already do the former, while the latter would have been impossible in the space available. Instead, our goal was to provide an accessible introduction that might give interested readers starting points for further reading, and help them determine whether GPR might be useful for their own datasets. With this in mind, we took pains to require minimal prior knowledge, to provide practical advice regarding the modelling choices one needs to make when using GPR, and to review relevant open-source software.
 
@@ -122,7 +122,7 @@ Perhaps the earliest use of GPR in the refereed astronomical literature that wil
 After an increase in popularity throughout the 1990s, the use of GPs in astrophysics remained fairly constant around $\sim20$ publications per year until 2010.
 Since 2010, the popularity of GPs has grown significantly, and in 2021, more than 500 refereed papers referencing GPs were published in the astrophysics literature. A snapshot of the areas where GPs are currently used in astronomy can be obtained readily from the keywords of those papers published in the last two years (using the NASA ADS analytics tools). This shows that approximately a third of these are cosmology papers, where GPs are primarily used as emulators; this falls outside the scope of this review since it doesn't involve time-series data. The second and largest grouping covers exoplanets and, by extension, stellar variability (since most exoplanet discoveries rely on indirect detection of the planetary signals in observations of their host stars). Finally, the remaining 30\% or so of the papers relate to other kinds of astrophysical variability including active galactic nuclei, compact objects, transients and gravitational waves.
 
-A number of important factors have contributed to recent the democratisation of GPR across a wide range of scientific disciplines, including the publication of a dedicated textbook \citep{gpml}, as well as the availability of cheap computing power and user-friendly, open-source GPR software. In astronomy, specifically, an additional factor has been at play: the rise of time domain surveys. Correlated noise in time-domain observations is a direct and unavoidable consequence of causation, and hence ubiquitous. Adequately modelling this correlated noise is vital when searching for faint signals, for example from exoplanets. Astrophysical sources, from accretion disks on all scales to magnetically active stars or cloudy brown dwarfs, also display complex, intrinsically or apparently stochastic behaviour, for which adequate modelling strategies are required. GPR is a natural choice to tackle these challenges. Rather than attempting to cover all applications of GPs in astrophysics, which would not be feasible in the space available, we have therefore opted to focus on its application to time-domain datasets in astronomy.
+A number of important factors have contributed to recent the democratisation of GPR across a wide range of scientific disciplines, including the publication of a dedicated textbook \citep{gpml}, as well as the availability of cheap computing power and user-friendly, open-source GPR software. In astronomy, specifically, packages such as {\sc george} \citep{george} and {\sc celerite} \citep{celerite}, which were developed by astronomers working with applied mathematicians have been instrumental in broadening the user base for GPR. An additional factor has also been at play in this application domain: the rise of time domain surveys. Correlated noise in time-domain observations is a direct and unavoidable consequence of causation, and hence ubiquitous. Adequately modelling this correlated noise is vital when searching for faint signals, for example from exoplanets. Astrophysical sources, from accretion disks on all scales to magnetically active stars or cloudy brown dwarfs, also display complex, intrinsically or apparently stochastic behaviour, for which adequate modelling strategies are required. GPR is a natural choice to tackle these challenges. Rather than attempting to cover all applications of GPs in astrophysics, which would not be feasible in the space available, we have therefore opted to focus on its application to time-domain datasets in astronomy.
 
 \begin{figure}[ht]
   \centering
@@ -153,11 +153,11 @@ Here and throughout, the probabilistic models are implemented using the \project
 \subsubsection{Example 1: The time delay of a gravitational lensed quasar}
 \label{sec:quasar}
 
-In this example, we re-visit the method developed by \citet{prh92a} to measure the time delay of the gravitationally lensed quasar 0957+561, one of the earliest applications of GPR for time domain astronomy.
+In this example, we re-visit the method developed by \citet{prh92a} to measure the time delay of the gravitationally lensed quasar 0957+561, one of the earliest applications of GPR for time domain astronomy. 
 The underlying model here is that the unobserved latent variability of the source is modelled using a GP, in this case we use a Mat\'ern-3/2 covariance function as discussed and defined in \autoref{sec:kernels}.
-The images sample this time series at lagged times and with different mean magnitudes and variability amplitudes.
+The images sample this time series at lagged times and with different mean magnitudes and variability amplitudes. 
 
-Under this assumed model, we simulate a pair of light curves with the same cadence and uncertainties as the dataset from \citet{1989A&A...215....1V} that was analysed by \citet{prh92a}.
+Under this assumed model, we simulate a pair of light curves with the same cadence and uncertainties as the dataset from \citet{1989A&A...215....1V} that was analysed by \citet{prh92a}. 
 In this simulation, the parameters of the covariance model, the mean magnitudes, and the time delay are all set to known values, designed to produce qualitatively similar features to the dataset from \citet{1989A&A...215....1V}.
 The simulated light curves are plotted in the left panel of \autoref{fig:quasar}.
 
@@ -187,6 +187,10 @@ Since these are simulated data, we know the true values of these parameters, and
   \label{fig:quasar}
 \end{figure}
 
+It is worth noting that the determination of the time-delay for 0957+561 attracted considerable controversy at the time \citep[see][and references therein]{1995ApJ...455L...5K} and that later observations \citep{1997ApJ...482...75K} favour a significantly shorter time-delay than that obtained by \citet{prh92a}. Whatever the statistical method used, 
+the likelihood function for translation problems of this type can be highly multi-modal on large scales, making identification of the global optimum challenging. Furthermore, the assumption that one quasar image's light curve is merely a scaled and shifted version of the other is probably too simplistic. This is why we opted to use simulated data in this example, rather than work with the  dataset originally analysed by \citet{prh92a}.
+
+
 \subsubsection{Example 2: Fitting an exoplanet transit with stellar variability}
 \label{sec:transit}
 
@@ -194,7 +198,7 @@ In this second example, we demonstrate another common application of GPR in astr
 To this end, we simulate the light curve of a transiting exoplanet and aim to infer the physical parameters of the system, taking correlated noise into account.
 The correlated noise in transit light curves is typically caused by the variability of the host star and by instrumental effects like focus or pointing changes.
 It has been demonstrated that neglecting to account for these variations can cause significant errors when inferring the properties of the planet \citep{2006MNRAS.373..231P,2007A&A...472L..13G}.
-This correlated noise can often be well modelled by a GP, and the use of GPs for transit modelling has been a fruitful area of research in the astrophysics literature (see Section~\ref{sec:transit_fit} for a more detailed discussion).
+This correlated noise can often be well modelled by a GP, and the use of GPs for transit modelling has been a fruitful area of research in the astrophysics literature (see \autoref{sec:transit_fit} for a more detailed discussion).
 
 For this example, the transit was simulated with known physical properties such as the planet-to-star radius ratio, the impact parameter, and quadratic limb darkening parameters \citep{2020AJ....159..123A}.
 We then add correlated and white noise by sampling from a GP model with a Mat\'ern-3/2 covariance function as defined in \autoref{sec:kernels}, with a known amplitude, timescale, and white noise amplitude.
@@ -207,6 +211,8 @@ The posterior constraints on the time of transit and the planet-to-star ratio ar
 When the correlated noise is neglected (plotted in orange in \autoref{fig:transit}), the inferred parameters are significantly inconsistent with the truth.
 In this fit, while the correlated noise is neglected, we fit for an excess variance or ``jitter'' term, which is a method commonly used to account for model misspecification.
 Taking the correlated noise into account (blue in \autoref{fig:transit}) increases the uncertainties on the inferred parameters, but also shifts the results to recover the true parameters.
+
+% Do we want to say something about model checking here? The white noise version is clearly a bad fit!
 
 \begin{figure}[ht]
   \centering
@@ -228,7 +234,7 @@ Taking the correlated noise into account (blue in \autoref{fig:transit}) increas
 
 \subsection{Overview of this review}
 
-The remainder of this review is structured as follows. Section~\ref{sec:basics} provides a brief, accessible introduction to the basic theory of GPR, and Section~\ref{sec:choices} discusses the key modelling choices one needs to make when using a GP to model data, with practical advice for how to make these choices. Section~\ref{sec:uses} gives an overview of applications of GPR to time-domain astronomical datasets to date, from stars and exoplanets to active galactic nuclei, pulsars and gravitational waves. In Section~\ref{sec:challenges} we discuss some challenges of using GPR in practice, and how they may be overcome, while Section~\ref{sec:open} reviews the ecosystem of open-source GPR software available today. Finally, we summarise the main take-away points and outline future directions in Section~\ref{sec:concl}.
+The remainder of this review is structured as follows. \autoref{sec:basics} provides a brief, accessible introduction to the basic theory of GPR, and \autoref{sec:choices} discusses the key modelling choices one needs to make when using a GP to model data, with practical advice for how to make these choices. \autoref{sec:uses} gives an overview of applications of GPR to time-domain astronomical datasets to date, from stars and exoplanets to active galactic nuclei, pulsars and gravitational waves. In \autoref{sec:challenges} we discuss some challenges of using GPR in practice, and how they may be overcome, while \autoref{sec:open} reviews the ecosystem of open-source GPR software available today. Finally, we summarise the main take-away points and outline future directions in \autoref{sec:concl}.
 
 
 % Heading 1
@@ -259,22 +265,24 @@ The elements of the mean vector and covariance matrix are given by the \textit{m
 \end{equation}
 where $\boldsymbol{x}_i$ is the set of inputs (independent variables) corresponding to the $i^{\rm th}$ sample. For time-series data, the inputs usually include, but aren't necessarily restricted to, the time $t_i$. The covariance function, also known as the \emph{kernel function}, is the fundamental ingredient of a GP model, and considerable care must be taken to select it adequately (or to test different possibilities). Sometimes the mean function is assumed to be constant, or even zero, everywhere; this is often done in the wider GPR literature to keep derivations uncluttered. However, for many astrophysical applications where a GP is used to model a nuisance signal, the mean function contains the signal of interest and is important.
 
-\begin{figure}[ht]
-  \centering
-  \script{GPR_PGM.ipynb}
-  \includegraphics[width=0.8\linewidth]{figures/GPR_PGM.pdf}
-  \caption{Probabilistic Graphical Model (chain graph) for GP regression (adapted from Figure 2.3 of \citealt{gpml}) given observations $\mathbf{y}$ at inputs $\mathbf{t}$, and a prediction at test input $t_\star$. Dots represent fixed variables (inputs), grey circles represent observed variables white circles represent unknown (latent) variables. The thick horizontal bar indicates a set of fully connected nodes (meaning that every $f$ depends on every $t$). On the other hand, each observed output $y_i$ depends only on the corresponding $f_i$ and $\sigma_i$, and is conditionally independent of the other variables. In this example, the measurement uncertainties $\boldsymbol{\sigma}$ and the GP hyper-parameters (not shown) are treated as known (fixed).}
-  \label{fig:GPR_PGM}
-\end{figure}
+% \begin{figure}[ht]
+%   \centering
+%   \script{GPR_PGM.ipynb}
+%   \includegraphics[width=0.8\linewidth]{figures/GPR_PGM.pdf}
+%   \caption{Probabilistic Graphical Model (chain graph) for GP regression (adapted from Figure 2.3 of \citealt{gpml}) given observations $\mathbf{y}$ at inputs $\mathbf{t}$, and a prediction at test input $t_\star$. Dots represent fixed variables (inputs), grey circles represent observed variables white circles represent unknown (latent) variables. The thick horizontal bar indicates a set of fully connected nodes (meaning that every $f$ depends on every $t$). On the other hand, each observed output $y_i$ depends only on the corresponding $f_i$ and $\sigma_i$, and is conditionally independent of the other variables. In this example, the measurement uncertainties $\boldsymbol{\sigma}$ and the GP hyperparameters (not shown) are treated as known (fixed).}
+%   \label{fig:GPR_PGM}
+% \end{figure}
 
-The parameters $\meanparams$ and $\hyperparams$ of the mean and covariance function are known as the \textit{hyper-parameters} of the GP. Strictly speaking, the \textit{parameters} of the GP are the (infinitely many) unknown functions that share the specified mean vector and covariance matrix and could have given rise to the observations. However, these parameters are always marginalised over: we never explicitly deal with the individual functions, except when drawing samples for illustrative purposes (as we did in Figures~\ref{fig:quasar} and \ref{fig:transit}). GPs are therefore a type of \textit{Hierarchical Bayesian Model} (HBM). To illustrate this, we show a Probabilistic Graphical Model (PGM) of GPR in Figure~\ref{fig:GPR_PGM}. In this type of graph, shaded circles represent random variables that are observed, while un-shaded circles represent latent, or unobserved, random variables. We never observe the unknown function that gave rise to the data directly, but infer a probability distribution for it from our noisy observations.
+The parameters $\meanparams$ and $\hyperparams$ of the mean and covariance function are known as the \textit{hyperparameters} of the GP. Strictly speaking, the \textit{parameters} of the GP are the (infinitely many) unknown functions that share the specified mean vector and covariance matrix and could have given rise to the observations. However, these parameters are always marginalised over: we never explicitly deal with the individual functions, except when drawing samples for illustrative purposes (as we did in Figures~\ref{fig:quasar} and \ref{fig:transit}). GPs are therefore a type of \textit{Hierarchical Bayesian Model} (HBM). 
+%To illustrate this, we show a Probabilistic Graphical Model (PGM) of GPR in Figure~\ref{fig:GPR_PGM}. In this type of graph, shaded circles represent random variables that are observed, while un-shaded circles represent latent, or unobserved, random variables. 
+We never observe the unknown function that gave rise to the data directly, but infer a probability distribution for it from our noisy observations.
 
 Although it is possible to construct and use stochastic process models based on other distributions, GPs are by far the most popular, for two main reasons. The first is Central Limit theorem: it implies that the assumption of Gaussianity is often at least approximately correct. The second is that Gaussian distributions obey simple mathematical identities for marginalisation and conditioning, that enable inference with GPs (the process of marginalising over the individual functions) to be performed \textit{analytically}, with very simple linear algebra. It is this analytic marginalisation property that sets GPR apart from other forms of HBM. 
 
 \subsection{From least-squares to GPR}
 \label{sec:from_lsq}
 
-The formal definition given in Equation~\ref{eq:gp_def} does not necessarily provide an intuitive understanding of how GPs work. Most readers of this review will, however, be more familiar with least-squares regression. In this section we will show that GPR can be thought of as a generalisation of least-squares regression, allowing for correlated noise (or signals) in the data. Conversely, least-squares regression, as traditionally presented, is a special case of GPR, where the covariance matrix is assumed to be purely diagonal, and the variances associated with each observation are known \textit{a priori}.
+The formal definition given in \autoref{eq:gp_def} does not necessarily provide an intuitive understanding of how GPs work. Most readers of this review will, however, be more familiar with least-squares regression. In this section we will show that GPR can be thought of as a generalisation of least-squares regression, allowing for correlated noise (or signals) in the data. Conversely, least-squares regression, as traditionally presented, is a special case of GPR, where the covariance matrix is assumed to be purely diagonal, and the variances associated with each observation are known \textit{a priori}.
 
 \subsubsection{Revisiting least squares}\label{sec:lsq}
 
@@ -317,7 +325,7 @@ Now, instead of assuming that the covariance matrix takes this very specific for
 \begin{equation}
   K_{ij} = k(t_i,t_j,\hyperparams) + \delta_{ij} \sigma_i^2,
 \end{equation}
-where $k$ is a \emph{covariance function}, or \emph{kernel function}, controlled by parameters $\hyperparams$. The result is a GP, and its likelihood is still given by Equation~\ref{eq:gp_like}. Depending on the choice of kernel function and parameters, the covariance matrix can now have non-zero off-diagonal elements, allowing us to explicitly model correlated noise or stochastic signals in the data.
+where $k$ is a \emph{covariance function}, or \emph{kernel function}, controlled by parameters $\hyperparams$. The result is a GP, and its likelihood is still given by \autoref{eq:gp_like}. Depending on the choice of kernel function and parameters, the covariance matrix can now have non-zero off-diagonal elements, allowing us to explicitly model correlated noise or stochastic signals in the data.
 Note that the likelihood depends not only on the argument of the exponential, but also on the determinant of the covariance matrix, which therefore needs to be evaluated explicitly. This term acts as a built-in Occam's razor, automatically penalising more complex models.
 
 The kernel function $k$ encodes our beliefs about the stochastic, or random, element of the model, in just the same way as the mean function $m$ encodes our beliefs about the deterministic component of the model. For example, in many circumstances, we would expect that two observations taken close together in time should be more strongly correlated than observations taken further apart, and we would use a decreasing function of the time interval $\dt=|t_i-t_j|$ to represent that. One of the most widely used covariance functions is the squared exponential
@@ -325,33 +333,35 @@ The kernel function $k$ encodes our beliefs about the stochastic, or random, ele
 \label{eq:kse}
   k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,\lengthscale^2}\right).
 \end{equation}
-This gives rise to smooth random functions with variance $\amplitude$ and characteristic length-scale $\lambda$. We present other commonly used kernel functions and discuss how to select one in Section~\ref{sec:kernels}.
+This gives rise to smooth (infinitely differentiable) random functions with variance $\amplitude$ and characteristic length-scale $\lambda$. We present other commonly used kernel functions and discuss how to select one in \autoref{sec:kernels}.
 
 \subsection{Inference with a GP}\label{sec:gp-inf}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{figures/GPR_workflow.pdf}
-  \caption{Schematic representation of a typical GPR workflow. Given a dataset (blue box) and some modelling choices (grey boxes, Section~\ref{sec:choices}), the mathematical framework presented in Section~\ref{sec:basics} can be used (green boxes) to evaluate the likelihood and posterior distribution over the hyper-parameters which can be optimised or sampled. We can also condition the GP on the data to predict observations at locations where we do not yet have observations. Several of the plots in this figure are taken from the 
-  tutorial on hyper-parameter optimization included in the {\sc george} package documentation (\url{https://george.readthedocs.io}), and show the composite GP model proposed by \citet{gpml} for the Mauna Loa CO$_2$ dataset of \citet{MaunaLoaCO2}.}  
+  \caption{Schematic representation of a typical GPR workflow. Given a dataset (blue box) and some modelling choices (grey boxes, \autoref{sec:choices}), the mathematical framework presented in \autoref{sec:basics} can be used (green boxes) to evaluate the likelihood and posterior distribution over the hyperparameters which can be optimised or sampled. Note that, for simplicity, we have assumed a zero mean function in this figure. We can also condition the GP on the data to predict observations at locations where we do not yet have observations. Several of the plots in this figure are taken from the 
+  tutorial on hyperparameter optimization included in the {\sc george} package documentation (\url{https://george.readthedocs.io}), and show the composite GP model proposed by \citet{gpml} for the Mauna Loa CO$_2$ dataset of \citet{MaunaLoaCO2}.}  
   \label{fig:GPR_workflow}
 \end{figure}
 
-Now that we know how to evaluate the likelihood (Equation~\ref{eq:gp_like}), we are ready to perform \textit{inference}, that is to use observations to update our prior beliefs about the system we are observing. The overall Bayesian inference workflow for GPR regression is illustrated schematically in Figure~\ref{fig:GPR_workflow}. Given a dataset (blue, left panel), our first task is typically to select a kernel function, along with an educated initial guess for its hyper-parameters ($2^{\rm nd}$ column, top panel). These choices are discussed in more detail in Section~\ref{sec:choices}, and should be guided by a combination of domain knowledge (what we know about the process that generated the data), practical considerations (e.g.\ ease of implementation and computational cost) and diagnostics based on the data themselves (e.g.\ examining the auto-correlation function and/or the power spectral density of the data). Given a kernel function and hyper-parameters, we can draw samples from the GP prior ($3^{\rm rd}$ column, top panel), which can serve as sanity check for the choice of kernel function (in the sense that, measurement errors aside, samples from the GP prior should ideally look qualitatively similar to the observations). 
+Now that we know how to evaluate the likelihood (\autoref{eq:gp_like}), we are ready to perform \textit{inference}, that is to use observations to update our prior beliefs about the system we are observing. The overall Bayesian inference workflow for GPR regression is illustrated schematically in \autoref{fig:GPR_workflow}. Given a dataset (blue, left panel), our first task is typically to select a kernel function, along with an educated initial guess for its hyperparameters ($2^{\rm nd}$ column, top panel). These choices are discussed in more detail in \autoref{sec:choices}, and should be guided by a combination of domain knowledge (what we know about the process that generated the data), practical considerations (e.g.\ ease of implementation and computational cost) and diagnostics based on the data themselves (e.g.\ examining the auto-correlation function and/or the power spectral density of the data). Given a kernel function and hyperparameters, we can draw samples from the GP prior ($3^{\rm rd}$ column, top panel), which can serve as sanity check for the choice of kernel function (in the sense that, measurement errors aside, samples from the GP prior should ideally look qualitatively similar to the observations). 
 
-We are now in a position to compute the GP covariance matrix for the data ($2^{\rm nd}$ column, $2^{\rm nd}$ panel), and to evaluate the likelihood of the model ($2^{\rm nd}$ column, $3^{\rm rd}$ panel), which we can then optimise with respect to the hyper-parameters ($3^{\rm rd}$ column, $2^{\rm nd}$ panel) using standard optimization methods; this is called \emph{training} the GP. Often, however, we would incorporate priors on the hyper-parameters ($2^{\rm nd}$ column, bottom panel), which we select once again based on domain knowledge and practical considerations. We can then evaluate the \emph{posterior} distribution ($3^{\rm rd}$ column, $3^{\rm rd}$ panel):
+We are now in a position to compute the GP covariance matrix for the data ($2^{\rm nd}$ column, $2^{\rm nd}$ panel), and to evaluate the likelihood of the model ($2^{\rm nd}$ column, $3^{\rm rd}$ panel), which we can then optimise with respect to the hyperparameters ($3^{\rm rd}$ column, $2^{\rm nd}$ panel) using standard optimization methods; this is called \emph{training} the GP. Often, however, we would incorporate priors on the hyperparameters ($2^{\rm nd}$ column, bottom panel), which we select once again based on domain knowledge and practical considerations. We can then evaluate the \emph{posterior} distribution ($3^{\rm rd}$ column, $3^{\rm rd}$ panel):
 \begin{equation}
   p(\meanparams,\hyperparams|\mathbf{y})=\frac{p(\mathbf{y}|\meanparams,\hyperparams)p(\meanparams,\hyperparams)}{p(\mathbf{y})},
 \end{equation}
-where the denominator $p(\mathbf{y})=\int p(\mathbf{y}|\meanparams,\hyperparams)p(\meanparams,\hyperparams) \mathrm{d}\meanparams \mathrm{d}\hyperparams$ is the marginal likelihood, or model evidence, and is often omitted from calculations since it is constant, but becomes relevant for model comparison. Once again, we can optimise this posterior with respect to the hyper-parameters ($3^{\rm rd}$ column, $2^{\rm nd}$ panel). For a given set of hyper-parameters (for example, the set which maximises either the likelihood or the posterior), the GP prior can be conditioned on the observations to make predictions ($4^{\rm th}$ column, top panel); this is called \emph{conditioning} the GP, and is discussed in Section~\ref{sec:pred}. 
+where the denominator $p(\mathbf{y})=\int p(\mathbf{y}|\meanparams,\hyperparams)p(\meanparams,\hyperparams) \mathrm{d}\meanparams \mathrm{d}\hyperparams$ is the marginal likelihood, or model evidence, and is often omitted from calculations since it is constant, but becomes relevant for model comparison. Once again, we can optimise this posterior with respect to the hyperparameters ($3^{\rm rd}$ column, $2^{\rm nd}$ panel). For a given set of hyperparameters (for example, the set which maximises either the likelihood or the posterior), the GP prior can be conditioned on the observations to make predictions ($4^{\rm th}$ column, top panel); this is called \emph{conditioning} the GP, and is discussed in \autoref{sec:pred}. 
 
-However, in astronomical applications we often need to estimate the full posterior distribution over the hyper-parameters. 
-Generally we cannot do this analytically, so we resort to sampling methods such as Markov Chain Monte Carlo (MCMC) or nested sampling ($3^{\rm rd}$ column, bottom panel). The samples can be used to estimate posterior distributions for individual hyper-parameters of interest ($4^{\rm th}$ column, $2^{\rm nd}$ panel). For example, we might be using a GP to take into account correlated noise when fitting an otherwise deterministic model to some data, but we are not interested in the noise \emph{per se}, only on the impact it has on the parameters of the mean function, $\meanparams$. We would then \emph{marginalise} (integrate over, or project) the posterior samples over the \emph{nuisance parameters} $\hyperparams$. Some samplers also enable us to compute the model evidence, which can be used to compare different kernel functions (see Section~\ref{sec:model_selection} for a discussion). Finally,  posterior samples can also be used in a Monte Carlo fashion to compute predictions that incorporate the uncertainties on the hyper-parameters ($4^{\rm th}$ column, bottom panel).
+However, in astronomical applications we often need to estimate the full posterior distribution over the hyperparameters. 
+Generally we cannot do this analytically, so we resort to sampling methods such as Markov Chain Monte Carlo (MCMC) or nested sampling ($3^{\rm rd}$ column, bottom panel). The samples can be used to estimate posterior distributions for individual hyperparameters of interest ($4^{\rm th}$ column, $2^{\rm nd}$ panel). For example, we might be using a GP to take into account correlated noise when fitting an otherwise deterministic model to some data, but we are not interested in the noise \emph{per se}, only on the impact it has on the parameters of the mean function, $\meanparams$. We would then \emph{marginalise} (integrate over, or project) the posterior samples over the \emph{nuisance parameters} $\hyperparams$. Some samplers also enable us to compute the model evidence, which can be used to compare different kernel functions (see \autoref{sec:model_selection} for a discussion). Finally,  posterior samples can also be used in a Monte Carlo fashion to compute predictions that incorporate the uncertainties on the hyperparameters ($4^{\rm th}$ column, bottom panel).
 
 \subsection{Making predictions}
 \label{sec:pred}
 
-An important use case for GPR is as a statistically principled interpolation method. We wish to ``learn'' an unknown function that gave rise to some data, in order to make predictions for some new set of inputs. This process is illustrated schematically in Figure~\ref{fig:GPR_PGM}, where such a test input and the corresponding function value are highlighted in red. Importantly, a GP model provides not a point estimate but a full probability distribution for the function at any desired location(s) in the input domain. This allows for robust uncertainty propagation (though there are some important caveats we will touch upon in Section~\ref{sec:caution}), and can also motivate strategies for active sampling (deciding when or where to make new observations).
+An important use case for GPR is as a statistically principled interpolation method. We wish to ``learn'' an unknown function that gave rise to some data, in order to make predictions for some new set of inputs. 
+%This process is illustrated schematically in Figure~\ref{fig:GPR_PGM}, where such a test input and the corresponding function value are highlighted in red.
+Importantly, a GP model provides not a point estimate but a full probability distribution for the function at any desired location(s) in the input domain. This allows for robust uncertainty propagation (though there are some important caveats we will touch upon in \autoref{sec:caution}), and can also motivate strategies for active sampling (deciding when or where to make new observations).
 
 \subsubsection{The predictive equations}\label{sec:predeq}
 
@@ -361,19 +371,26 @@ Given some existing observations $\mathbf{y}$, taken at times $\mathbf{t}$, how 
   \mathbf{f}_\star = \mathbf{m}_\star + \mathbf{K}_\star^{\mathrm{T}} \, \mathbf{K}^{-1} \, (\mathbf{y} - \mathbf{m}) ~\mathrm{~~~and~~~}
   \mathbf{C}_\star =   \mathbf{K}_{\star\star} - \mathbf{K}_\star^{\mathrm{T}} \, \mathbf{K}^{-1} \, \mathbf{K}_\star,
 \end{equation}
-where we have introduced the notation $\mathbf{m}_\star \equiv m(\mathbf{t}_\star,\meanparams)$, $\mathbf{K}_\star \equiv k(\mathbf{t},\mathbf{t}_\star, \hyperparams)$ and
-$\mathbf{K}_{\star\star} \equiv k(\mathbf{t}_\star,\mathbf{t}_\star,\hyperparams)$. Note that, as real observations are always noisy, $\mathbf{K}$ generally includes a white noise term ($\delta_{ij} \sigma^2_i$), but $\mathbf{K}_\star$ does not. Depending on whether one wishes the predictive variance (the diagonal elements of $\mathbf{C}_\star$)  to account for measurement uncertainties or not, one can include the white noise term in $\mathbf{K}_{\star\star}$ or leave it out.
+where we have introduced the vector $\mathbf{m}_\star \equiv m(\mathbf{t}_\star;\meanparams)$ and the matrices $\mathbf{K}_\star$ and $\mathbf{K}_{\star\star}$, with elements
+\begin{equation}
+  \label{eq:Kstar}
+    [\mathbf{K}_\star]_{ij} = k(t_i,\mathbf{t}_{\star,j}; \hyperparams) ~~~~~ \text{and} ~~~~~
+    [\mathbf{K}_{\star\star}]_{ij} = k(\mathbf{t}_{\star,i},\mathbf{t}_{\star,j};\hyperparams).
+\end{equation}
+Note that, as real observations are always noisy, $\mathbf{K}$ generally includes a white noise term ($\delta_{ij} \sigma^2_i$), but $\mathbf{K}_\star$ does not. The white noise term is usually omitted from (the diagonal elements of) $\mathbf{K}_{\star\star}$, in which case the predictive covariance $\mathbf{C}_\star$ accounts only for the uncertainties in the function inferred with the GP model. When making predictions that represent hypothetical additional observations taken with the same setup as the training set, however, the white noise term should be included in $\mathbf{K}_{\star\star}$. % Add ref to cross validationa nd eqn 27
 
 \subsubsection{Properties of the predictive distribution}
-A closer look at Equation~\ref{eq:pred} reveals some important properties.
-First, a GP is a \textit{linear predictor}. The predictive mean for a specific time $t_\star$ can be written as a linear combination of the observations:
+A closer look at \autoref{eq:pred} reveals some important properties.
+First, a GP is a \textit{linear predictor}\footnote{%
+  There is some subtlety with respect to the non-linear mean function so, in this section, we set the mean to zero or, equivalently, consider the \emph{residuals} away from the mean model as the ``data''.}.
+The predictive mean for a specific time $t_\star$ can be written as a linear combination of the observations:
 $f_\star = \mathbf{w}^{\mathrm{T}} \, \mathbf{y}$, where $\mathbf{w} = \mathbf{K}^{-1} \, \mathbf{k}_\star$ and $\mathbf{k}_\star=k(\mathbf{t},t_\star,\hyperparams)$. It can also be written as
 a linear combination of covariance functions centred on the training points:
 $f_\star = \mathbf{\alpha}^\mathrm{T} \,  \mathbf{k}_\star$ where $\mathbf{\alpha} = \mathbf{K}^{-1} \, \mathbf{y}$.
-These linearity properties are very important to understand the behaviour of GPs. They shed light on the relationship between GPR and standard linear models with very large numbers of free parameters \citep[see e.g.][for a more detailed discussion]{2021PASP..133i3001H},
-and lead to a number of powerful extensions that are beyond  scope of this review.
+These linearity properties are very important to understand the behaviour of GPs, as they shed light on the relationship between GPR and other types of models, including standard linear models with very large numbers of free parameters \citep[see e.g.][for a more detailed discussion]{2021PASP..133i3001H}.
+%and lead to a number of powerful extensions that are beyond  scope of this review.
 
-Second, the predictive covariance is independent of the data. $\mathbf{C}_\star$ depends only on the \emph{locations} $\mathbf{t}$ of the observations, not on their values $\mathbf{y}$. This has important consequences for observation planning: if we know the covariance function $k$ and its parameters, we can decide when to observations to optimise our predictions at a given (set of) time(s). However, in practice we rarely know the hyper-parameters \textit{a priori}, and the predictive posterior distribution marginalised over the hyper-parameters \textit{does} depend on the observations.
+Second, the predictive covariance is independent of the data. $\mathbf{C}_\star$ depends only on the \emph{locations} $\mathbf{t}$ of the observations, not on their values $\mathbf{y}$. This has important consequences for observation planning: if we know the covariance function $k$ and its parameters, we can decide when to observations to optimise our predictions at a given (set of) time(s). However, in practice we rarely know the hyperparameters \textit{a priori}, and the predictive posterior distribution marginalised over the hyperparameters \textit{does} depend on the observations.
 
 Finally, as $\mathbf{K}$ is positive semi-definite, so is $\mathbf{K}^{-1}$. Therefore, $\mathbf{k}_\star^{\mathrm{T}} \, \mathbf{K}^{-1} \, \mathbf{k}_\star \ge 0,$ and $\mathrm{Var}(\mathbf{f}_\star) \leq k(t_\star,t_\star)$. This is as we would expect: obtaining more data should only ever improve the accuracy of our predictions.
 
@@ -399,13 +416,13 @@ In this section we walk through this process in detail.
 
 \begin{textbox}[htb]
   \section{Kernel function}
-  The ``kernel'' or ``covariance'' function, typeset here as $k(t_i,\,t_j;\,\hyperparams)$ is a parametric description of the covariance between two data points $t_i$ and $t_j$. This function takes a pair of inputs (here $t_i$ and $t_j$) as arguments, and is controlled by a set of parameters $\hyperparams$, typically referred to as ``hyper-parameters''.
+  The ``kernel'' or ``covariance'' function, typeset here as $k(t_i,\,t_j;\,\hyperparams)$ is a parametric description of the covariance between two data points $t_i$ and $t_j$. This function takes a pair of inputs (here $t_i$ and $t_j$) as arguments, and is controlled by a set of parameters $\hyperparams$, typically referred to as ``hyperparameters''.
 
   \vspace{1.5em}
 
-  \section{Hyper-parameters}
-  In a GP model, the kernel function is typically parameterized by a set of parameters that we will label as $\hyperparams$ and refer to as ``hyper-parameters''.
-  Formally, the ``parameters'' of a GP are the (unknown) ``true'' values of the process at the observed times, but the magic of Gaussians means that these parameters can be marginalised over in closed form, leaving the hyper-parameters as the parameters of interest.
+  \section{Hyperparameters}
+  In a GP model, the kernel function is typically parameterized by a set of parameters that we will label as $\hyperparams$ and refer to as ``hyperparameters''.
+  Formally, the ``parameters'' of a GP are the (unknown) ``true'' values of the process at the observed times, but the magic of Gaussians means that these parameters can be marginalised over in closed form, leaving the hyperparameters as the parameters of interest.
 \end{textbox}
 
 The kernel function can be any positive scalar function that gives rise to a positive semi-definite covariance matrix over the input domain, but some will be more useful than others.
@@ -423,14 +440,14 @@ For example, if there is expected to only be a single non-periodic timescale in 
 \subsubsection{Standard kernel functions}\label{sec:standard-kernels}
 
 Some popular kernel functions are listed in \autoref{tab:kernels}, and some other choices are discussed in Chapter 4 of \citet{gpml}. We already met the 
-squared exponential kernel function, defined in Equation~\ref{eq:kse}. Its  hyper-parameters are $\hyperparams = \{\amplitude,\,\lengthscale\}$, where $\amplitude$ controls the amplitude (output scale) and $\lengthscale$ the length scale (input scale) of the functions. Due to its simplicity, this is the most widely-used kernel for modelling smooth functions of unknown shape.
+squared exponential kernel function, defined in \autoref{eq:kse}. Its  hyperparameters are $\hyperparams = \{\amplitude,\,\lengthscale\}$, where $\amplitude$ controls the amplitude (output scale) and $\lengthscale$ the length scale (input scale) of the functions. Due to its simplicity, this is the most widely-used kernel for modelling smooth functions of unknown shape.
 
 Another example that is commonly used in the astrophysics literature \citep{2012MNRAS.419.3147A,2014MNRAS.443.2517H} is the following ``quasi-periodic'' kernel function
 \begin{equation}
 \label{eq:kqp}
   k(\dt;\,\hyperparams) = \amplitude^2\,\exp\left(-\frac{\dt^2}{2\,{\lengthscale_1}^2} -\Gamma\,\sin^2\left[\frac{\pi\,\dt}{\lengthscale_2}\right] \right)
 \end{equation}
-with $\hyperparams = \{\amplitude,\,\lengthscale_1,\,\lengthscale_2,\,\gamma\}$, which has a period of $\lengthscale_2$, and a decoherence timescale of $\lengthscale_1$. The hyper-parameter $\Gamma$ controls the extent to which the periodic component of the signal resembles a simple sinusoid or is more complex.
+with $\hyperparams = \{\amplitude,\,\lengthscale_1,\,\lengthscale_2,\,\gamma\}$, which has a period of $\lengthscale_2$, and a decoherence timescale of $\lengthscale_1$. The hyperparameter $\Gamma$ controls the extent to which the periodic component of the signal resembles a simple sinusoid or is more complex.
 
 It's worth noting that, in any practical application, these kernel functions are not generally used on their own.
 Instead, more expressive models are designed by combining these models as discussed in \autoref{sec:kernel-ops}.
@@ -442,7 +459,7 @@ In practice, this is done by choosing a grid of times $\boldsymbol{t} = \{t_i\}$
 \end{equation}
 and then generating a multivariate Gaussian sample with this covariance.
 As an example, \autoref{fig:samples} shows several prior samples for three different kernel functions from \autoref{tab:kernels}, with a range of length scales $\lengthscale$ and amplitudes $\amplitude$.
-In this figure, we can see some qualitative differences between the kernel functions---namely that the samples become ``smoother'' from left to right---and we can see how the characteristic input and output scales of the allowed functions change with the hyper-parameters.
+In this figure, we can see some qualitative differences between the kernel functions---namely that the samples become ``smoother'' from left to right---and we can see how the characteristic input and output scales of the allowed functions change with the hyperparameters.
 
 A key feature of a kernel function that defines its qualitative behaviour is its mean square (MS) differentiability.
 We won't formally define MS differentiability---interested readers are instead referred to Section~4.1.1 of \citet{gpml} for a more detailed discussion---but we want to highlight that MS differentiability is important because it defines the ``smoothness'' of the functions that can be modelled by the GP.
@@ -473,10 +490,10 @@ It can be seen in \autoref{fig:samples} that the exponential squared kernel func
     \end{tabular}
   \end{center}
   \begin{tabnote}
-    $^{\rm a}$in each case, $\dt$ is defined as $\dt = \left|t_i - t_j\right|$, and Greek letters indicate hyper-parameters;
+    $^{\rm a}$in each case, $\dt$ is defined as $\dt = \left|t_i - t_j\right|$, and Greek letters indicate hyperparameters;
     $^{\rm b}$``radial basis function'';
     $^{\rm c}$``Ornstein--Uhlenbeck'', ``damped random walk'' or ``Mat\'ern-1/2'';
-    $^{\rm d}$\citet{celerite}.
+    $^{\rm d}$stochastically-driven damped simple harmonic oscillator \citep{celerite}.
   \end{tabnote}
 \end{table}
 
@@ -569,10 +586,10 @@ or even include support for covariance between different input dimensions:
 \begin{equation}
   \rho(\boldsymbol{x}_i,\boldsymbol{x}_j) = \sqrt{\boldsymbol{x}_i\,\boldsymbol{M}^{-1}\,\boldsymbol{x}_j}
 \end{equation}
-where $\boldsymbol{M}$ is a $D\times D$ positive definite matrix of hyper-parameters.
+where $\boldsymbol{M}$ is a $D\times D$ positive definite matrix of hyperparameters.
 
 Kernels with a different length scale parameter for each dimension (\autoref{eq:ard-distance}) are commonly referred to as ``automatic relevance determination'' \citep[ARD;][]{gpml} kernels, the idea being that the data can inform the importance of each input dimension when describing the observations.
-In practice, such a kernel is often used in conjunction with a ``shrinkage'' prior on the hyper-parameters, favouring large values of $\lengthscale_d$ as discussed further in \autoref{sec:transit_fit}.
+In practice, such a kernel is often used in conjunction with a ``shrinkage'' prior on the hyperparameters, favouring large values of $\lengthscale_d$ as discussed further in \autoref{sec:transit_fit}.
 \begin{armarginnote}[]
   \entry{ARD}{Automatic Relevance Determination}
 \end{armarginnote}
@@ -584,7 +601,7 @@ In this case, one common choice of kernel function is:
 \begin{equation}\label{eq:multiband}
   k(\boldsymbol{x}_i,\boldsymbol{x}_j;\hyperparams) = \boldsymbol{a}_{\ell_i}^\mathrm{T} \boldsymbol{a}_{\ell_j} k_0(t_i,t_j;\hyperparams) \quad,
 \end{equation}
-where $k_0(t_i,t_j;\hyperparams)$ is a standard one-dimensional kernel, and the set of $\{\boldsymbol{a}_d\}_{d=1}^D$ are also hyper-parameters of the model.
+where $k_0(t_i,t_j;\hyperparams)$ is a standard one-dimensional kernel, and the set of $\{\boldsymbol{a}_d\}_{d=1}^D$ are also hyperparameters of the model.
 This class of kernels includes the models commonly used for interpolating multi-band photometric observations of transients \citep[e.g.,][]{2020ApJ...905...94V, 2021ApJS..255...24V}.
 In the case where the data are rectangular (i.e., all input dimensions are observed at all times), the covariance matrix defined by \autoref{eq:multiband} will have Kronecker structure \citep[e.g.,][]{2015arXiv151101870W, 2020AJ....160..240G}, which can be exploited to improve the computational performance of the GP model.
 
@@ -600,8 +617,8 @@ There are, however, many cases where analysis in the time domain is preferred---
 This is especially true when working with short, significantly unevenly sampled, or otherwise heterogeneous datasets, or when combined with non-stationary functions that cannot be compactly represented in the frequency domain. 
 
 Another class of GPs that are commonly used for astrophysics are stochastic differential equations \citep[see][for a detailed discussion of these models]{Sarkka:2019}, although this terminology is not standard in the literature.
-The most widely-used model in this class is the Ornstein--Uhlenbeck \citep{1930PhRv...36..823U}, or ``damped random walk'' process \citep[e.g.,][]{2009ApJ...698..895K, 2012A&A...546A..89B, 2020AJ....160..265H}.
-These models---or the generalized ``continuous-time autoregressive moving average'' (CARMA) process \citep[e.g.,][]{2014ApJ...788...33K, celerite, 2022arXiv220108943Y}---are commonly used as a physically-motivated model for the stochastic time-variability of active galactic nuclei (AGN).
+The most widely-used model in this class is the Ornstein--Uhlenbeck \citep{1930PhRv...36..823U}, or ``damped random walk'' process \citep[e.g.,][]{2009ApJ...698..895K, 2010ApJ...708..927K, 2010ApJ...721.1014M, 2012A&A...546A..89B, 2020AJ....160..265H}.
+These models---or the generalized ``continuous-time autoregressive moving average'' (CARMA) process \citep[e.g.,][]{2014ApJ...788...33K, celerite, 2022ApJ...936..132Y}---are commonly used as a physically-motivated model for the stochastic time-variability of active galactic nuclei (AGN).
 Although this fact is not always noted in the literature, these models are examples of GPs with specific kernel function choices.
 Besides their physical interpretability, these models can also be evaluated with computationally efficient and scalable algorithms \citep[e.g.,][]{2014ApJ...788...33K, celerite}, which can be crucial for practical applications, as we discuss in \autoref{sec:fast}.
 
@@ -612,7 +629,7 @@ Like the AGN models discussed above, these asteroseismic GP models can typically
 So far, the applications of GPR to asteroseismology have been generally restricted to simple effective models with a single wide mode used to capture the power spectrum of the oscillations, but it is conceivable that more complex models could be applied to fully capture the structure of the power spectrum.
 
 While the models discussed so far in this section have strong physical motivations, it is also common to apply GPR using effective kernel models with physically-motived \emph{parameters}.
-For example, GPs have been used to measure the rotation periods of stars in photometric time series using a quasi-periodic kernel function, where one parameter of the model can be interpreted as the stellar rotation period \citep{2018MNRAS.474.2094A, 2020MNRAS.492.1008G}.
+For example, GPs have been used to measure the rotation periods of stars in photometric time series using a quasi-periodic kernel function, where one parameter of the model can be interpreted as the stellar rotation period \citep{2018MNRAS.474.2094A}.
 These models perform well and can be used to formally propagate the observational uncertainty to the inferred rotation period.
 Recently, some more physically interpretable kernel functions have been developed for measuring stellar rotation, and mapping stellar surfaces using photometric time series \citep{2021AJ....162..124L}, but these models have so far seen limited use because of their computational cost.
 
@@ -620,14 +637,14 @@ Recently, some more physically interpretable kernel functions have been develope
 
 \subsection{Hyperparameter Inference}\label{sec:inference}
 
-A key component of all the covariance functions discussed above is that they are all \emph{parameterized} by a set of hyper-parameters.
-In most cases, you won't have \emph{a priori} knowledge for how the values of these hyper-parameters should be set.
+A key component of all the covariance functions discussed above is that they are all \emph{parameterized} by a set of hyperparameters.
+In most cases, you won't have \emph{a priori} knowledge for how the values of these hyperparameters should be set.
 Instead, their values will need to be numerically tuned or incorporated into a larger inference scheme.
 
-In the astrophysics literature, the most common approach for taking this uncertainty into account---and the method that we advocate for here---is to treat the hyper-parameters directly as parameters of the model.
-In other words, instead of just fitting for the parameters of the mean model $\meanparams$, we can simultaneously fit for both $\meanparams$ and the hyper-parameters $\hyperparams$.
+In the astrophysics literature, the most common approach for taking this uncertainty into account---and the method that we advocate for here---is to treat the hyperparameters directly as parameters of the model.
+In other words, instead of just fitting for the parameters of the mean model $\meanparams$, we can simultaneously fit for both $\meanparams$ and the hyperparameters $\hyperparams$.
 In \autoref{sec:gp-lsq-link}, we defined the likelihood for a GP model and, in \autoref{sec:gp-inf}, we sketched the procedure used for Bayesian inference with such a model.
-The likelihood function defined in \autoref{eq:gp_like} is a function of both $\meanparams$ and $\hyperparams$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo (MCMC) procedure to marginalise over the hyper-parameters, and propagate their uncertainty to constraints on the parameters of the mean model.
+The likelihood function defined in \autoref{eq:gp_like} is a function of both $\meanparams$ and $\hyperparams$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo \citep[MCMC; e.g.][]{2018ApJS..236...11H} procedure to marginalise over the hyperparameters, and propagate their uncertainty to constraints on the parameters of the mean model.
 
 An important point here is that, since many data analysis procedures in astrophysics include a step like the ones listed above, the use of a GP likelihood doesn't significantly change the processing.
 In fact, we like to say that the GP likelihood can be used as a drop-in replacement for anywhere you're currently using a ``chi-squared'' objective.
@@ -637,7 +654,7 @@ In this review, we won't go into too many details about the inference algorithms
 \begin{equation}
   \meanparams_\star,\hyperparams_\star = \argmax_{\meanparams,\hyperparams} \,\mathcal{L}(\meanparams,\hyperparams) = \argmax_{\meanparams,\hyperparams} \,\log p(\ydata\,|\,\meanparams,\hyperparams) \quad.
 \end{equation}
-Another common inference technique used in astrophysics---and in this review!---is the use of Markov chain Monte Carlo (MCMC) to generate posterior samples
+Another common inference technique used in astrophysics---and in this review!---is the use of MCMC or nested sampling \citep{skilling2006nested} to generate posterior samples
 \begin{equation}
   \meanparams,\hyperparams \sim p(\meanparams,\hyperparams\,|\,\ydata)
 \end{equation}
@@ -672,7 +689,7 @@ The Bayesian evidence integral is defined as:
   Z(H) \equiv p(\ydata\,|\,H) = \int p(\meanparams,\hyperparams\,|\,H)\,p(\ydata\,|\,\meanparams,\hyperparams,H)\,\mathrm{d}\meanparams\,\mathrm{d}\hyperparams
 \end{equation}
 where $H$ indicates the modelling choices, in this case the choice of kernel function.
-The Bayesian evidence is frequently used in the astrophysics literature as an ingredient in model selection procedures.
+The Bayesian evidence is frequently used in the astrophysics literature as an ingredient in model selection procedures \citep[see][for a more detailed discussion]{2008ConPh..49...71T}.
 Nested sampling is an algorithm for numerically estimating this integral, and we apply it to produce estimates of $Z$ for each choice of kernel $H$, and plot these results in the middle panel of \autoref{fig:assessment}.
 In this figure, it is clear that the squared exponential and rational quadratic kernels are indistinguishable under this metric, while the Mat\'ern-3/2 kernel is somewhat disfavoured. 
 
@@ -742,7 +759,7 @@ The vast majority of early transit candidates were later diagnosed as diluted or
 %\citep{2005A&A...431.1105B,2005A&A...438.1123P}.
 Intriguingly, a small fraction turned out to be spurious detections, despite having relatively high signal-to-noise ratio (SNR). Indeed, \citet{2006MNRAS.373..231P} noted that all the confirmed OGLE planets had very high SNRs, and went on to show that the SNRs for all candidates had been over-estimated due to the presence of correlated, or red, noise in the light curves. They proposed an empirical method to evaluate the red noise on transit time-scales from the individual light curves (analogous to the method proposed by \citealt{prh92a} to evaluate the correlation matrix of a quasar light curve), and then a prescription for adjusting the detection threshold accordingly. In effect, they were searching for a way to model the covariance of the data. This is precisely what GPR allows, but the methodology was not known in the exoplanet community at the time.
 
-GP models have been used on occasion to \textit{de-trend} light curves from transit surveys prior to running transit searches, i.e.\ to remove variability on timescales significantly longer than a transit \citep[see e.g.][]{2016ApJS..226....7C}, and are used frequently after detection to model the out-of-transit baseline alongside the transit signal itself (see Section~\ref{sec:transit_fit}). In principle, a GP could also be used to model out-of-transit variations (intrinsic or instrumental) alongside transits as part of a detection pipeline. Doing this simultaneously rather than sequentially allows more flexible models to be used for the out-of-transit variations, and avoids the risk of corrupting the transit signal by using an excessively aggressive filter at the detection stage, as demonstrated by \citet{2015ApJ...806..215F} for \textit{K2} data. In that case, the primary source of out-of-transit variability is instrumental systematics (see Section~\ref{sec:transit_fit}), which are to some degree common to all light curves in a given observing run. \citet{2015ApJ...806..215F} model these systematics as a linear combination of the first 150 principal components of the ensemble of light curves, alongside a simple box-shaped transit model, varying the latter's period, phase and duration.
+GP models have been used on occasion to \textit{de-trend} light curves from transit surveys prior to running transit searches, i.e.\ to remove variability on timescales significantly longer than a transit \citep[see e.g.][]{2016ApJS..226....7C}, and are used frequently after detection to model the out-of-transit baseline alongside the transit signal itself (see \autoref{sec:transit_fit}). In principle, a GP could also be used to model out-of-transit variations (intrinsic or instrumental) alongside transits as part of a detection pipeline. Doing this simultaneously rather than sequentially allows more flexible models to be used for the out-of-transit variations, and avoids the risk of corrupting the transit signal by using an excessively aggressive filter at the detection stage, as demonstrated by \citet{2015ApJ...806..215F} for \textit{K2} data. In that case, the primary source of out-of-transit variability is instrumental systematics (see \autoref{sec:transit_fit}), which are to some degree common to all light curves in a given observing run. \citet{2015ApJ...806..215F} model these systematics as a linear combination of the first 150 principal components of the ensemble of light curves, alongside a simple box-shaped transit model, varying the latter's period, phase and duration.
 
 In other space-based transit surveys such as \textit{CoRoT}, \emph{Kepler} and \emph{TESS}, the systematics are less prominent, so the dominant source of out-of-transit variations is intrinsic stellar variability, which occurs mainly on timescales longer than transits, and can therefore be filtered out quite effectively without removing the transits. However, in some cases, for example for rapidly rotating and magnetically active stars, the separation between transits and stellar signal becomes less clean, significantly reducing the performance of sequential de-trending approaches (irrespective of the algorithm used, \citealt{wotan}).
 In such cases, a simultaneous modelling approach could improve detection performance significantly. Since the nuisance signal is specific to each star, it cannot be modelled using other light curves, but a GP is a credible alternative. Such an approach could also offer a small but significant enhancement in the sensitivity future missions such as \textit{PLATO} to transits of habitable planets around Sun-like stars (which are very shallow and relatively long). The main issue would be computational cost: transit surveys monitor $10^4$--$10^5$ stars at a time, with $10^3$--$10^5$ observations per run, and the transit search must be run over a fine grid of periods and phases. Doing this with standard GPR methods would be impractical. However, now fast and scalable GP solvers are available, this becomes a more feasible proposition.
@@ -752,7 +769,7 @@ In such cases, a simultaneous modelling approach could improve detection perform
 
 In practice, GPR has been much more widely applied to transit modelling than to detection \textit{per se}. The detailed depth, timing, duration and shape of a transit depends on the planet-to-star radius ratio $R_{\rm p}/R_\star$, the system scale $a/R_\star$ (where $a$ is the orbital semi-major axis), the impact parameter $b$, the orbital period $P$ and the time of transit centre, $T_0$ as well as the limb-darkening profile of the star. High-precision observations of one or more transits of a given planet can be used to infer these parameters, which has a wide range of scientific applications. The most obvious is to estimate the planet size (and hence, given a mass estimate, its bulk density and composition). The system scale is directly related to the stellar density \citep{2003ApJ...585.1038S}, which can be used for sanity checks to ensure the transits are indeed of planetary origin.
 % [ref tingley].
-Small departures from strictly periodic timing, known as Transit Timing Variations (TTVs), probe dynamical interactions between multiple planets in a given system, and can be used measure the planets' masses and eccentricities and to reveal the presence of additional, non-transiting planets \citep{2005Sci...307.1288H}. Wavelength-dependent measurements of the transit depth probe the effect of the planet's atmosphere on the star light that filters through it, and hence allow us to access the atmospheric composition \citep{2000ApJ...537..916S}. The depth of any secondary eclipse (when the planet passes behind the star) depends on the planet-to-star flux ratio, and can therefore be used to measure an emission or reflection spectrum, while its timing yields strong constraints on the orbital eccentricity. All of this requires precise and accurate measurements of the transit parameters, for which any correlated noise must be accounted for explicitly, as we demonstrated using a simulated example in Section~\ref{sec:transit}.
+Small departures from strictly periodic timing, known as Transit Timing Variations (TTVs), probe dynamical interactions between multiple planets in a given system, and can be used measure the planets' masses and eccentricities and to reveal the presence of additional, non-transiting planets \citep{2005Sci...307.1288H}. Wavelength-dependent measurements of the transit depth probe the effect of the planet's atmosphere on the starlight that filters through it, and hence allow us to access the atmospheric composition \citep{2000ApJ...537..916S}. The depth of any secondary eclipse (when the planet passes behind the star) depends on the planet-to-star flux ratio, and can therefore be used to measure an emission or reflection spectrum, while its timing yields strong constraints on the orbital eccentricity. All of this requires precise and accurate measurements of the transit parameters, for which any correlated noise must be accounted for explicitly, as we demonstrated using a simulated example in \autoref{sec:transit}.
 
 
 To address this, \citet{2009ApJ...704...51C} proposed a wavelet-based method to model correlated noise in transit light curves, which can be seen as a special case of GPR with a covariance function belonging to the exponential family, but formulated in terms of wavelets. Rather than modelling the covariance in the time domain, the Power Spectral Density (PSD) of the noise is assumed to be of the form $P(f) \propto f^{-\gamma}$.
@@ -761,17 +778,18 @@ This method has been used widely since its publication to model transit observat
 \begin{armarginnote}
   \entry{Colours of noise}{White, pink and red noise correspond to $\gamma=0$, $1$ and $2$, respectively.}
 \end{armarginnote}
-However, the use of a wavelet transform requires regular time sampling, which precludes its application to datasets with irregular sampling or significant data gaps, for example from space telescopes in low-Earth orbit such as Hubble and Spitzer.
+However, the use of a wavelet transform requires regular time sampling, which precludes its application to datasets with irregular sampling or significant data gaps, for example from ground-based, space telescopes in low-Earth orbit such as Hubble.
 
-This limitation is significant, as Hubble and Spitzer have been the workhorse instruments for transit and eclipse spectroscopy for over a decade. This involves measuring minute changes in the depth of the primary transit or secondary eclipse as a function of wavelength, either using successive photometric observations through different filters or using a spectrograph (see \citealt {2018haex.bookE.100K} for a review). The signal of interest is the wavelength dependence of the transit depth, or the depth of the eclipse, which are of order $10^{-4}$ and $10^{-3}$ respectively, in  the most favourable cases. Even when observed from space, these signals are typically dwarfed by instrumental systematics. The pointing jitter and thermal relaxation of the telescope as it orbits the Earth causes the target star to move on the detector, typically by a fraction of a pixel. As the sensitivity of the detector varies from pixel to pixel (the ``flat-field'') and between the centre and edges of each pixel, this motion causes spurious variations in the recorded flux from the target. Although we expect the measured flux to depend on ``housekeeping" variables such as the satellite orbital phase, telescope attitude, the centroid of the image or the locus and angle of the spectrum of the detector, or the temperatures of various parts of the instrument, a physically motivated model for the form of this dependence is generally lacking. \textit{Ad hoc} parametric (e.g.\ polynomial) models are problematic, as the choice of model inputs and functional form is arbitrary, yet can drastically alter the resulting exoplanet spectrum \citep{2011MNRAS.411.2199G}.
+This limitation is significant, as most datasets for transit and eclipse spectroscopy are unevenly sampled with significant data gaps. Transit spectroscopy involves measuring minute changes in the depth of the primary transit or secondary eclipse as a function of wavelength, either using successive photometric observations through different filters or using a spectrograph (see \citealt {2018haex.bookE.100K} for a review). The signal of interest is the wavelength dependence of the transit depth, or the depth of the eclipse, which are of order $10^{-4}$ and $10^{-3}$ respectively, in  the most favourable cases. Even when observed from space, these signals are typically dwarfed by instrumental systematics. The pointing jitter and thermal relaxation of the telescope as it orbits the Earth causes the target star to move on the detector, typically by a fraction of a pixel. As the sensitivity of the detector varies from pixel to pixel (the ``flat-field'') and between the centre and edges of each pixel, this motion causes spurious variations in the recorded flux from the target. Although we expect the measured flux to depend on ``housekeeping" variables such as the satellite orbital phase, telescope attitude, the centroid of the image or the locus and angle of the spectrum of the detector, or the temperatures of various parts of the instrument, a physically motivated model for the form of this dependence is generally lacking. \textit{Ad hoc} parametric (e.g.\ polynomial) models are problematic, as the choice of model inputs and functional form is arbitrary, yet can drastically alter the resulting exoplanet spectrum \citep{2011MNRAS.411.2199G}.
 
 To address this, \citet{2012MNRAS.419.2683G} proposed a GPR framework to model the systematics in space-based transit observations. The aforementioned housekeeping variables are treated as multidimensional inputs to a squared exponential GP whose mean is the transit signal, allowing one to marginalise over broad families of systematic models without assuming a specific functional form for them, all the while propagating the resulting uncertainties on the physical parameter of interest, namely the (wavelength-dependent) planet-to-star radius ratio. The kernel used was a squared exponential kernel with an automatic relevance determination (ARD) distance metric (\autoref{eq:ard-distance}), this allows one to try including a wide range of housekeeping data into the fit; in principle only those which are genuinely relevant will have an effect on the result.
 GP-based systematics models of this kind were later extended to eclipse spectroscopy, where the parameter of interest is the planet-to-star flux ratio, which controls the eclipse depth. Among other successes, this approach has enabled the first measurement of the wavelength-dependent albedo of a hot Jupiter \citep{2013ApJ...772L..16E}, helped resolve early controversies surrounding the treatment of systematics in Spitzer observations \citep{2015MNRAS.451..680E} and
 led to the first unambiguous detection of a thermal inversion in an exoplanet emission spectrum \citep{2017Natur.548...58E}. Using simulated data, \citet{2014MNRAS.445.3401G} showed that GPs outperform parametric models when the true form of the systematics is unknown, but also that the most robust results overall are obtained by marginalising over families of both parametric and GP models.
 
-Despite these theoretical advantages and practical successes, the use of GPR to analyse low-resolution transit and eclipse spectra remains confined to a relatively small subset of the corresponding community. Parametric models (in some cases marginalising over families thereof, \citealt{2016ApJ...819...10W}) remain the most widely-used approach for Hubble Space Telescope observations, and Pixel-Level-Decorrelation (PLD) for Spitzer observations \citep{2015ApJ...805..132D}. Possible explanations for this include computational cost, as well as the fact that these other methods are perceived as easier to implement and interpret. As the recently-launched JWST begins to deliver much higher signal-to-noise observations of exoplanet transits \citep[see e.g.][]{https://doi.org/10.48550/arxiv.2208.11692}, with considerably lower systematics, it will be interesting to see how this topic evolves in the next few years.
+Despite these theoretical advantages and practical successes, the use of GPR to analyse low-resolution transit and eclipse spectra remains confined to a relatively small subset of the corresponding community. Parametric models (in some cases marginalising over families thereof, \citealt{2016ApJ...819...10W}) remain the most widely-used approach for Hubble Space Telescope observations, and Pixel-Level-Decorrelation (PLD) for Spitzer observations \citep{2015ApJ...805..132D}. Possible explanations for this include computational cost, as well as the fact that these other methods are perceived as easier to implement and interpret. Another likely reason, at least in the case of HST transmission spectra, is that GP systematics models tend to produce exoplanet spectra with larger uncertainties than parametric ones. This does not mean that they are less accurate, however, merely that they make a less restrictive set of assumptions about the functional form of the systematics. As discussed by \citet{2014MNRAS.445.3401G} and demonstrated in the appendix of \citet{2018AJ....156..283E}, when the true functional form of the systematics is unknown, choosing the `wrong' systematic model can lead to overconfident estimates of the transit depth, which is more problematic for the robust interpretation of the results than the enlarged uncertainties produced by a more agnostic GP model.
+As the recently-launched JWST begins to deliver much higher signal-to-noise observations of exoplanet transits \citep[see e.g.][]{https://doi.org/10.48550/arxiv.2208.11692}, it will be interesting to see how this topic evolves in the next few years. Early results indicates that the systematics are clearly much lower than in e.g.\ HST data, but only time and more data will tell where the systematics floor lies and whether GPR will have a role to play in lowering it.
 
-One general shortcoming of current GP-based systematics models with multidimensional inputs is that the uncertainties on the input variables are ignored. This could in principle be remedied by treating the housekeeping variables as noisy observations of latent GP variables, and modelling them alongside the observed fluxes, but we are not aware of published attempts to do this in practice to date. \begin{armarginnote}
+One general shortcoming of current GP-based systematics models with multidimensional inputs is that the uncertainties on the input variables are ignored. This could be remedied by treating the housekeeping variables as noisy observations of latent GP variables, and modelling them alongside the observed fluxes, as done by \citet{2016MNRAS.462..726A} in the context of photometric redshift determination, but we are not aware of published attempts to do this in practice to date. \begin{armarginnote}
   \entry{Latent variable}{A random variable which is never actually observed.}
 \end{armarginnote}
 In spectroscopic observations, whether using GPs or parametric models, it has become standard practice to model the ``white" light curve first (obtained by integrating the spectrum over the full wavelength range at each time-step). ``Coloured'' light curves, extracted in individual wavelength bins, are then divided by the best-fit systematics model derived from the white light curve, before being modelled further. To our knowledge, no attempt has been made to model the wavelength dependence of the systematics directly.
@@ -783,12 +801,12 @@ GP-based models have also been used to correct instrumental systematics in data 
 
 \begin{textbox}[ht]
 \section{Composite GPs}
-A composite (additive or multiplicative) GP is a powerful way to separate different components of a time-series dataset, whether these components depend on different input variables (as in the instrumental systematics examples discussed in this section) or not. To evaluate the predictive distribution for a particular component of a composite GP, one simply evaluates $\mathbf{K}_\star$ and $\mathbf{K}_{\star\star}$ in Equations~(\ref{eq:pred}) using that component only, while using the full covariance for $\mathbf{K}$.
+A composite (additive or multiplicative) GP is a powerful way to separate different components of a time-series dataset, whether these components depend on different input variables (as in the instrumental systematics examples discussed in this section) or not. To evaluate the predictive distribution for a particular component of a composite GP, one simply evaluates $\mathbf{K}_\star$ and $\mathbf{K}_{\star\star}$ in \autoref{eq:pred} using that component only, while using the full covariance for $\mathbf{K}$.
 \end{textbox}
 
 \subsubsection{Quasi-periodic GP models for stellar light curves}
 
-The light curves of Sun-like stars (broadly construed) display low-amplitude quasi-periodic variations, which are caused by the rotational modulation and evolution of magnetically active regions on their surfaces. These produce quasi-periodic variations in both photometry and radial velocity observations, and GPs have in recent years become one of the most popular ways of modelling them. One reason for this is that a simple quasi-periodic covariance function (Equation~\ref{eq:kqp}) gives rise to functions, which reproduce the light curves of rotating stars with evolving active regions remarkably well.
+The light curves of Sun-like stars (broadly construed) display low-amplitude quasi-periodic variations, which are caused by the rotational modulation and evolution of magnetically active regions on their surfaces. These produce quasi-periodic variations in both photometry and radial velocity observations, and GPs have in recent years become one of the most popular ways of modelling them. One reason for this is that a simple quasi-periodic covariance function (\autoref{eq:kqp}) gives rise to functions, which reproduce the light curves of rotating stars with evolving active regions remarkably well.
 
 %\suz{Some of this paragraph may be superseded by text in Section 3.} In particular, the following quasi-periodic (QP) kernel has proved especially popular to model stellar activity signals:
 %\begin{equation}
@@ -811,11 +829,11 @@ Given the remarkable instrumental precision achieved by modern RV spectrographs,
 
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{figures/RV_framework.pdf}
-  \caption{Schematic of the multidimensional GP framework of \citet{2015MNRAS.452.2269R} for modelling activity signals in RV data. The observed RVs (shown as orange points with error bars in the bottom right panel) are modelled alongside observations of activity indicators extracted from the spectra or line profiles (orange points with error bars in the bottom left and bottom middle panels). In all these time-series, the activity signal (shown by the black line in each panel) is modelled as a linear combination of an unobserved (latent) GP, shown in the top-left panel, and its first time-derivative, shown in the top middle panel. In addition, the Keplerian signal(s) of putative planet(s) (the sum of which is shown by the blue lines in the top right and bottom right panels) contribute to the RVs but not to the activity indicators. This hierarchical model is implemented in a Bayesian framework, sampling over all the hyper-parameters listed in the blue boxes (subject to appropriate priors) to derive posteriors over the hyper-parameters of interest and/or estimate the evidence for models with different numbers of planets. }
+  \caption{Schematic of the multidimensional GP framework of \citet{2015MNRAS.452.2269R} for modelling activity signals in RV data. The observed RVs (shown as orange points with error bars in the bottom right panel) are modelled alongside observations of activity indicators extracted from the spectra or line profiles (orange points with error bars in the bottom left and bottom middle panels). In all these time-series, the activity signal (shown by the black line in each panel) is modelled as a linear combination of an unobserved (latent) GP, shown in the top-left panel, and its first time-derivative, shown in the top middle panel. In addition, the Keplerian signal(s) of putative planet(s) (the sum of which is shown by the blue lines in the top right and bottom right panels) contribute to the RVs but not to the activity indicators. This hierarchical model is implemented in a Bayesian framework, sampling over all the hyperparameters listed in the blue boxes (subject to appropriate priors) to derive posteriors over the hyperparameters of interest and/or estimate the evidence for models with different numbers of planets. }
   \label{fig:RV_framework}
 \end{figure}
 
-Overall, active regions produce quasi-periodic RV variations which are frequently modelled with the same kind of QP GPs as for light curves. However, unlike transits, planetary signatures in RV occur on timescales similar to activity signals, meaning that the risk of over-fitting is significant. This is partly mitigated for RV follow-up of transiting planets by strong priors on the stellar rotation period and on the period and phase of the planetary orbit, but it is a severe problem for ``blind'' RV searches. The issue is compounded by the fact that RV observations are invariably ground-based, and often have sparse time-sampling.
+Overall, active regions produce quasi-periodic RV variations which are frequently modelled with the same kind of QP GPs as for light curves. However, unlike transits, planetary signatures in RV occur on timescales similar to activity signals, meaning that the risk of overfitting is significant. This is partly mitigated for RV follow-up of transiting planets by strong priors on the stellar rotation period and on the period and phase of the planetary orbit, but it is a severe problem for ``blind'' RV searches. The issue is compounded by the fact that RV observations are invariably ground-based, and often have sparse time-sampling.
 
 As previously mentioned, \citet{2012MNRAS.419.3147A} showed that an approximate relationship should exist between the photometric and RV signatures of active regions. Specifically, if $F(t)$ is the photometric signature and $F'(t)$ its time-derivative, the RV variations are expected to scale as $A F(t) F'(t) + B F^2(t)$, where the first term corresponds to spots and the second to faculae (assuming that the two are generally co-located, although the latter covers a larger area), and $A$ and $B$ are tunable free parameters. In its original form, however, this method was of limited applicability, as it requires the RV observations to be quasi-simultaneous with high-precision, tightly sampled light curves, which is the case only exceptionally (see e.g.\ \citealt{2014MNRAS.443.2517H}).
 
@@ -823,7 +841,7 @@ On the other hand, RV extraction pipelines routinely provide additional indicato
 
 \subsubsection{Granulation and asteroseismology}
 
-As discussed in Section~\ref{sec:physical}, asteroseismology is an area where physically motivated GP models arise quite naturally. This has motivated studies where GPs have been used to model stellar oscillations in the time-domain \citep{2017AJ....154..254G, 2018ApJ...865L..20F}, but these remain very much an exception to the much more widespread practice of transforming the data into the Fourier domain, and identifying and modelling oscillation modes therein. Using a GP in this context makes particular sense when the data are irregularly sampled or inhomogeneous, or when the GP is combined with a mean function that is much easier to specify in the time-domain (for example a planetary transit). For example, the \textit{PLATO} mission \citep{2014ExA....38..249R} aims to characterise all the host stars of the transiting planets it will discover through asteroseismology. Current plans for the \textit{PLATO} pipeline involve either subtracting the best-fit transit model from the light curve, or cutting and interpolating over the transits, before performing the seismic analysis. However, a GP model would  enable a simultaneous analysis, which should in principle be more robust. Conversely, \citet{2020A&A...634A..75B} demonstrated the importance of 
+As discussed in \autoref{sec:physical}, asteroseismology is an area where physically motivated GP models arise quite naturally. This has motivated studies where GPs have been used to model stellar oscillations in the time-domain \citep{2017AJ....154..254G, 2018ApJ...865L..20F}, but these remain very much an exception to the much more widespread practice of transforming the data into the Fourier domain, and identifying and modelling oscillation modes therein. Using a GP in this context makes particular sense when the data are irregularly sampled or inhomogeneous, or when the GP is combined with a mean function that is much easier to specify in the time-domain (for example a planetary transit). For example, the \textit{PLATO} mission \citep{2014ExA....38..249R} aims to characterise most of the the host stars of the transiting planets it will discover up to magnitude $V \sim 11$ through asteroseismology (except for late K and M stars for which the oscillation amplitudes are too small and the frequencies too high). Current plans for the \textit{PLATO} pipeline involve either subtracting the best-fit transit model from the light curve, or cutting and interpolating over the transits, before performing the seismic analysis. However, a GP model would  enable a simultaneous analysis, which should in principle be more robust. Conversely, \citet{2020A&A...634A..75B} demonstrated the importance of 
 explicitly accounting for short-term stellar variability signals, including both granulation and oscillations, to obtain robust and accurate values of the transiting planets' parameters; and compared a range of GP models with different kernels for this purpose.
 
 \subsection{AGN variability}
@@ -845,8 +863,8 @@ Updated versions of this algorithm now form the basis for fast GP solvers discus
 
 GPR is also used to study the population-level properties of AGN samples, by characterizing and interpreting the statistics of the light curve variability for large samples.
 The idea is that the properties of the stochastic variations of an AGN light curve are driven by an accretion disk near the central supermassive black hole, and that this variability provides an observational probe of the small scale astrophysical processes.
-The standard approach is to fit a GP model to the light curve---typically using a ``damped random walk'' kernel, or the more general ``continuous-time autoregressive moving average'' (CARMA) kernel \citep[e.g.,][]{2014ApJ...788...33K}, since these permit efficient computations even with large datasets---and then to use the inferred hyper-parameter values to constrain the variability amplitudes and timescales of the system \citep[e.g.,][]{2014ApJ...788...33K, 2017MNRAS.470.3027K, 2019PASP..131f3001M, 2022MNRAS.514..164S}.
-These amplitudes and timescales have been shown to empirically correlate with the fundamental properties of the AGN system, such as the mass of the central black hole, Eddington ratio, and bolometric luminosity \citep{2022ApJ...936..132Y}.
+The standard approach is to fit a GP model to the light curve---typically using a ``damped random walk'' kernel \citep[e.g.,][]{2010ApJ...708..927K, 2010ApJ...721.1014M, 2012ApJ...753..106M}, or the more general ``continuous-time autoregressive moving average'' (CARMA) kernel \citep[e.g.,][]{2014ApJ...788...33K, 2022ApJ...930..157Z, 2022ApJ...936..132Y}, since these permit efficient computations even with large datasets---and then to use the inferred hyperparameter values to constrain the variability amplitudes and timescales of the system \citep[e.g.,][]{2010ApJ...708..927K, 2010ApJ...721.1014M, 2012ApJ...753..106M, 2014ApJ...788...33K, 2017MNRAS.470.3027K, 2019PASP..131f3001M, 2022MNRAS.514..164S, 2022ApJ...930..157Z, 2022ApJ...936..132Y}.
+These amplitudes and timescales have been shown to empirically correlate with the fundamental properties of the AGN system, such as the mass of the central black hole, Eddington ratio, and bolometric luminosity.
 
 Driven by the success of this approach, and the scale of upcoming survey datasets from, for example, the Vera C. Rubin Observatory and the LSST survey, there has been a concerted effort within this field to develop GP methods that can scale to large datasets.
 This began, perhaps, with \citet{pr95}, and the development of a fast GP solver for exponential kernels.
@@ -877,28 +895,28 @@ For these datasets, the power spectrum has been empirically calibrated, and it i
 As discussed above, under some generally reasonable conditions, this noise process diagonalizes in the Fourier domain, and this empirically calibrated model can be used to compute the likelihood of a signal model also represented in the Fourier domain.
 This type of model becomes significantly more complicated for ring-down analyses where edge effects invalidate the assumption that the data are periodic \citep{2021arXiv210705609I}.
 
-\subsubsection{Transient classification} In the context of transient light curve classification, GPs have been widely used as a tool for interpolating sparsely-sampled and noisy photometric time series onto uniformly sampled grids that are more amenable to standard machine learning classification methods \citep[e.g.][]{2016ApJS..225...31L, 2019AJ....158..257B, 2020ApJ...905...94V}.
+\subsubsection{Transient classification} In the context of transient light curve classification, GPs have been widely used as a tool for interpolating sparsely-sampled and noisy photometric time series onto uniformly sampled grids that are more amenable to standard machine learning classification methods \citep[e.g.][]{2016ApJS..225...31L, 2019AJ....158..257B, 2019MNRAS.489.3591P, 2020ApJ...905...94V}.
 These pipelines differ in how they treat the covariances between photometric bands, with most learning a correlation length in effective wavelength.
 Recently, \citet{2021ApJS..255...24V} proposed a wavelength covariance matrix that uses a distance metric defined by the throughput overlap between each pair of filters.
 So far in this domain, GPs have primarily been used in a pre-processing step to produce data correctly structured for standard machine learning methods, but recent developments that integrate GPs with deep learning frameworks could permit these GPs to be embedded within the larger classification pipeline.
 
 \subsubsection{Quasi-periodic oscillations}
 
-One very active area of research where GPs have not been widely applied to date, is the characterisation of Quasi-Periodic Oscillations (QPOs). QPOs are seen in astrophysical transients right across the electromagnetic spectrum, including Gamma-ray bursts, X-ray binaries, flares in Sun-like stars and in magnetised pulsars, and fast radio bursts. Most QPOs are believed to arise from the interaction between one or more compact objects and an accretion disk, but a detailed understanding of the origin of most classes of QPOs remains elusive. Their phenomenology is typically studied in the time domain, by fitting the power spectrum of individual, contiguous blocks of observations with empirical models, most frequently a sum of Lorentzian functions \citep[see][and references therein]{ingram_motta_QPOs}. Very recently, two studies \citep{Yang_2021,2022ApJ...936...17H} used GPs to model QPOs directly in the time-domain, with encouraging results both for the detection of QPOs in the presence of correlated noise and the characterisation of their properties such as frequency.
+One very active area of research where GPs have not been widely applied to date, is the characterisation of Quasi-Periodic Oscillations (QPOs). QPOs are seen in astrophysical transients right across the electromagnetic spectrum, including Gamma-ray bursts, X-ray binaries, flares in Sun-like stars and in magnetised pulsars, and fast radio bursts. Most QPOs are believed to arise from the interaction between one or more compact objects and an accretion disk, but a detailed understanding of the origin of most classes of QPOs remains elusive. Their phenomenology is typically studied in the time domain, by fitting the power spectrum of individual, contiguous blocks of observations with empirical models, most frequently a sum of Lorentzian functions \citep[see][and references therein]{ingram_motta_QPOs}. Very recently, two studies \citep{2021ApJ...907..105Y, 2022ApJ...936...17H} used GPs to model QPOs directly in the time-domain, with encouraging results both for the detection of QPOs in the presence of correlated noise and the characterisation of their properties such as frequency.
 
 \section{CHALLENGES, PITFALLS, AND SOLUTIONS}
 \label{sec:challenges}
 
 So far, we have primarily discussed the benefits of GP models for astrophysics, but in this section we aim to highlight some challenges faced when using GPs in practice.
 The most significant challenge that has so far limited broader adoption GPs for astrophysics is their computational cost and scaling, but as we will see below, several techniques have been developed recently that overcome this limitation, in particular for one dimensional datasets that are common in time domain astronomy.
-We also briefly discuss some contexts where GP models may over-fit, or be otherwise misspecified for specific problems.
+We also briefly discuss some contexts where GP models may overfit, or be otherwise misspecified for specific problems.
 
 \subsection{Scalable GP inference}
 \label{sec:fast}
 
 The core computations required for GPR are the likelihood function (\autoref{eq:gp_like}), and predictive distributions (\autoref{eq:pred}).
 All of these computations require the solution to a linear system, whose dimension scales with the number of data points $N$.
-While this can be solved using optimised linear algebra libraries, possibly including acceleration with a GPU or other highly parallel hardware, the raw computational cost of evaluating a GP model typically scales as the cube of the number of data points $N^3$.
+While this can be solved using optimised linear algebra libraries, possibly including acceleration with a GPU or other highly parallel hardware, the raw computational cost of evaluating a GP model typically scales as the cube of the number of data points $\mathcal{O}(N^3)$, as shown in \autoref{fig:scaling}.
 This makes it intractable to use GPs for large datasets, practically restricting their use to datasets with less than a few hundred data points.
 General approaches have been developed for scaling GP models to larger datasets, and there are some methods that have seen significant impact within the astronomical literature.
 
@@ -914,21 +932,34 @@ The use of Toeplitz structure for scalable Gaussian noise modelling has primaril
 The most widely-used algorithms for scalable exact GPR in time domain astrophysics are based---often not explicitly---on stochastic differential equations \citep[SDEs;][]{Sarkka:2019}, and typically require that the data be ``sortable''.
 As an early example in the astrophysics literature, \citet{pr95} presented an algorithm for GPR with linear scaling with the size of the dataset, when using an exponential kernel with unevenly sampled time series data.
 This method was later generalized to a wider range of covariance functions \citep{ambikasaran2015generalized, celerite, 2020AJ....160..240G, 2020A&A...638A..95D, 2022A&A...659A.182D}.
-The \project{celerite}\footnote{\url{https://github.com/dfm/celerite}} and \project{S+LEAF}\footnote{\url{https://obswww.unige.ch/~delisle/spleaf/doc}} implementations of these methods have been widely-used for a wide range of applications, including: measuring stellar rotation periods \citep[e.g.,][]{2020MNRAS.492.1008G, 2022AJ....164..115N}; characterizing AGN light curves \citep[e.g.,][]{2022ApJ...936..132Y}; and modelling the light curves of transiting planets \citep[e.g.,][]{2019AJ....158...32K} and eclipsing binaries \citep[e.g.,][]{2020ApJS..250...34C}.
+The real-world performance of these generalized methods (as implemented by the \project{tinygp} package) is shown in \autoref{fig:scaling} by the curves labelled ``celerite'', and indexed by the number of ``terms'' (in this case Mat\'ern-3/2 functions) in the kernel \citep[see][for a more detailed discussion]{celerite}.
+The \project{celerite}\footnote{\url{https://github.com/dfm/celerite}} and \project{S+LEAF}\footnote{\url{https://obswww.unige.ch/~delisle/spleaf/doc}} implementations of these methods have been widely-used for a wide range of applications, including: measuring stellar rotation periods \citep[e.g.,][]{2020MNRAS.492.1008G, 2021ApJ...913...70G, 2022AJ....164..115N}; characterizing AGN light curves \citep[e.g.,][]{2022ApJ...936..132Y}; and modelling the light curves of transiting planets \citep[e.g.,][]{2019AJ....158...32K} and eclipsing binaries \citep[e.g.,][]{2020ApJS..250...34C}.
 A qualitatively different, and independently developed approach to implementing these models uses a state-space representation for the underlying SDE to enable scalable inference using a Kalman filter \citep{2014ApJ...788...33K,  2021RNAAS...5..107J, 2022arXiv220709327M}.
 Of particular interest, while the core algorithms discussed here are inherently serial and cannot benefit from parallel hardware, this filtering approach to GPR has recently been formally parallelized \citep{sarkka2020temporal}.
 
-% \dan{Do we want to add a figure here demonstrating the importance of scaling?} \suz{yes why not if time permits...}
+\begin{figure}[ht]
+  \centering
+  \script{scaling.ipynb}
+  \includegraphics[width=0.7\linewidth]{figures/scaling.pdf}
+  \caption{How the computational cost of a single evaluation of the GP likelihood function (\autoref{eq:gp_like}) scales with the size of the dataset using different algorithms.
+  In each case, the kernel function is a one-dimensional Mat\'ern-3/2 with randomly generated data.
+  The top two lines labelled ``direct (CPU)'' and ``direct (GPU)'' show the cost of directly evaluating \autoref{eq:gp_like} directly using the Cholesky factorization of $\mathbf{K}$ provided by a tuned and optimised linear algebra library.
+  The CPU solver was run using a single-threaded implementation, and the GPU version was executed on an \textsf{A100 NVIDIA} GPU.
+  In both cases, the asymptotic scaling of the algorithm was approximately $\mathcal{O}(N^3)$ for $N$ data points.
+  The three lines labelled ``celerite ($J$ terms)'' show the performance of the \project{celerite} algorithm \citep[][as implemented by the \project{tinygp} package]{celerite} for a sum of $J$ Mat\'ern-3/2 kernels, since the computational cost of that method scales with the ``complexity'' of the kernel.
+  The asymptotic performance of each of these curves is linear in the number of data points, $\mathcal{O}(N)$.}
+  \label{fig:scaling}
+\end{figure}
 
 
 \subsection{Overfitting}
 
-In our experience, a common concern that astrophysicists have when working with GPs is that these flexible models may over-fit the observations, and decrease the significance of their results, especially when a GP is used as an effective model for noise sources.
+In our experience, a common concern that astrophysicists have when working with GPs is that these flexible models may overfit the observations, and decrease the significance of their results, especially when a GP is used as an effective model for noise sources.
 While this is not an unjustified concern, we find that the risk is generally overestimated.
-As discussed in \autoref{sec:gp-lsq-link}, the determinant in \autoref{eq:gp_like} penalises GP models with ``unspecific'' hyper-parameters, instead preferring to explain as much of the data as possible with the mean model.
+As discussed in \autoref{sec:gp-lsq-link}, the determinant in \autoref{eq:gp_like} penalises GP models with ``unspecific'' hyperparameters, instead preferring to explain as much of the data as possible with the mean model.
 In other (but equally informal) terms, this means that a GP's modelling capacity will only be used to describe residuals that are not captured within the mean model's support.
 
-All this being said, there do exist cases where the use of a GP can lead to over-fitting. One such example is RV planet searches when the ephemeris of the planet(s) is unknown (i.e.\ excluding transiting planets). Unless the time-sampling of the data is truly excellent, the hyper-parameters of the GP activity model are poorly constrained, and the highly multi-modal nature of the posterior surface means that standard Bayesian inference and model comparison techniques can be misleading. One example of such a situation is the short-period, Earth-mass planet reported by \citet{2012Natur.491..207D} around $\alpha$\,Centauri\,B, which was shown by \citet{2016MNRAS.456L...6R} to be an artefact of the time-sampling: a small peak in the window function of the observations was serendipitously ``boosted'' by the complex model necessary to account for the star's activity signal. This is a concern with any flexible model applied to a sparse dataset, but it can be less obvious for GPs, which can be very flexible with comparatively few hyper-parameters. Useful strategies to deal with this kind of problem include cross-validation (as discussed in Section~\ref{sec:model_selection}) and performing exhaustive injection-recovery tests to build (or undermine, as the case may be!) confidence in one's results. 
+All this being said, there do exist cases where the use of a GP can lead to overfitting. One such example is RV planet searches when the ephemeris of the planet(s) is unknown (i.e.\ excluding transiting planets). Unless the time-sampling of the data is truly excellent, the hyperparameters of the GP activity model are poorly constrained, and the highly multi-modal nature of the posterior surface means that standard Bayesian inference and model comparison techniques can be misleading. One example of such a situation is the short-period, Earth-mass planet reported by \citet{2012Natur.491..207D} around $\alpha$\,Centauri\,B, which was shown by \citet{2016MNRAS.456L...6R} to be an artefact of the time-sampling: a small peak in the window function of the observations was serendipitously ``boosted'' by the complex model necessary to account for the star's activity signal. This is a concern with any flexible model applied to a sparse dataset, but it can be less obvious for GPs, which can be very flexible with comparatively few hyperparameters. Useful strategies to deal with this kind of problem include cross-validation (as discussed in \autoref{sec:model_selection}) and performing exhaustive injection-recovery tests to build (or undermine, as the case may be!) confidence in one's results. 
 
 \subsection{Model misspecification}
 
@@ -976,7 +1007,7 @@ Perhaps the most widely used \project{Python} library for GP inference in astrop
 More recently, the scalable methods implemented by \project{celerite}\footnote{\url{https://github.com/dfm/celerite}} \citep{celerite} and \project{S+LEAF}\footnote{\url{https://obswww.unige.ch/~delisle/spleaf/doc}} \citep{2020A&A...638A..95D, 2022A&A...659A.182D} have become popular for time domain GP models in astrophysics.
 These libraries require one-dimensional---or appropriately structured \citep{2020AJ....160..240G, 2022A&A...659A.182D}---input data, and a specific set of kernel functions, although these kernels form a complete \citep{JMLR:v22:21-0072} and physically interpretable \citep{celerite} basis, and it has recently been demonstrated that the Mat\'ern class of kernels can be exactly represented \citep{2021RNAAS...5..107J}.
 
-Outside of astrophysics, the \project{GPy}\footnote{\url{https://github.com/SheffieldML/GPy}} and \project{GPyTorch}\footnote{\url{https://gpytorch.ai}} \citep{gpytorch} projects provide mature and widely used GP implementations.
+Outside of astrophysics, the \project{GPy}\footnote{\url{https://github.com/SheffieldML/GPy}}, \project{GPyTorch}\footnote{\url{https://gpytorch.ai}} \citep{gpytorch}, and \project{GPFlow}\footnote{\url{https://www.gpflow.org}} \citep{GPflow2017, GPflow2020multioutput} projects provide mature and widely used GP implementations.
 \project{GPyTorch}, in particular, is designed for scaling GP modelling to large datasets, using approximate methods \citep[e.g.,][]{kissgp, 2015arXiv151101870W} that do not have the same restrictions as \project{celerite} and \project{S+LEAF}.
 \project{GPyTorch} has been used for a variety of applications in astrophysics \citep[e.g.,][]{2022A&A...658A.166D, 2022MNRAS.511.5597L}, but not yet as widely as the other libraries discussed so far, perhaps because it does not integrate into the astronomical workflow as easily as the projects that were designed with astrophysicists in mind.
 
@@ -992,7 +1023,7 @@ After a very brief historical introduction, we started this review by introducin
 
 We then reviewed the growing literature on applications of GPR to time-domain datasets, from exoplanet detection and characterisation, where GPs are mostly used to account for instrumental or stellar nuisance signals, to the characterisation of stellar variability itself, where the GP is now used to model a stochastic signal for its own sake. These examples are drawn from the exoplanet and stellar astrophysics literature, which we are most familiar with, but we also attempted to give an overview of recent applications of GPR to two other classes of astronomical objects where it is increasingly important, namely AGN and compact objects. Altogether, these applications include a very diverse array of GP models with varying levels of complexity, including multidimensional inputs and outputs, derivative and integral observations, and applications where the GP model is physically motivated versus cases where it is merely an effective model. We noted how GPR can be used to tease apart the deterministic and stochastic components of a model, but also different components of a stochastic process. 
 
-Finally, we discussed the challenges and pitfalls of GPR, noting recent algorithmic and technical developments that have brought down their computational cost, once prohibitive for large datasets, and outlining some strategies to limit the risk of over-fitting. Finally, we reviewed the ecosystem of free software resources for GPR, which make it easy to test a GP model for a new problem in just a few lines of code, and to implement a computationally efficient version suitable for a large dataset with minimal additional effort. 
+We discussed the challenges and pitfalls of GPR, noting recent algorithmic and technical developments that have brought down their computational cost, once prohibitive for large datasets, and outlining some strategies to limit the risk of overfitting. Nonetheless, the size of the dataset remains an important consideration when deciding whether or not to use GPR for a particular problem. If too small, learning the kernel hyperparameters and flagging outliers can be difficult, while computing time can still be problematic for certain types of kernels and/or computations on very large datasets. Finally, we reviewed the ecosystem of free software resources for GPR, which make it easy to test a GP model for a new problem in just a few lines of code, and to implement a computationally efficient version suitable for a large dataset with minimal additional effort. 
 
 \subsection{Future perspectives}
 
@@ -1000,122 +1031,11 @@ In certain application domains, such as the analysis of photometric and radial v
 
 In other applications, such as pulsars, QPOs and astrophysical transients, GPR remains more of a niche pursuit so far, but promising early results should motivate further work in the next few years. The next decade will see a vast increase in the scale of the relevant datasets, with major surveys such as the Vera Rubin Observatory's Legacy Survey of Space and Time (LSST) or the Square Kilometre Array (SKA) routinely delivering tens of TB per night. Even with the recent development of scalable GP models, it is unclear whether GPR cam be useful as a ``first contact'' analysis tool for these very large surveys, but it has clear potential for the analysis of specific subsets of data.
 
-One area of active development concerns the problem of non-Gaussianity. While the assumption of Gaussianity implicit to GPR is often good enough in practice, it is almost never strictly correct, and this can become problematic when extreme precision is required on the model hyper-parameters, or when the data contain (a relatively small proportion of) significant outliers. Stochastic process models based on distributions with higher kurtosis than the Gaussian, for example Student's-$t$ processes are an interesting alternative, though they have not been extensively used in astronomy.
+One area of active development concerns the problem of non-Gaussianity. While the assumption of Gaussianity implicit to GPR is often good enough in practice, it is almost never strictly correct, and this can become problematic when extreme precision is required on the model hyperparameters, or when the data contain (a relatively small proportion of) significant outliers. Stochastic process models based on distributions with higher kurtosis than the Gaussian, for example Student's-$t$ processes are an interesting alternative, though they have not been extensively used in astronomy.
 
 Another area where GPR could become more widely used in future is for intelligent observation planning: if a set of variable objects is being monitored as part of a survey, using a GP to model existing observations would enable the observer to make predictions (including uncertainties) for future observations, and therefore to prioritise among the target list in real time according to some metric of choice. 
 
 \subsubsection*{Parting remarks} GPs are an extremely powerful and general data analysis method, which explains their rapidly growing popularity in a wide range of application domains, including time-domain astronomy. However, their very flexibility, together with their built-in property of automatic marginalisation over random functions, can make them appear arcane, occasionally leading to lukewarm reception from the wider community. We hope this review will have de-mystified the subject somewhat, and provided our readers with enough information to make informed decisions about when and how to use GPs for their datasets.
-
-% \section{FIRST-LEVEL HEADING}
-% This is dummy text.
-% % Heading 2
-% \subsection{Second-Level Heading}
-% This is dummy text. This is dummy text. This is dummy text. This is dummy text.
-
-% % Heading 3
-% \subsubsection{Third-Level Heading}
-% This is dummy text. This is dummy text. This is dummy text. This is dummy text.
-
-% % Heading 4
-% \paragraph{Fourth-Level Heading} Fourth-level headings are placed as part of the paragraph.
-
-% %Example of a Figure
-% \section{ELEMENTS\ OF\ THE\ MANUSCRIPT}
-% \subsection{Figures}Figures should be cited in the main text in chronological order. This is dummy text with a citation to the first figure (\textbf{Figure \ref{fig1}}). Citations to \textbf{Figure \ref{fig1}} (and other figures) will be bold.
-
-% \begin{figure}[ht]
-%   \includegraphics[width=3in]{SampleFigure}
-%   \caption{Figure caption with descriptions of parts a and b}
-%   \label{fig1}
-% \end{figure}
-
-% % Example of a Table
-% \subsection{Tables} Tables should also be cited in the main text in chronological order (\textbf {Table \ref{tab1}}).
-
-% \begin{table}[ht]
-%   \tabcolsep7.5pt
-%   \caption{Table caption}
-%   \label{tab1}
-%   \begin{center}
-%     \begin{tabular}{@{}l|c|c|c|c@{}}
-%       \hline
-%       Head 1              &          &                   &         & Head 5    \\
-%       {(}units)$^{\rm a}$ & Head 2   & Head 3            & Head 4  & {(}units) \\
-%       \hline
-%       Column 1            & Column 2 & Column3$^{\rm b}$ & Column4 & Column    \\
-%       Column 1            & Column 2 & Column3           & Column4 & Column    \\
-%       Column 1            & Column 2 & Column3           & Column4 & Column    \\
-%       Column 1            & Column 2 & Column3           & Column4 & Column    \\
-%       \hline
-%     \end{tabular}
-%   \end{center}
-%   \begin{tabnote}
-%     $^{\rm a}$Table footnote; $^{\rm b}$second table footnote.
-%   \end{tabnote}
-% \end{table}
-
-% % Example of lists
-% \subsection{Lists and Extracts} Here is an example of a numbered list:
-% \begin{enumerate}
-%   \item List entry number 1,
-%   \item List entry number 2,
-%   \item List entry number 3,\item List entry number 4, and
-%   \item List entry number 5.
-% \end{enumerate}
-
-% Here is an example of a extract.
-% \begin{extract}
-%   This is an example text of quote or extract.
-%   This is an example text of quote or extract.
-% \end{extract}
-
-% \subsection{Sidebars and Margin Notes}
-% % Margin Note
-% \begin{armarginnote}[]
-%   \entry{Term A}{definition}
-%   \entry{Term B}{definition}
-%   \entry{Term C}{defintion}
-% \end{armarginnote}
-
-% \begin{textbox}[ht]\section{SIDEBARS}
-%   Sidebar text goes here.
-%   \subsection{Sidebar Second-Level Heading}
-%   More text goes here.\subsubsection{Sidebar third-level heading}
-%   Text goes here.\end{textbox}
-
-
-
-% \subsection{Equations}
-% % Example of a single-line equation
-% \begin{equation}
-%   a = b \ {\rm ((Single\ Equation\ Numbered))}
-% \end{equation}
-% %Example of multiple-line equation
-% Equations can also be multiple lines as shown in Equations 2 and 3.
-% \begin{eqnarray}
-%   c = 0 \ {\rm ((Multiple\  Lines, \ Numbered))}\\
-%   ac = 0 \ {\rm ((Multiple \ Lines, \ Numbered))}
-% \end{eqnarray}
-
-% % Summary Points
-% \begin{summary}[SUMMARY POINTS]
-%   \begin{enumerate}
-%     \item Summary point 1. These should be full sentences.
-%     \item Summary point 2. These should be full sentences.
-%     \item Summary point 3. These should be full sentences.
-%     \item Summary point 4. These should be full sentences.
-%   \end{enumerate}
-% \end{summary}
-
-% % Future Issues
-% \begin{issues}[FUTURE ISSUES]
-%   \begin{enumerate}
-%     \item Future issue 1. These should be full sentences.
-%     \item Future issue 2. These should be full sentences.
-%     \item Future issue 3. These should be full sentences.
-%     \item Future issue 4. These should be full sentences.
-%   \end{enumerate}
-% \end{issues}
 
 %Disclosure
 \section*{DISCLOSURE STATEMENT}
@@ -1139,6 +1059,7 @@ The authors would like to thank the community members who sent feedback on the p
 Eric Agol,
 Nestor Espinoza,
 Christopher Kochanek,
+Konstantin Malanchev,
 Maria Pruzhinskaya,
 Steve Roberts,
 Fergus Simpson,
