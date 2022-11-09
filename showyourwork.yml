@@ -1,10 +1,11 @@
-version:
-  fork: https://github.com/dfm/showyourwork
-  ref: araa-abstract-fix
+version: 0.4.1
+
+stamp:
+  xpos: 8.0
+  angle: 20.0
 
 overleaf:
   id: 62f169d4cce9f5c2976ac131
-  gh_actions_sync: true
   push:
     - src/tex/figures
     - src/tex/output
