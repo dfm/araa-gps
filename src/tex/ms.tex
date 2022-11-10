@@ -224,7 +224,7 @@ Taking the correlated noise into account (blue in \autoref{fig:transit}) increas
   \end{minipage}
   \caption{The results of fitting the simulated light curve of a transiting exoplanet.
   \emph{Left:} The simulated dataset plotted as points with error bars.
-  The inferred model when correlated noise is (blue) or isn't (orange) taken into account are over-plotted on the data.
+  The inferred model when correlated noise is (blue) or is not (orange) taken into account are over-plotted on the data.
   \emph{Right:} The posterior constraints on the time of transit $T_0$ and the planet-to-star radius ratio $R_\mathrm{p}/R_\star$.
   The colours in this figure match those in the left panel, and the true values of these parameters are indicated with black lines.
   The results when neglecting correlated noise (orange) are significantly inconsistent with the true value, but when the correlated noise is modelled using a GP (blue), the correct parameters are recovered, albeit with larger uncertainty.}
@@ -241,12 +241,12 @@ The remainder of this review is structured as follows. \autoref{sec:basics} prov
 \label{sec:basics}
 
 
-So far we have discussed how GPR has become widely used in astronomy and touched on some of their pros and cons, but we haven't explicitly defined what a GP is or explained how GPR works. This section gives a brief introduction to the theory of GPR, written in a way that we hope will be intelligible to most astronomers. A much more in-depth treatment is provided by \citet{gpml}, which to this day remains the main reference textbook on GPs.
+So far we have discussed how GPR has become widely used in astronomy and touched on some of their pros and cons, but we have not explicitly defined what a GP is or explained how GPR works. This section gives a brief introduction to the theory of GPR, written in a way that we hope will be intelligible to most astronomers. A much more in-depth treatment is provided by \citet{gpml}, which to this day remains the main reference textbook on GPs.
 
 \subsection{Formal definition}
 \label{sec:def}
 
-A GP is a type of \textit{stochastic process} based on the Gaussian probability distribution. A probability distribution describes a random variable with a finite number of dimensions. A stochastic process extends this concept to an infinite number of dimensions, allowing us to define a probability distribution over functions. Just what do we mean by ``extending to an infinite number of dimensions''? Well, this can be a little problematic mathematically, but we needn't worry about it, because in practice we only ever deal with finite samples from the stochastic process.
+A GP is a type of \textit{stochastic process} based on the Gaussian probability distribution. A probability distribution describes a random variable with a finite number of dimensions. A stochastic process extends this concept to an infinite number of dimensions, allowing us to define a probability distribution over functions. Just what do we mean by ``extending to an infinite number of dimensions''? Well, this can be a little problematic mathematically, but we need not worry about it, because in practice we only ever deal with finite samples from the stochastic process.
 
 The formal definition of a GP is that the joint probability distribution over any finite sample $\mathbf{y} = \{y_i\}_{i=1,\ldots,N}$ from the GP is a multi-variate Gaussian:
 \begin{equation}
@@ -262,7 +262,7 @@ The elements of the mean vector and covariance matrix are given by the \textit{m
 \begin{equation}
     K_{ij} = k(\boldsymbol{x}_i,\boldsymbol{x}_j, \hyperparams).
 \end{equation}
-where $\boldsymbol{x}_i$ is the set of inputs (independent variables) corresponding to the $i^{\rm th}$ sample. For time-series data, the inputs usually include, but aren't necessarily restricted to, the time $t_i$. The covariance function, also known as the \emph{kernel function}, is the fundamental ingredient of a GP model, and considerable care must be taken to select it adequately (or to test different possibilities). Sometimes the mean function is assumed to be constant, or even zero, everywhere; this is often done in the wider GPR literature to keep derivations uncluttered. However, for many astrophysical applications where a GP is used to model a nuisance signal, the mean function contains the signal of interest and is important.
+where $\boldsymbol{x}_i$ is the set of inputs (independent variables) corresponding to the $i^{\rm th}$ sample. For time-series data, the inputs usually include, but are not necessarily restricted to, the time $t_i$. The covariance function, also known as the \emph{kernel function}, is the fundamental ingredient of a GP model, and considerable care must be taken to select it adequately (or to test different possibilities). Sometimes the mean function is assumed to be constant, or even zero, everywhere; this is often done in the wider GPR literature to keep derivations uncluttered. However, for many astrophysical applications where a GP is used to model a nuisance signal, the mean function contains the signal of interest and is important.
 
 % \begin{figure}[ht]
 %   \centering
@@ -364,7 +364,7 @@ Importantly, a GP model provides not a point estimate but a full probability dis
 
 \subsubsection{The predictive equations}\label{sec:predeq}
 
-Given some existing observations $\mathbf{y}$, taken at times $\mathbf{t}$, how do we make predictions at some new set of times $\mathbf{t}_\star$? We are after $p(\mathbf{y}_\star|\mathbf{y})$, the \textbf{conditional} probability distribution for $\mathbf{y}_\star$ given $\mathbf{y}$. In GPR this is also known as the \emph{predictive distribution}, because it is often used to extrapolate a time-series dataset forwards. The `magic' of GPR is that the predictive distribution is also Gaussian, and its mean and covariance are given by simple analytic relations:
+Given some existing observations $\mathbf{y}$, taken at times $\mathbf{t}$, how do we make predictions at some new set of times $\mathbf{t}_\star$? We are after $p(\mathbf{y}_\star|\mathbf{y})$, the \textbf{conditional} probability distribution for $\mathbf{y}_\star$ given $\mathbf{y}$. In GPR this is also known as the \emph{predictive distribution}, because it is often used to extrapolate a time-series dataset forwards. The ``magic'' of GPR is that the predictive distribution is also Gaussian, and its mean and covariance are given by simple analytic relations:
 \begin{equation}
   \label{eq:pred}
   \mathbf{f}_\star = \mathbf{m}_\star + \mathbf{K}_\star^{\mathrm{T}} \, \mathbf{K}^{-1} \, (\mathbf{y} - \mathbf{m}) ~\mathrm{~~~and~~~}
@@ -426,13 +426,13 @@ In this section we walk through this process in detail.
 
 The kernel function can be any positive scalar function that gives rise to a positive semi-definite covariance matrix over the input domain, but some will be more useful than others.
 Given this large decision space, you may be wondering how to choose the right kernel function for your specific problem.
-If you're very lucky, you may be able to motivate your model using physics.
+If you are very lucky, you may be able to motivate your model using physics.
 This can be approached from two directions.
 On one hand, some commonly used kernel functions have a specific physical interpretation---for example, the solution to a stochastic ordinary differential equation---that would naturally motivate their use in certain circumstances.
 On the other hand, if your physical model is specified by its \emph{power spectrum}, this can be recast as a GP model with a specific kernel function.
 % \suz{Say something about the number of times a function is differentiable? That can be a useful consideration. But perhaps already mentioned later.}
 
-Even if you don't have a formal physics-based justification for your model, you may be able to identify the key scales of your problem and design a kernel function that captures these features.
+Even if you do not have a formal physics-based justification for your model, you may be able to identify the key scales of your problem and design a kernel function that captures these features.
 The usual approach to this problem is to take sums and products of commonly used kernel functions to construct a set of models that have the desired covariance structure, and then combine or select between these choices.
 For example, if the problem of interest is expected to involve only a single non-periodic timescale, you could list all the two-parameter non-periodic kernel functions and use a numerical model selection technique as described below.
 
@@ -448,7 +448,7 @@ Another example that is commonly used in the astrophysics literature \citep{2012
 \end{equation}
 with $\hyperparams = \{\amplitude,\,\lengthscale_1,\,\lengthscale_2,\,\Gamma\}$, which has a period of $\lengthscale_2$, and a decoherence timescale of $\lengthscale_1$. The hyperparameter $\Gamma$ controls the extent to which the periodic component of the signal resembles a simple sinusoid or is more complex.
 
-It's worth noting that, in any practical application, these kernel functions are not generally used on their own.
+It is worth noting that, in any practical application, these kernel functions are not generally used on their own.
 Instead, more expressive models are designed by combining these models as discussed in \autoref{sec:kernel-ops}.
 
 When selecting a kernel function, it can be useful to generate samples from this implied prior distribution over functions to get a qualitative sense of the properties of the kernel.
@@ -461,7 +461,7 @@ As an example, \autoref{fig:samples} shows several prior samples for three diffe
 In this figure, we can see some qualitative differences between the kernel functions---namely that the samples become ``smoother'' from left to right---and we can see how the characteristic input and output scales of the allowed functions change with the hyperparameters.
 
 A key feature of a kernel function that defines its qualitative behaviour is its mean square (MS) differentiability.
-We won't formally define MS differentiability---interested readers are instead referred to Section~4.1.1 of \citet{gpml} for a more detailed discussion---but we want to highlight that MS differentiability is important because it defines the ``smoothness'' of the functions that can be modelled by the GP.
+We will not formally define MS differentiability---interested readers are instead referred to Section~4.1.1 of \citet{gpml} for a more detailed discussion---but we want to highlight that MS differentiability is important because it defines the ``smoothness'' of the functions that can be modelled by the GP.
 It can be seen in \autoref{fig:samples} that the exponential squared kernel function, which is infinitely MS differentiable, is significantly ``smoother'' than the exponential kernel function, which is not MS differentiable.
 
 \begin{armarginnote}[]
@@ -645,9 +645,9 @@ In other words, instead of just fitting for the parameters of the mean model $\m
 In \autoref{sec:gp-lsq-link}, we defined the likelihood for a GP model and, in \autoref{sec:gp-inf}, we sketched the procedure used for Bayesian inference with such a model.
 The likelihood function defined in \autoref{eq:gp_like} is a function of both $\meanparams$ and $\hyperparams$, and we can use that function as an objective for a non-linear optimization routine to find the maximum likelihood parameter values, or in a Markov chain Monte Carlo \citep[MCMC; e.g.][]{2018ApJS..236...11H} procedure to marginalise over the hyperparameters, and propagate their uncertainty to constraints on the parameters of the mean model.
 
-An important point here is that, since many data analysis procedures in astrophysics include a step like the ones listed above, the use of a GP likelihood doesn't significantly change the processing.
-In fact, we like to say that the GP likelihood can be used as a drop-in replacement for anywhere you're currently using a ``chi-squared'' objective.
-There are some practical reasons why things aren't necessarily this simple (for example, computational cost, as described below), but the sentiment stands.
+An important point here is that, since many data analysis procedures in astrophysics include a step like the ones listed above, the use of a GP likelihood does not significantly change the processing.
+In fact, we like to say that the GP likelihood can be used as a drop-in replacement for anywhere you are currently using a ``chi-squared'' objective.
+There are some practical reasons why things are not necessarily this simple (for example, computational cost, as described below), but the sentiment stands.
 
 In this review, we won't go into too many details about the inference algorithms, but throughout the text, we will regularly use the \textsf{BFGS} gradient-based, non-linear optimization routine \citep{Nocedal:1999, scipy} to find the maximum likelihood parameter values
 \begin{equation}
@@ -668,7 +668,7 @@ All the examples in this review are implemented using the \textsf{NumPyro} proba
 
 Given the wide array of possible kernel functions described in \autoref{sec:kernels}, it can be important to assess the performance of your model and the relevant choices.
 This includes both assessing the choice to use a GP in the first place, and the specific choice of kernel function.
-It's important to note that there's nothing fundamentally different about GPs in this context when compared to other models for data, so that means that many methods that you may already use for model selection and validation in other contexts will also apply when using GPs.
+It is important to note that there is nothing fundamentally different about GPs in this context when compared to other models for data, so that means that many methods that you may already use for model selection and validation in other contexts will also apply when using GPs.
 That being said, within the astrophysics literature formal probabilistic model checking has had limited use, and GPs do come with some specific technical complications, therefore we will discuss some examples of model validation and selection techniques that have been used for GPs.
 
 When it comes to selecting between different possible kernel functions, the approach that you take may depend on your specific research goals.
@@ -706,12 +706,12 @@ In this example, we use MCMC to fit the data shown as black dots in the left pan
 At each step in the MCMC, we evaluate the likelihood in \autoref{eq:held-out-like} for the held out data conditioned on the training data and the model parameters.
 In the rightmost panel of \autoref{fig:assessment}, we plot the posterior distribution of the held out log probability to show that, like with the evidence integral, the squared exponential and rational quadratic kernels are indistinguishable, while the Mat\'ern-3/2 kernel is disfavoured.
 In this case we hold out a single fixed subset of the data, but it is common practice to repeat this process for several unique held out subsets, and average these results.
-There is some freedom in the choice of held out data, and it's not trivial to select the best procedure for correlated time series data.
+There is some freedom in the choice of held out data, and it is not trivial to select the best procedure for correlated time series data.
 In this example, we held out some contiguous data points at the beginning and end of the time series to assess the model's performance when extrapolating, and then held out a random subset of the remaining data points to validate the bulk statistics of the process.
 For GP models, simple ``leave-one-out'' or other uniform sampling schemes are unlikely to be sufficient for assessing the correlation structure of the data, and care should be taken to select validation datasets that capture the details of interest.
 
 Besides the model comparison tests discussed so far, it can also be useful to assess the quality of fit in a more absolute sense.
-Like with the other assessment tools, there isn't anything particularly unique about GP models when it comes to model checking, although it is generally non-trivial to quantify goodness of fit metrics in all but the simplest cases \citep[e.g.,][]{gelman1995bayesian}.
+Like with the other assessment tools, there is not anything particularly unique about GP models when it comes to model checking, although it is generally non-trivial to quantify goodness of fit metrics in all but the simplest cases \citep[e.g.,][]{gelman1995bayesian}.
 Our preferred approach to model checking is to use graphical posterior predictive checks \citep[see][for example]{bayes-workflow}.
 The idea behind posterior predictive checks is that the observed data $\ydata$ should not be an extreme outlier with respect to synthetic data $\ydata_\star$ sampled from the posterior:
 \begin{equation}
@@ -785,7 +785,7 @@ To address this, \citet{2012MNRAS.419.2683G} proposed a GPR framework to model t
 GP-based systematics models of this kind were later extended to eclipse spectroscopy, where the parameter of interest is the planet-to-star flux ratio, which controls the eclipse depth. Among other successes, this approach has enabled the first measurement of the wavelength-dependent albedo of a hot Jupiter \citep{2013ApJ...772L..16E}, helped resolve early controversies surrounding the treatment of systematics in Spitzer observations \citep{2015MNRAS.451..680E} and
 led to the first unambiguous detection of a thermal inversion in an exoplanet emission spectrum \citep{2017Natur.548...58E}. Using simulated data, \citet{2014MNRAS.445.3401G} showed that GPs outperform parametric models when the true form of the systematics is unknown, but also that the most robust results overall are obtained by marginalising over families of both parametric and GP models.
 
-Despite these theoretical advantages and practical successes, the use of GPR to analyse low-resolution transit and eclipse spectra remains confined to a relatively small subset of the corresponding community. Parametric models (in some cases marginalising over families thereof, \citealt{2016ApJ...819...10W}) remain the most widely-used approach for Hubble Space Telescope observations, and Pixel-Level-Decorrelation (PLD) for Spitzer observations \citep{2015ApJ...805..132D}. Possible explanations for this include computational cost, as well as the fact that these other methods are perceived as easier to implement and interpret. Another likely reason, at least in the case of HST transmission spectra, is that GP systematics models tend to produce exoplanet spectra with larger uncertainties than parametric ones. This does not mean that they are less accurate, however, merely that they make a less restrictive set of assumptions about the functional form of the systematics. As discussed by \citet{2014MNRAS.445.3401G} and demonstrated in the appendix of \citet{2018AJ....156..283E}, when the true functional form of the systematics is unknown, choosing the `wrong' systematic model can lead to overconfident estimates of the transit depth, which is more problematic for the robust interpretation of the results than the enlarged uncertainties produced by a more agnostic GP model.
+Despite these theoretical advantages and practical successes, the use of GPR to analyse low-resolution transit and eclipse spectra remains confined to a relatively small subset of the corresponding community. Parametric models (in some cases marginalising over families thereof, \citealt{2016ApJ...819...10W}) remain the most widely-used approach for Hubble Space Telescope observations, and Pixel-Level-Decorrelation (PLD) for Spitzer observations \citep{2015ApJ...805..132D}. Possible explanations for this include computational cost, as well as the fact that these other methods are perceived as easier to implement and interpret. Another likely reason, at least in the case of HST transmission spectra, is that GP systematics models tend to produce exoplanet spectra with larger uncertainties than parametric ones. This does not mean that they are less accurate, however, merely that they make a less restrictive set of assumptions about the functional form of the systematics. As discussed by \citet{2014MNRAS.445.3401G} and demonstrated in the appendix of \citet{2018AJ....156..283E}, when the true functional form of the systematics is unknown, choosing the ``wrong'' systematic model can lead to overconfident estimates of the transit depth, which is more problematic for the robust interpretation of the results than the enlarged uncertainties produced by a more agnostic GP model.
 
 One general shortcoming of current GP-based systematics models with multidimensional inputs is that the uncertainties on the input variables are ignored. This could be remedied by treating the housekeeping variables as noisy observations of latent GP variables, and modelling them alongside the observed fluxes, as done by \citet{2016MNRAS.462..726A} in the context of photometric redshift determination, but we are not aware of published attempts to do this in practice to date. \begin{armarginnote}
   \entry{Latent variable}{A random variable which is never actually observed.}
@@ -852,7 +852,7 @@ In particular, as discussed in \autoref{sec:intro}, a GP was used by \citet{prh9
 When the quasar is lensed by an intervening galaxy or galaxy cluster, multiple images can be formed, whose brightness can be monitored individually.
 Measurements of the time-delays between the resulting light curves can be used to constrain the Hubble constant, $H_0$ \citep{doi:10.1146/annurev.aa.30.090192.001523}.
 Early measurements of these time-delays in the decade following the discovery of the first multiply imaged quasar, the ``double quasar'' 0957$+$561, were hampered by the lack of a generative model for the light curves.
-Heuristic methods based on interpolation and cross-correlation were developed, but uncertainties were difficult to derive and results obtained with different instruments and different bandpasses weren't always consistent.
+Heuristic methods based on interpolation and cross-correlation were developed, but uncertainties were difficult to derive and results obtained with different instruments and different bandpasses were not always consistent.
 \citet{prh92a} derived a simple $\chi^2$ metric under the assumption that the observed light curves are shifted, noisy versions of a single sample a Gaussian process with known covariance.
 Having proposed an empirical procedure to estimate the covariance function from the data, they then optimised the $\chi^2$ with respect to the time-delay between images, and applied standard methods to derive an uncertainty.
 While their method relied on an ad hoc method to estimate the covariance matrix, and did not propagate the corresponding errors into the final result, it did resolve the prior discrepancy between the estimates of the time-delay from optical and radio datasets \citep{prh92b}.
@@ -998,7 +998,7 @@ In this section, we describe some popular libraries in this space, while caution
 Most of our discussion will focus on tools implemented in the \project{Python} programming language since it is---at the time of writing---the most popular language, both in astronomy and GP modelling, but there are tools available in all other popular languages.
 
 Alongside this review, we have released all the source code to generate the figures in this document using the \project{tinygp} library\footnote{\url{https://tinygp.readthedocs.io}} \citep{tinygp}, which is a relatively new open source \project{Python} library for GP modelling.
-While this library hasn't yet been widely used in the astrophysics literature, we believe\footnote{Note that the development of the \project{tinygp} library is led by D.\ Foreman-Mackey, an author of this review.} that it is a good choice for many applications.
+While this library has not yet been widely used in the astrophysics literature, we believe\footnote{Note that the development of the \project{tinygp} library is led by D.\ Foreman-Mackey, an author of this review.} that it is a good choice for many applications.
 \project{tinygp} uses the \project{JAX}\footnote{\url{https://jax.readthedocs.io}} library as its computational backend, giving it good computational performance (including support for GPU hardware) with a pure-\project{Python} user interface.
 \project{JAX} also provides support for automatic differentiation \citep[e.g.,][]{autodiff}, which can be used to accelerate all the inference schemes described in Sections~\ref{sec:inference} and~\ref{sec:model_selection}.
 
