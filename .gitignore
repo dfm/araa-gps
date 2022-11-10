@@ -6,6 +6,7 @@
 /*.pdf
 report.html
 arxiv.tar.gz
+ms.synctex.gz
 
 # Figure output
 src/tex/figures/*
