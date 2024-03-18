@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
         exclude: ^(src/tex/ms.tex|src/tex/bib.bib)$
@@ -8,15 +8,15 @@ repos:
         exclude_types: [json, binary]
         exclude: ^(src/tex/ms.tex|src/tex/bib.bib)$
   - repo: https://github.com/PyCQA/isort
-    rev: "5.10.1"
+    rev: "5.13.2"
     hooks:
       - id: isort
         additional_dependencies: [toml]
   - repo: https://github.com/psf/black
-    rev: "22.10.0"
+    rev: "24.3.0"
     hooks:
       - id: black-jupyter
   - repo: https://github.com/kynan/nbstripout
-    rev: "0.6.1"
+    rev: "0.7.1"
     hooks:
       - id: nbstripout
